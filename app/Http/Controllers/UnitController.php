@@ -83,8 +83,13 @@ class UnitController extends Controller
             'name' => ['required', 'string', 'max:255', Rule::unique('units')],
             'abbreviation' => ['required', 'string', 'max:50'],
         ]);
-
-        $unit = Unit::create($validated);
+        try {
+            $unit = Unit::create($validated);
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Unable to create unit. Please try again.',
+            ], 500);
+        }
 
         return response()->json([
             'message' => 'Unit created successfully.',
@@ -127,8 +132,13 @@ class UnitController extends Controller
             'name' => ['required', 'string', 'max:255', Rule::unique('units')->ignore($unit->id)],
             'abbreviation' => ['required', 'string', 'max:50'],
         ]);
-
-        $unit->update($validated);
+        try {
+            $unit->update($validated);
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Unable to update unit. Please try again.',
+            ], 500);
+        }
 
         return response()->json([
             'message' => 'Unit updated successfully.',
@@ -145,8 +155,13 @@ class UnitController extends Controller
      */
     public function destroy(Unit $unit)
     {
-        $unit->delete();
-
+        try {
+            $unit->delete();
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Unable to delete unit. Please try again.',
+            ], 500);
+        }
         return response()->json([
             'message' => 'Unit deleted successfully.',
         ]);

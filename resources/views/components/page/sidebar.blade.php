@@ -29,7 +29,7 @@
           </a>
         </li>
         <li>
-          <a href="layouts-horizontal.html">
+          <a href="{{ route('crops.index') }}">
             <i data-feather="box"></i>
             <span data-key="t-horizontal">Crops</span>
           </a>
