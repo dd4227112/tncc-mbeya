@@ -1,58 +1,80 @@
-  <div class="modal fade add-crop-modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add New Crop</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="addCropForm" novalidate>
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group mb-3">
-                  <label for="add-name">Name</label>
-                  <input type="text" id="add-name" name="name" class="form-control" />
-                  <span class="invalid-feedback d-block" id="add-name-error"></span>
-                </div>
+<div class="modal fade add-user-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add New {{ ucfirst(rtrim($role, 's')) }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addUserForm" novalidate>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-3">
+                <label for="add-first-name">First Name</label>
+                <input type="text" id="add-first-name" name="first_name" class="form-control" />
+                <span class="invalid-feedback d-block" id="add-first-name-error"></span>
               </div>
             </div>
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group mb-3">
-                  <label for="add-description">Description</label>
-                  <input type="text" id="add-description" name="description" class="form-control" />
-                  <span class="invalid-feedback d-block" id="add-description-error"></span>
-                </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-3">
+                <label for="add-last-name">Last Name</label>
+                <input type="text" id="add-last-name" name="last_name" class="form-control" />
+                <span class="invalid-feedback d-block" id="add-last-name-error"></span>
               </div>
             </div>
-            <div class="row">
-              <div class="col-12">
-                <div class="form-group mb-3">
-                  <label for="add-price">Price</label>
-                  <input type="number" id="add-price" name="price" class="form-control" />
-                  <span class="invalid-feedback d-block" id="add-price-error"></span>
-                </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-3">
+                <label for="add-phone">Phone</label>
+                <input type="text" id="add-phone" name="phone" class="form-control" />
+                <span class="invalid-feedback d-block" id="add-phone-error"></span>
               </div>
             </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-3">
+                <label for="add-email">Email</label>
+                <input type="email" id="add-email" name="email" class="form-control" />
+                <span class="invalid-feedback d-block" id="add-email-error"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-3">
+                <label for="add-address">Address</label>
+                <input type="text" id="add-address" name="address" class="form-control" />
+                <span class="invalid-feedback d-block" id="add-address-error"></span>
+              </div>
+            </div>
+          </div>
+          @if ($role === 'staffs')
             <div class="row">
               <div class="col-12">
                 <div class="form-group mb-3">
-                  <label for="add-unit">Unit</label>
-                  <select id="add-unit" name="unit_id" class="form-control">
-                    <option value="">Select Unit</option>
-                    @foreach ($units as $unit)
-                      <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                  <label for="add-role">Role</label>
+                  <select id="add-role" name="role_id" class="form-control">
+                    <option value="">Select Role</option>
+                    @foreach ($roles as $roleOption)
+                      <option value="{{ $roleOption->id }}">{{ ucfirst($roleOption->name) }}</option>
                     @endforeach
                   </select>
-                  <span class="invalid-feedback d-block" id="add-unit-error"></span>
+                  <span class="invalid-feedback d-block" id="add-role-error"></span>
                 </div>
               </div>
             </div>
-            <div class="form-group">
-              <button type="submit" class="btn btn-primary">Save</button>
-            </div>
-          </form>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+          @else
+            <input type="hidden" name="role_id" value="4" /> <!--  role_id 4 corresponds to 'Member' -->
+          @endif
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

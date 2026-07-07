@@ -1,116 +1,141 @@
 <script>
     $(function () {
         function clearEditErrors() {
-            $('#editCropForm').find('.is-invalid').removeClass('is-invalid');
-            $('#editCropForm').find('.invalid-feedback').text('');
+            $('#editUserForm').find('.is-invalid').removeClass('is-invalid');
+            $('#editUserForm').find('.invalid-feedback').text('');
         }
 
-        $(document).on('click', '.edit-crop', function (e) {
+        $(document).on('click', '.edit-user', function (e) {
             e.preventDefault();
 
-            var cropId = $(this).data('id');
-            var $modal = $('.edit-crop-modal');
-            var $form = $('#editCropForm');
+            var userId = $(this).data('id');
+            var $modal = $('.edit-user-modal');
+            var $form = $('#editUserForm');
 
             clearEditErrors();
             $form.trigger('reset');
             $form.find('button[type="submit"]').prop('disabled', false).text('Save');
 
             $.ajax({
-                url: "{{ route('crops.edit', ['crop' => ':id']) }}".replace(':id', cropId),
+                url: "{{ route($role . '.edit', [$role === 'members' ? 'member' : 'staff' => ':id']) }}".replace(':id', userId),
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
+                    console.log(response);
                     if (response && response.data) {
-                        $('#edit-crop-id').val(response.data.id);
-                        $('#edit-name').val(response.data.name);
-                        $('#edit-description').val(response.data.description);
-                        $('#edit-price').val(response.data.price);
-                        $('#edit-unit').val(response.data.unit_id);
+                        $('#edit-user-id').val(response.data.id);
+                        $('#edit-first-name').val(response.data.first_name);
+                        $('#edit-last-name').val(response.data.last_name);
+                        $('#edit-phone').val(response.data.phone);
+                        $('#edit-email').val(response.data.email);
+                        $('#edit-address').val(response.data.address);
+                        if ($('#edit-role').length) {
+                            $('#edit-role').val(response.data.role_id);
+                        }
                         $modal.modal('show');
                     }
                 },
                 error: function () {
-                    toastr.error('Unable to load crop details. Please try again.');
+                    toastr.error('Unable to load user details. Please try again.');
                 }
             });
         });
 
-        $('#editCropForm').on('submit', function (e) {
+        $('#editUserForm').on('submit', function (e) {
             e.preventDefault();
 
             var $form = $(this);
-            var cropId = $('#edit-crop-id').val();
+            var userId = $('#edit-user-id').val();
             var $submitButton = $form.find('button[type="submit"]');
-            var $nameInput = $('#edit-name');
-            var $descriptionInput = $('#edit-description');
-            var $priceInput = $('#edit-price');
-            var $unitInput = $('#edit-unit');
-            var name = $.trim($nameInput.val());
-            var description = $.trim($descriptionInput.val());
-            var price = $.trim($priceInput.val());
-            var unitId = $.trim($unitInput.val());
+            var $firstNameInput = $('#edit-first-name');
+            var $lastNameInput = $('#edit-last-name');
+            var $phoneInput = $('#edit-phone');
+            var $emailInput = $('#edit-email');
+            var $addressInput = $('#edit-address');
+            var $roleInput = $('#edit-role');
+            var firstName = $.trim($firstNameInput.val());
+            var lastName = $.trim($lastNameInput.val());
+            var phone = $.trim($phoneInput.val());
+            var email = $.trim($emailInput.val());
+            var address = $.trim($addressInput.val());
+            var role = $.trim($roleInput.val());
 
             clearEditErrors();
 
-            if (!name) {
-                $nameInput.addClass('is-invalid').focus();
-                $('#edit-name-error').text('Please enter the crop name.');
+            if (!firstName) {
+                $firstNameInput.addClass('is-invalid').focus();
+                $('#edit-first-name-error').text('Please enter the first name.');
                 return;
             }
 
-            // if (!description) {
-            //     $descriptionInput.addClass('is-invalid').focus();
-            //     $('#edit-description-error').text('Please enter the description.');
-            //     return;
-            // }
+            if (!lastName) {
+                $lastNameInput.addClass('is-invalid').focus();
+                $('#edit-last-name-error').text('Please enter the last name.');
+                return;
+            }
 
-            if (!price) {
-                $priceInput.addClass('is-invalid').focus();
-                $('#edit-price-error').text('Please enter the price.');
+            if (!phone) {
+                $phoneInput.addClass('is-invalid').focus();
+                $('#edit-phone-error').text('Please enter the phone number.');
                 return;
             }
-            if (!unitId) {
-                $unitInput.addClass('is-invalid').focus();
-                $('#edit-unit-error').text('Please select a unit.');
+
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                $emailInput.addClass('is-invalid').focus();
+                $('#edit-email-error').text('Please enter a valid email.');
                 return;
             }
+
+            if ($roleInput.length && !role) {
+                $roleInput.addClass('is-invalid').focus();
+                $('#edit-role-error').text('Please select a role.');
+                return;
+            }
+
             $submitButton.prop('disabled', true).text('Saving...');
 
             $.ajax({
-                url: "{{ route('crops.update', ['crop' => ':id']) }}".replace(':id', cropId),
+                url: "{{ route($role . '.update', [$role === 'members' ? 'member' : 'staff' => ':id']) }}".replace(':id', userId),
                 type: 'PUT',
                 data: $form.serialize(),
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function (response) {
-                    $('.edit-crop-modal').modal('hide');
-                    toastr.success(response.message || 'Crop updated successfully.');
-                    if (typeof loadCropsTable === 'function') {
-                        loadCropsTable();
+                    $('.edit-user-modal').modal('hide');
+                    toastr.success(response.message || 'User updated successfully.');
+                    if (typeof loadUsersTable === 'function') {
+                        loadUsersTable();
                     }
                 },
                 error: function (xhr) {
-                    var message = 'Unable to update crop. Please try again.';
+                    var message = 'Unable to update user. Please try again.';
 
                     if (xhr && xhr.responseJSON) {
                         if (xhr.responseJSON.errors) {
-                            if (xhr.responseJSON.errors.name) {
-                                $nameInput.addClass('is-invalid');
-                                $('#edit-name-error').text(xhr.responseJSON.errors.name[0]);
+                            if (xhr.responseJSON.errors.first_name) {
+                                $firstNameInput.addClass('is-invalid');
+                                $('#edit-first-name-error').text(xhr.responseJSON.errors.first_name[0]);
                             }
-                            if (xhr.responseJSON.errors.description) {
-                                $descriptionInput.addClass('is-invalid');
-                                $('#edit-description-error').text(xhr.responseJSON.errors.description[0]);
+                            if (xhr.responseJSON.errors.last_name) {
+                                $lastNameInput.addClass('is-invalid');
+                                $('#edit-last-name-error').text(xhr.responseJSON.errors.last_name[0]);
                             }
-                            if (xhr.responseJSON.errors.price) {
-                                $priceInput.addClass('is-invalid');
-                                $('#edit-price-error').text(xhr.responseJSON.errors.price[0]);
+                            if (xhr.responseJSON.errors.phone) {
+                                $phoneInput.addClass('is-invalid');
+                                $('#edit-phone-error').text(xhr.responseJSON.errors.phone[0]);
                             }
-                            if (xhr.responseJSON.errors.unit_id) {
-                                $unitInput.addClass('is-invalid');
-                                $('#edit-unit-error').text(xhr.responseJSON.errors.unit_id[0]);
+                            if (xhr.responseJSON.errors.email) {
+                                $emailInput.addClass('is-invalid');
+                                $('#edit-email-error').text(xhr.responseJSON.errors.email[0]);
+                            }
+                            if (xhr.responseJSON.errors.address) {
+                                $addressInput.addClass('is-invalid');
+                                $('#edit-address-error').text(xhr.responseJSON.errors.address[0]);
+                            }
+                            if (xhr.responseJSON.errors.role) {
+                                $roleInput.addClass('is-invalid');
+                                $('#edit-role-error').text(xhr.responseJSON.errors.role[0]);
                             }
                         }
                         if (xhr.responseJSON.message) {
@@ -118,7 +143,7 @@
                         }
                     }
 
-                    if (!$('#edit-name-error').text() && !$('#edit-description-error').text() && !$('#edit-price-error').text() && !$('#edit-unit-error').text()) {
+                    if (!$('#edit-first-name-error').text() && !$('#edit-last-name-error').text() && !$('#edit-phone-error').text() && !$('#edit-email-error').text() && !$('#edit-address-error').text() && !$('#edit-role-error').text()) {
                         toastr.error(message);
                     }
                 },
@@ -128,14 +153,14 @@
             });
         });
 
-        $(document).on('click', '.delete-crop', function (e) {
+        $(document).on('click', '.delete-user', function (e) {
             e.preventDefault();
 
-            var cropId = $(this).data('id');
+            var userId = $(this).data('id');
 
             Swal.fire({
-                title: 'Delete Crop',
-                text: 'Are you sure you want to delete this crop? This action cannot be undone.',
+                title: 'Delete User',
+                text: 'Are you sure you want to delete this user? This action cannot be undone.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -144,19 +169,19 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "{{ route('crops.destroy', ['crop' => ':id']) }}".replace(':id', cropId),
+                        url: "{{ route($role . '.destroy', [$role === 'members' ? 'member' : 'staff' => ':id']) }}".replace(':id', userId),
                         type: 'DELETE',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function (response) {
-                            if (typeof loadCropsTable === 'function') {
-                                loadCropsTable();
+                            if (typeof loadUsersTable === 'function') {
+                                loadUsersTable();
                             }
-                            Swal.fire('Deleted!', response.message || 'Crop deleted successfully.', 'success');
+                            Swal.fire('Deleted!', response.message || 'User deleted successfully.', 'success');
                         },
                         error: function (xhr) {
-                            var message = 'Unable to delete crop. Please try again.';
+                            var message = 'Unable to delete user. Please try again.';
                             if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
                                 message = xhr.responseJSON.message;
                             }

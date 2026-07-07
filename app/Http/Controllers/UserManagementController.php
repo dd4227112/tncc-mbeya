@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Throwable;
 use Illuminate\Validation\Rule;
+use Throwable;
 
 class UserManagementController extends Controller
 {
     public string $role;
+
     public function __construct(Request $request)
     {
         $segment = $request->segment(1);
@@ -22,23 +24,19 @@ class UserManagementController extends Controller
         };
         User::setManagementRole($this->role);
     }
-    /**
-     * Display a listing of the resource.
-     */
-
 
     public function index(Request $request)
     {
         $this->data['role'] = $this->role;
+        $this->data['roles'] = Role::where('name', '!=', 'Member')->get();
+
         return view('pages.users.index', $this->data);
-    }   
-     public function getUsers()
+    }
+
+    public function getUsers()
     {
-
         try {
-            $users = User::select(['id', 'first_name', 'last_name', 'phone', 'email', 'address'])->get();
-     
-
+            $users = User::with('roles')->select(['id', 'first_name', 'last_name', 'phone', 'email', 'address'])->get();
             $data = $users->map(function ($user, $index) {
                 return [
                     'id' => $index + 1,
@@ -49,11 +47,11 @@ class UserManagementController extends Controller
                     'address' => $user->address,
                     'roles' => $user->roles->pluck('name')->implode(', '),
                     'actions' => '
-                    <button class="btn btn-sm btn-primary edit-user" href="#" data-id="' . $user->id . '">Edit</button> 
-                    <button class="btn btn-sm btn-danger delete-user" href="#" data-id="' . $user->id . '">Delete</button>
-                    ',
+                        <button class="btn btn-sm btn-primary edit-user" href="#" data-id="' . $user->id . '">Edit</button>
+                        <button class="btn btn-sm btn-danger delete-user" href="#" data-id="' . $user->id . '">Delete</button>',
                 ];
             })->values();
+
             return response()->json([
                 'draw' => 1,
                 'recordsTotal' => $users->count(),
@@ -62,6 +60,7 @@ class UserManagementController extends Controller
             ]);
         } catch (Throwable $e) {
             Log::error('Error fetching users: ' . $e->getMessage(), ['exception' => $e]);
+
             return response()->json([
                 'message' => 'Failed to get users. Please try again later or contact support.',
                 'data' => [],
@@ -69,119 +68,159 @@ class UserManagementController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('users')],
-            'description' => ['nullable', 'string', 'max:255'],
-            'price' => ['required', 'numeric', 'min:1'],
-            'unit_id' => ['required', 'exists:units,id'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20', 'unique:users,phone'],
+            'email' => ['nullable', 'email', 'max:255', 'unique:users,email'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'role_id' => ['required', 'integer', 'exists:roles,id'],
         ]);
 
         try {
-            $user = User::create($validated);
+            $user = User::create([
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'phone' => $validated['phone'],
+                'email' => $validated['email'] ?? null,
+                'password' => $validated['phone'], // Set phone number as password
+                'address' => $validated['address'] ?? null,
+            ]);
+
+            $user->roles()->sync([$validated['role_id']]);
+
+            return response()->json([
+                'message' => 'User created successfully.',
+                'data' => [
+                    'id' => $user->id,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'phone' => $user->phone,
+                    'email' => $user->email,
+                    'address' => $user->address,
+                    'role' => $user->roles->pluck('name')->first() ?? null,
+                ],
+            ], 201);
         } catch (Throwable $e) {
             Log::error('Error creating user: ' . $e->getMessage(), ['exception' => $e]);
+
             return response()->json([
                 'message' => 'Unable to create user. Please try again.',
             ], 500);
         }
-
-        return response()->json([
-            'message' => 'User created successfully.',
-            'data' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'description' => $user->description,
-                'price' => $user->price,
-                'unit_id' => $user->unit_id,
-            ],
-        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
+    public function edit(int $id)
     {
+        try {
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Unable to find user. Please try again.',
+            ], 500);
+        }
+
         return response()->json([
             'data' => [
                 'id' => $user->id,
-                'name' => $user->name,
-                'description' => $user->description,
-                'price' => $user->price,
-                'unit_id' => $user->unit_id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'phone' => $user->phone,
+                'email' => $user->email,
+                'address' => $user->address,
+                'role_id' => $user->roles->pluck('id')->first() ?? null,
+                'role' => $user->roles->pluck('name')->first() ?? null,
             ],
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, User $user)
+    public function update(Request $request, int $id)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'description' => ['nullable', 'string', 'max:255'],
-            'price' => ['required', 'numeric', 'min:1'],
-            'unit_id' => ['required', 'exists:units,id'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($id)],
+            'email' => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($id)],
+            'address' => ['nullable', 'string', 'max:255'],
+            'role_id' => ['required', 'integer', 'exists:roles,id'],
         ]);
 
         try {
-            $user->update($validated);
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
+            $data = [
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'phone' => $validated['phone'],
+                'email' => $validated['email'] ?? null,
+                'address' => $validated['address'] ?? null,
+            ];
+            $user->update($data);
+            $user->roles()->sync([$validated['role_id']]);
+
+            return response()->json([
+                'message' => 'User updated successfully.',
+                'data' => [
+                    'id' => $user->id,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'phone' => $user->phone,
+                    'email' => $user->email,
+                    'address' => $user->address,
+                    'role_id' => $validated['role_id'],
+                ],
+            ]);
         } catch (Throwable $e) {
+            Log::error('Error updating user: ' . $e->getMessage(), ['exception' => $e]);
+
             return response()->json([
                 'message' => 'Unable to update user. Please try again.',
             ], 500);
         }
-
-        return response()->json([
-            'message' => 'User updated successfully.',
-            'data' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'description' => $user->description,
-                'price' => $user->price,
-                'unit_id' => $user->unit_id,
-            ],
-        ]);
     }
 
-    /**     
-
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
+    public function destroy(int $id)
     {
         try {
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json([
+                    'message' => 'User not found.',
+                ], 404);
+            }
             $user->delete();
+
+            return response()->json([
+                'message' => 'User deleted successfully.',
+            ]);
         } catch (Throwable $e) {
+            Log::error('Error deleting user: ' . $e->getMessage(), ['exception' => $e]);
+
             return response()->json([
                 'message' => 'Unable to delete user. Please try again.',
             ], 500);
         }
-
-        return response()->json([
-            'message' => "User deleted successfully.",
-        ]);
     }
 }

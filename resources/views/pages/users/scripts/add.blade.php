@@ -1,50 +1,60 @@
 <script>
     $(function () {
-        $('#addCropForm').on('submit', function (e) {
+        $('#addUserForm').on('submit', function (e) {
             e.preventDefault();
 
             var $form = $(this);
             var $submitButton = $form.find('button[type="submit"]');
-            var $nameInput = $form.find('[name="name"]');
-            var $descriptionInput = $form.find('[name="description"]');
-            var $priceInput = $form.find('[name="price"]');
-            var $unitInput = $form.find('[name="unit_id"]');
-            var name = $.trim($nameInput.val());
-            var description = $.trim($descriptionInput.val());
-            var price = $.trim($priceInput.val());
-            var unit_id = $.trim($unitInput.val());
+            var $firstNameInput = $form.find('[name="first_name"]');
+            var $lastNameInput = $form.find('[name="last_name"]');
+            var $phoneInput = $form.find('[name="phone"]');
+            var $emailInput = $form.find('[name="email"]');
+            var $addressInput = $form.find('[name="address"]');
+            var $roleInput = $form.find('[name="role_id"]');
+            var firstName = $.trim($firstNameInput.val());
+            var lastName = $.trim($lastNameInput.val());
+            var phone = $.trim($phoneInput.val());
+            var email = $.trim($emailInput.val());
+            var address = $.trim($addressInput.val());
+            var role = $.trim($roleInput.val());
 
             $form.find('.is-invalid').removeClass('is-invalid');
             $form.find('.invalid-feedback').text('');
 
-            if (!name) {
-                $nameInput.addClass('is-invalid').focus();
-                $('#add-name-error').text('Please enter the crop name.');
+            if (!firstName) {
+                $firstNameInput.addClass('is-invalid').focus();
+                $('#add-first-name-error').text('Please enter the first name.');
                 return;
             }
 
-            // if (!description) {
-            //     $descriptionInput.addClass('is-invalid').focus();
-            //     $('#add-description-error').text('Please enter the crop description.');
-            //     return;
-            // }
-
-            if (!price) {
-                $priceInput.addClass('is-invalid').focus();
-                $('#add-price-error').text('Please enter the crop price.');
+            if (!lastName) {
+                $lastNameInput.addClass('is-invalid').focus();
+                $('#add-last-name-error').text('Please enter the last name.');
                 return;
             }
 
-            if (!unit_id) {
-                $unitInput.addClass('is-invalid').focus();
-                $('#add-unit-error').text('Please select a unit.');
+            if (!phone) {
+                $phoneInput.addClass('is-invalid').focus();
+                $('#add-phone-error').text('Please enter the phone number.');
+                return;
+            }
+
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                $emailInput.addClass('is-invalid').focus();
+                $('#add-email-error').text('Please enter a valid email.');
+                return;
+            }
+
+            if ($roleInput.length && !role) {
+                $roleInput.addClass('is-invalid').focus();
+                $('#add-role-error').text('Please select a role.');
                 return;
             }
 
             $submitButton.prop('disabled', true).text('Saving...');
 
             $.ajax({
-                url: '{{ route('crops.store') }}',
+                url: '{{ route($role . '.store') }}',
                 type: 'POST',
                 data: $form.serialize(),
                 headers: {
@@ -52,33 +62,45 @@
                 },
                 success: function (response) {
                     $form[0].reset();
-                    $('.add-crop-modal').modal('hide');
-                    toastr.success(response.message || 'Crop created successfully.');
-                    if (typeof loadCropsTable === 'function') {
-                        loadCropsTable();
+                    $('.add-user-modal').modal('hide');
+                    toastr.success(response.message || 'User created successfully.');
+                    if (typeof loadUsersTable === 'function') {
+                        loadUsersTable();
                     }
                 },
                 error: function (xhr) {
-                    var message = 'Unable to save crop. Please try again.';
+                    console.error('Error response:', xhr); // Log the entire error response for debugging
+                    var message = 'Unable to save user. Please try again.';
 
                     if (xhr && xhr.responseJSON) {
                         if (xhr.responseJSON.errors) {
-                            if (xhr.responseJSON.errors.name) {
-                                $nameInput.addClass('is-invalid');
-                                $('#add-name-error').text(xhr.responseJSON.errors.name[0]);
+                            if (xhr.responseJSON.errors.first_name) {
+                                $firstNameInput.addClass('is-invalid');
+                                $('#add-first-name-error').text(xhr.responseJSON.errors.first_name[0]);
                             }
 
-                            if (xhr.responseJSON.errors.description) {
-                                $descriptionInput.addClass('is-invalid');
-                                $('#add-description-error').text(xhr.responseJSON.errors.description[0]);
+                            if (xhr.responseJSON.errors.last_name) {
+                                $lastNameInput.addClass('is-invalid');
+                                $('#add-last-name-error').text(xhr.responseJSON.errors.last_name[0]);
                             }
-                            if (xhr.responseJSON.errors.price) {
-                                $priceInput.addClass('is-invalid');
-                                $('#add-price-error').text(xhr.responseJSON.errors.price[0]);
+
+                            if (xhr.responseJSON.errors.phone) {
+                                $phoneInput.addClass('is-invalid');
+                                $('#add-phone-error').text(xhr.responseJSON.errors.phone[0]);
                             }
-                            if (xhr.responseJSON.errors.unit_id) {
-                                $unitInput.addClass('is-invalid');
-                                $('#add-unit-error').text(xhr.responseJSON.errors.unit_id[0]);
+
+                            if (xhr.responseJSON.errors.email) {
+                                $emailInput.addClass('is-invalid');
+                                $('#add-email-error').text(xhr.responseJSON.errors.email[0]);
+                            }
+                            if (xhr.responseJSON.errors.address) {
+                                $addressInput.addClass('is-invalid');
+                                $('#add-address-error').text(xhr.responseJSON.errors.address[0]);
+                            }
+
+                            if (xhr.responseJSON.errors.role) {
+                                $roleInput.addClass('is-invalid');
+                                $('#add-role-error').text(xhr.responseJSON.errors.role[0]);
                             }
                         }
 
@@ -87,7 +109,7 @@
                         }
                     }
 
-                    if (!$('#add-name-error').text() && !$('#add-price-error').text() && !$('#add-description-error').text() && !$('#add-unit-error').text()) {
+                    if (!$('#add-first-name-error').text() && !$('#add-last-name-error').text() && !$('#add-phone-error').text() && !$('#add-email-error').text() && !$('#add-address-error').text() && !$('#add-role-error').text()) {
                         toastr.error(message);
                     }
                 },

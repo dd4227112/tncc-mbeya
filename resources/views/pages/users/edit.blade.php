@@ -1,62 +1,82 @@
-  <div class="modal fade edit-crop-modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Edit Crop</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="editCropForm" novalidate>
-            <input type="hidden" id="edit-crop-id" name="crop_id" />
-            <div class="row">
-              <div class="col-xl-12 col-md-12">
-                <div class="form-group mb-3">
-                  <label for="edit-name">Name</label>
-                  <input type="text" id="edit-name" name="name" required data-pristine-required-message="Please Enter a name"
-                    class="form-control" />
-                  <span class="invalid-feedback d-block" id="edit-name-error"></span>
-                </div>
+<div class="modal fade edit-user-modal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit {{ ucfirst($role) }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editUserForm" novalidate>
+          <input type="hidden" id="edit-user-id" name="user_id" />
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-3">
+                <label for="edit-first-name">First Name</label>
+                <input type="text" id="edit-first-name" name="first_name" class="form-control" />
+                <span class="invalid-feedback d-block" id="edit-first-name-error"></span>
               </div>
             </div>
-            <div class="row">
-              <div class="col-xl-12 col-md-12">
-                <div class="form-group mb-3">
-                  <label for="edit-description">Description</label>
-                  <input type="text" id="edit-description" name="description" required
-                    data-pristine-required-message="Please Enter a description" class="form-control" />
-                  <span class="invalid-feedback d-block" id="edit-description-error"></span>
-                </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-3">
+                <label for="edit-last-name">Last Name</label>
+                <input type="text" id="edit-last-name" name="last_name" class="form-control" />
+                <span class="invalid-feedback d-block" id="edit-last-name-error"></span>
               </div>
             </div>
-            <div class="row">
-              <div class="col-xl-12 col-md-12">
-                <div class="form-group mb-3">
-                  <label for="edit-price">Price</label>
-                  <input type="number" id="edit-price" name="price" required data-pristine-required-message="Please Enter a price"
-                    class="form-control" />
-                  <span class="invalid-feedback d-block" id="edit-price-error"></span>
-                </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-3">
+                <label for="edit-phone">Phone</label>
+                <input type="text" id="edit-phone" name="phone" class="form-control" />
+                <span class="invalid-feedback d-block" id="edit-phone-error"></span>
               </div>
             </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-3">
+                <label for="edit-email">Email</label>
+                <input type="email" id="edit-email" name="email" class="form-control" />
+                <span class="invalid-feedback d-block" id="edit-email-error"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group mb-3">
+                <label for="edit-address">Address</label>
+                <input type="text" id="edit-address" name="address" class="form-control" />
+                <span class="invalid-feedback d-block" id="edit-address-error"></span>
+              </div>
+            </div>
+          </div>
+          @if ($role === 'staffs')
             <div class="row">
-              <div class="col-xl-12 col-md-12">
+              <div class="col-12">
                 <div class="form-group mb-3">
-                  <label for="edit-unit">Unit</label>
-                  <select id="edit-unit" name="unit_id" class="form-control">
-                    <option value="">Select Unit</option>
-                    @foreach ($units as $unit)
-                      <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                  <label for="edit-role">Role</label>
+                  <select id="edit-role" name="role_id" class="form-control">
+                    <option value="">Select Role</option>
+                    @foreach ($roles as $role)
+                      <option value="{{ $role->id }}">{{ $role->name }}</option>
                     @endforeach
                   </select>
-                  <span class="invalid-feedback d-block" id="edit-unit-error"></span>
+                  <span class="invalid-feedback d-block" id="edit-role-error"></span>
                 </div>
               </div>
-            </div>            
-            <div class="form-group">
-              <button type="submit" class="btn btn-primary">Save</button>
             </div>
-          </form>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+          @else
+            <input type="hidden" name="role_id" value="4" /> <!--  role_id 4 corresponds to 'Member' -->
+          @endif
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

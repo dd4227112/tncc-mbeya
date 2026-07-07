@@ -31,8 +31,8 @@
         <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
           <div>
             <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".add-user-modal"><i class="bx bx-plus me-1"></i> Add New</a>
-            {{-- @include('pages.users.add') --}}
-            {{-- @include('pages.users.edit') --}}
+            @include('pages.users.add')
+            @include('pages.users.edit')
       </div>
     </div>
     <!-- end row -->
@@ -67,8 +67,8 @@
 
 @push('scripts')
   @include('pages.users.scripts.index')
-  {{-- @include('pages.users.scripts.add') --}}
-  {{-- @include('pages.users.scripts.edit-delete') --}}
+  @include('pages.users.scripts.add')
+  @include('pages.users.scripts.edit-delete')
 
 @endpush
 
