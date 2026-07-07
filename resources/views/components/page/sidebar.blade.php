@@ -48,8 +48,8 @@
             <span data-key="t-components">People</span>
           </a>
           <ul class="sub-menu" aria-expanded="false">
-            <li><a href="ui-alerts.html" data-key="t-alerts">Members</a></li>
-            <li><a href="ui-buttons.html" data-key="t-buttons">Staff</a></li>
+            <li><a href="{{ route('members.index') }}" data-key="t-alerts">Members</a></li>
+            <li><a href="{{ route('staffs.index') }}" data-key="t-buttons">Staff</a></li>
           </ul>
         </li>
 

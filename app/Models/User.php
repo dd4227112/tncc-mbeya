@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['first_name', 'last_name', 'phone', 'email', 'password'])]
+#[Fillable(['first_name', 'last_name', 'phone', 'email', 'password', 'address'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -22,6 +23,31 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    protected static ?string $managementRole = null;
+
+    public static function setManagementRole(string $role): void
+    {
+        static::$managementRole = $role;
+    }
+    protected static function booted()
+    {
+        static::addGlobalScope('role', function (Builder $builder) {
+            if (static::$managementRole) {
+                if(static::$managementRole === 'members') {
+                    $builder->whereHas('roles', function ($query) {
+                        $query->where('name', 'Member');
+                    });
+                } elseif(static::$managementRole === 'staffs') {
+                    $builder->whereHas('roles', function ($query) {
+                        $query->whereIn('name', ['Admin', 'Chairperson', 'Accountant']);
+                    });
+                } else {
+                    abort(400, 'Invalid role');
+                }
+               
+            }
+        });
+    }
     protected function casts(): array
     {
         return [
