@@ -16,7 +16,7 @@
           </a>
         </li>
         <li>
-          <a href="layouts-horizontal.html">
+          <a href="{{ route('invoices.index') }}">
             <i data-feather="file-text"></i>
             <span data-key="t-horizontal">Invoices</span>
           </a>

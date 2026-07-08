@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Add Invoice | Minia - Minimal Admin & Dashboard Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesbrand" name="author" />
+
+    <!-- Bootstrap Css (CDN — original template assets not bundled with this file) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Icons (used throughout the original template) -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --minia-primary: #556ee6;
+            --minia-primary-rgb: 85, 110, 230;
+            --minia-success: #34c38f;
+            --minia-danger: #f46a6a;
+            --minia-warning: #f1b44c;
+            --minia-body-bg: #f8f9fa;
+            --minia-card-border: #eff2f7;
+            --minia-text-muted: #74788d;
+        }
+
+        body {
+            background-color: var(--minia-body-bg);
+            font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #495057;
+        }
+
+        .page-content {
+            padding: 1.75rem 0.75rem 3rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 0.25rem;
+            box-shadow: 0 0 0.9375rem 0 rgba(33, 37, 41, 0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .page-title-box h4 {
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .breadcrumb {
+            font-size: 13px;
+        }
+
+        .breadcrumb-item a {
+            color: var(--minia-text-muted);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item.active {
+            color: #495057;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            top: 12px;
+            left: 14px;
+            font-size: 16px;
+            color: var(--minia-text-muted);
+        }
+
+        .search-box input {
+            padding-left: 40px;
+        }
+
+        .form-control:focus {
+            border-color: #a6b0cf;
+            box-shadow: none;
+        }
+
+        .search-results {
+            position: absolute;
+            z-index: 20;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            background: #fff;
+            border: 1px solid var(--minia-card-border);
+            border-radius: 0.25rem;
+            box-shadow: 0 4px 16px rgba(33, 37, 41, 0.12);
+            max-height: 260px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 10px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--minia-card-border);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover,
+        .search-result-item.active {
+            background-color: rgba(var(--minia-primary-rgb), 0.08);
+        }
+
+        .search-result-item .item-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .search-result-item .item-sub {
+            font-size: 12.5px;
+            color: var(--minia-text-muted);
+        }
+
+        .search-result-empty {
+            padding: 14px;
+            font-size: 13px;
+            color: var(--minia-text-muted);
+            text-align: center;
+        }
+
+        .member-card {
+            border: 1px dashed #ced4da;
+            border-radius: 0.25rem;
+            padding: 1.25rem;
+            min-height: 140px;
+        }
+
+        .member-card.has-member {
+            border-style: solid;
+            border-color: var(--minia-card-border);
+            background-color: #fbfbfd;
+        }
+
+        .member-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 92px;
+            color: var(--minia-text-muted);
+            font-size: 13.5px;
+            text-align: center;
+        }
+
+        .avatar-title {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(var(--minia-primary-rgb), 0.15);
+            color: var(--minia-primary);
+            font-weight: 600;
+        }
+
+        .avatar-sm {
+            height: 3rem;
+            width: 3rem;
+            border-radius: 50%;
+            font-size: 18px;
+        }
+
+        .badge-soft-success {
+            background-color: rgba(52, 195, 143, 0.12);
+            color: var(--minia-success);
+            font-weight: 500;
+        }
+
+        table.crop-table th {
+            font-size: 12.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            color: var(--minia-text-muted);
+            font-weight: 600;
+            border-top: none;
+            border-bottom: 1px solid var(--minia-card-border);
+        }
+
+        table.crop-table td {
+            vertical-align: middle;
+            border-color: var(--minia-card-border);
+        }
+
+        .qty-input {
+            width: 80px;
+        }
+
+        .empty-row td {
+            text-align: center;
+            color: var(--minia-text-muted);
+            padding: 2.25rem 0;
+            font-size: 13.5px;
+        }
+
+        .btn-remove-row {
+            border: none;
+            background: transparent;
+            color: var(--minia-danger);
+            font-size: 18px;
+            line-height: 1;
+            padding: 4px 6px;
+        }
+
+        .btn-remove-row:hover {
+            color: #d84a4a;
+        }
+
+        .summary-table td {
+            padding: 0.4rem 0;
+            font-size: 14px;
+        }
+
+        .summary-table tr.total-row td {
+            border-top: 1px solid var(--minia-card-border);
+            padding-top: 0.75rem;
+            font-size: 17px;
+            font-weight: 600;
+            color: #343a40;
+        }
+
+        .section-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 0.75rem;
+        }
+
+        .logo-txt {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--minia-primary);
+            vertical-align: middle;
+            margin-left: 6px;
+        }
+
+        @media (max-width: 575.98px) {
+            .qty-input { width: 70px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-content">
+        <div class="container-fluid" style="max-width: 1140px;">
+
+            <!-- page title -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                        <h4 class="mb-sm-0">Add Invoice</h4>
+                        <div class="page-title-right">
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="#">Invoices</a></li>
+                                <li class="breadcrumb-item active">Add Invoice</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <!-- Two-column layout: Member | Crops -->
+                            <div class="row">
+
+                                <!-- Column 1: Member -->
+                                <div class="col-lg-4 mb-4 mb-lg-0">
+                                    <div class="section-label">1. Select Member</div>
+                                    <div class="search-box position-relative mb-3">
+                                        <i class="mdi mdi-magnify search-icon"></i>
+                                        <input type="text" id="memberSearchInput" class="form-control" placeholder="Search member by name or phone…" autocomplete="off">
+                                        <div id="memberResults" class="search-results"></div>
+                                    </div>
+
+                                    <div id="memberCard" class="member-card">
+                                        <div class="member-placeholder" id="memberPlaceholder">
+                                            No member selected yet — search and pick a member.
+                                        </div>
+                                        <div id="memberDetails" class="d-none">
+                                            <div class="d-flex align-items-start">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <span class="avatar-title avatar-sm rounded-circle" id="memberAvatar">--</span>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex align-items-center">
+                                                        <h5 class="font-size-15 mb-1 me-2" id="memberName">—</h5>
+                                                        <span class="badge badge-soft-success" id="memberStatus">Active</span>
+                                                    </div>
+                                                    <p class="mb-1 text-muted font-size-13" id="memberFarm">—</p>
+                                                    <p class="mb-1 font-size-13"><i class="mdi mdi-map-marker me-1"></i><span id="memberLocation">—</span></p>
+                                                    <p class="mb-1 font-size-13"><i class="mdi mdi-phone me-1"></i><span id="memberPhone">—</span></p>
+                                                    <p class="mb-0 font-size-13"><i class="mdi mdi-identifier me-1"></i>Member ID: <span id="memberId">—</span></p>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-link text-danger p-0" id="clearMemberBtn" title="Remove member">
+                                                    <i class="mdi mdi-close"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Column 2: Crops -->
+                                <div class="col-lg-8">
+                                    <div class="section-label">2. Add Crop</div>
+                                    <div class="search-box position-relative mb-3">
+                                        <i class="mdi mdi-magnify search-icon"></i>
+                                        <input type="text" id="cropSearchInput" class="form-control" placeholder="Search crop by name…" autocomplete="off">
+                                        <div id="cropResults" class="search-results"></div>
+                                    </div>
+
+                                    <div class="border rounded p-3">
+                                        <div class="table-responsive">
+                                            <table class="table table-nowrap align-middle mb-0 crop-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 40px;">No.</th>
+                                                        <th>Crop</th>
+                                                        <th class="text-end" style="width: 90px;">Price</th>
+                                                        <th style="width: 70px;">Unit</th>
+                                                        <th style="width: 110px;">Qty</th>
+                                                        <th class="text-end" style="width: 100px;">Amount</th>
+                                                        <th class="text-center" style="width: 40px;"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="cropTableBody">
+                                                    <tr class="empty-row" id="emptyRow">
+                                                        <td colspan="7">No crops added yet. Use the search above to add crops to this invoice.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- end two-column layout -->
+
+                            <!-- Summary -->
+                            <div class="row justify-content-end mt-4">
+                                <div class="col-lg-5 col-md-7">
+                                    <div class="py-2">
+                                        <h5 class="font-size-15">3. Summary</h5>
+                                    </div>
+                                    <div class="p-3 p-md-4 border rounded">
+                                        <table class="table table-borderless summary-table mb-0">
+                                            <tbody>
+                                                <tr>
+                                                    <td>Items</td>
+                                                    <td class="text-end" id="summaryItemCount">0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sub Total</td>
+                                                    <td class="text-end" id="summarySubTotal">$0.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Tax (5%)</td>
+                                                    <td class="text-end" id="summaryTax">$0.00</td>
+                                                </tr>
+                                                <tr class="total-row">
+                                                    <td>Total</td>
+                                                    <td class="text-end" id="summaryTotal">$0.00</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="mt-4 text-end">
+                                <button type="button" class="btn btn-light waves-effect me-1">Cancel</button>
+                                <button type="button" class="btn btn-primary waves-effect waves-light" id="saveInvoiceBtn">
+                                    <i class="mdi mdi-content-save me-1"></i>Save Invoice
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ---------------------------------------------------------------
+        // Mock data — replace with real API calls when wiring this up.
+        // ---------------------------------------------------------------
+        const MEMBERS = [
+            { id: "MB-1001", name: "Richard Saul", farm: "Sunrise Family Farm", location: "Lafayette, LA", phone: "337-256-9134", status: "Active" },
+            { id: "MB-1002", name: "Grace Mushi", farm: "Green Valley Cooperative", location: "Mbeya, Tanzania", phone: "0754-112-334", status: "Active" },
+            { id: "MB-1003", name: "James Lemire", farm: "Lemire Estates", location: "Baton Rouge, LA", phone: "225-771-4420", status: "Active" },
+            { id: "MB-1004", name: "Amina Kombo", farm: "Kombo Agro Ventures", location: "Morogoro, Tanzania", phone: "0713-556-902", status: "Inactive" },
+            { id: "MB-1005", name: "Peter Mwakalinga", farm: "Highland Growers", location: "Iringa, Tanzania", phone: "0788-221-045", status: "Active" },
+            { id: "MB-1006", name: "Linda Foster", farm: "Foster Family Farm", location: "Opelousas, LA", phone: "337-902-8871", status: "Active" },
+        ];
+
+        const CROPS = [
+            { id: "CR-01", name: "Maize", price: 0.42, unit: "kg" },
+            { id: "CR-02", name: "Rice (Paddy)", price: 0.55, unit: "kg" },
+            { id: "CR-03", name: "Coffee (Arabica)", price: 4.20, unit: "kg" },
+            { id: "CR-04", name: "Cashew Nuts", price: 1.85, unit: "kg" },
+            { id: "CR-05", name: "Sesame Seeds", price: 1.10, unit: "kg" },
+            { id: "CR-06", name: "Sunflower Seeds", price: 0.65, unit: "kg" },
+            { id: "CR-07", name: "Cotton (Lint)", price: 1.95, unit: "kg" },
+            { id: "CR-08", name: "Soybeans", price: 0.78, unit: "kg" },
+            { id: "CR-09", name: "Cassava", price: 0.28, unit: "kg" },
+            { id: "CR-10", name: "Groundnuts", price: 1.05, unit: "kg" },
+        ];
+
+        const TAX_RATE = 0.05;
+
+        let selectedMember = null;
+        let cropRows = []; // { id, name, price, unit, quantity }
+
+        const fmt = (n) => "$" + n.toFixed(2);
+
+        // ---------------------------------------------------------------
+        // Generic search-dropdown behaviour
+        // ---------------------------------------------------------------
+        function setupSearch({ inputEl, resultsEl, dataset, renderItem, matches, onSelect }) {
+            function render(query) {
+                const q = query.trim().toLowerCase();
+                const results = q === "" ? [] : dataset.filter((item) => matches(item, q)).slice(0, 8);
+
+                resultsEl.innerHTML = "";
+                if (q === "") {
+                    resultsEl.classList.remove("show");
+                    return;
+                }
+                if (results.length === 0) {
+                    const div = document.createElement("div");
+                    div.className = "search-result-empty";
+                    div.textContent = "No results found.";
+                    resultsEl.appendChild(div);
+                    resultsEl.classList.add("show");
+                    return;
+                }
+                results.forEach((item) => {
+                    const div = document.createElement("div");
+                    div.className = "search-result-item";
+                    div.innerHTML = renderItem(item);
+                    div.addEventListener("click", () => {
+                        onSelect(item);
+                        resultsEl.classList.remove("show");
+                        inputEl.value = "";
+                    });
+                    resultsEl.appendChild(div);
+                });
+                resultsEl.classList.add("show");
+            }
+
+            inputEl.addEventListener("input", () => render(inputEl.value));
+            inputEl.addEventListener("focus", () => render(inputEl.value));
+            document.addEventListener("click", (e) => {
+                if (!resultsEl.contains(e.target) && e.target !== inputEl) {
+                    resultsEl.classList.remove("show");
+                }
+            });
+        }
+
+        // ---------------------------------------------------------------
+        // Member search + details
+        // ---------------------------------------------------------------
+        function initials(name) {
+            return name.split(" ").map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+        }
+
+        function selectMember(member) {
+            selectedMember = member;
+            document.getElementById("memberPlaceholder").classList.add("d-none");
+            const details = document.getElementById("memberDetails");
+            details.classList.remove("d-none");
+            document.getElementById("memberCard").classList.add("has-member");
+
+            document.getElementById("memberAvatar").textContent = initials(member.name);
+            document.getElementById("memberName").textContent = member.name;
+            document.getElementById("memberFarm").textContent = member.farm;
+            document.getElementById("memberLocation").textContent = member.location;
+            document.getElementById("memberPhone").textContent = member.phone;
+            document.getElementById("memberId").textContent = member.id;
+
+            const statusEl = document.getElementById("memberStatus");
+            statusEl.textContent = member.status;
+            statusEl.className = "badge " + (member.status === "Active" ? "badge-soft-success" : "bg-secondary");
+        }
+
+        document.getElementById("clearMemberBtn").addEventListener("click", () => {
+            selectedMember = null;
+            document.getElementById("memberDetails").classList.add("d-none");
+            document.getElementById("memberPlaceholder").classList.remove("d-none");
+            document.getElementById("memberCard").classList.remove("has-member");
+        });
+
+        setupSearch({
+            inputEl: document.getElementById("memberSearchInput"),
+            resultsEl: document.getElementById("memberResults"),
+            dataset: MEMBERS,
+            matches: (m, q) => m.name.toLowerCase().includes(q) || m.phone.includes(q) || m.farm.toLowerCase().includes(q),
+            renderItem: (m) => `
+                <div class="item-name">${m.name}</div>
+                <div class="item-sub">${m.farm} · ${m.phone}</div>
+            `,
+            onSelect: selectMember,
+        });
+
+        // ---------------------------------------------------------------
+        // Crop search + table
+        // ---------------------------------------------------------------
+        function addCrop(crop) {
+            const existing = cropRows.find((r) => r.id === crop.id);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cropRows.push({ id: crop.id, name: crop.name, price: crop.price, unit: crop.unit, quantity: 1 });
+            }
+            renderCropTable();
+        }
+
+        function removeCrop(id) {
+            cropRows = cropRows.filter((r) => r.id !== id);
+            renderCropTable();
+        }
+
+        function updateQuantity(id, value) {
+            const row = cropRows.find((r) => r.id === id);
+            if (!row) return;
+            let qty = parseFloat(value);
+            if (isNaN(qty) || qty < 0) qty = 0;
+            row.quantity = qty;
+            renderCropTable(false); // don't rebuild inputs, just update totals, to keep focus
+        }
+
+        function renderCropTable(rebuild = true) {
+            const tbody = document.getElementById("cropTableBody");
+            const emptyRow = document.getElementById("emptyRow");
+
+            if (cropRows.length === 0) {
+                tbody.innerHTML = "";
+                tbody.appendChild(emptyRow);
+                updateSummary();
+                return;
+            }
+
+            if (rebuild) {
+                tbody.innerHTML = "";
+                cropRows.forEach((row, idx) => {
+                    const tr = document.createElement("tr");
+                    tr.dataset.id = row.id;
+                    tr.innerHTML = `
+                        <th scope="row">${String(idx + 1).padStart(2, "0")}</th>
+                        <td>
+                            <h5 class="font-size-14 mb-0">${row.name}</h5>
+                        </td>
+                        <td class="text-end">${fmt(row.price)}</td>
+                        <td>${row.unit}</td>
+                        <td>
+                            <input type="number" min="0" step="any" class="form-control form-control-sm qty-input"
+                                   value="${row.quantity}" data-id="${row.id}">
+                        </td>
+                        <td class="text-end row-amount">${fmt(row.price * row.quantity)}</td>
+                        <td class="text-center">
+                            <button type="button" class="btn-remove-row" data-id="${row.id}" title="Remove crop">
+                                <i class="mdi mdi-trash-can-outline"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                tbody.querySelectorAll(".qty-input").forEach((input) => {
+                    input.addEventListener("input", (e) => {
+                        updateQuantity(e.target.dataset.id, e.target.value);
+                    });
+                });
+                tbody.querySelectorAll(".btn-remove-row").forEach((btn) => {
+                    btn.addEventListener("click", (e) => {
+                        removeCrop(e.currentTarget.dataset.id);
+                    });
+                });
+            } else {
+                // update amounts in place without losing input focus
+                cropRows.forEach((row) => {
+                    const tr = tbody.querySelector(`tr[data-id="${row.id}"]`);
+                    if (tr) {
+                        tr.querySelector(".row-amount").textContent = fmt(row.price * row.quantity);
+                    }
+                });
+            }
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const subTotal = cropRows.reduce((sum, r) => sum + r.price * r.quantity, 0);
+            const tax = subTotal * TAX_RATE;
+            const total = subTotal + tax;
+
+            document.getElementById("summaryItemCount").textContent = cropRows.length;
+            document.getElementById("summarySubTotal").textContent = fmt(subTotal);
+            document.getElementById("summaryTax").textContent = fmt(tax);
+            document.getElementById("summaryTotal").textContent = fmt(total);
+        }
+
+        setupSearch({
+            inputEl: document.getElementById("cropSearchInput"),
+            resultsEl: document.getElementById("cropResults"),
+            dataset: CROPS,
+            matches: (c, q) => c.name.toLowerCase().includes(q),
+            renderItem: (c) => `
+                <div class="item-name">${c.name}</div>
+                <div class="item-sub">${fmt(c.price)} / ${c.unit}</div>
+            `,
+            onSelect: addCrop,
+        });
+
+        // ---------------------------------------------------------------
+        // Save
+        // ---------------------------------------------------------------
+        document.getElementById("saveInvoiceBtn").addEventListener("click", () => {
+            if (!selectedMember) {
+                alert("Please select a member before saving the invoice.");
+                return;
+            }
+            if (cropRows.length === 0) {
+                alert("Please add at least one crop before saving the invoice.");
+                return;
+            }
+            const subTotal = cropRows.reduce((sum, r) => sum + r.price * r.quantity, 0);
+            const tax = subTotal * TAX_RATE;
+            const total = subTotal + tax;
+
+            console.log("Invoice payload:", {
+                member: selectedMember,
+                items: cropRows,
+                subTotal,
+                tax,
+                total,
+            });
+            alert(`Invoice saved for ${selectedMember.name}\nTotal: ${fmt(total)}`);
+        });
+
+        // initial render
+        renderCropTable();
+    </script>
+
+</body>
+</html>

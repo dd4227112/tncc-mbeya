@@ -12,6 +12,9 @@
   <!-- App favicon -->
   <link rel="shortcut icon" href="{{ asset('assets/images/tncc-logo.png') }}">
 
+  <!-- flatpickr css -->
+  <link href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css">
+
   <!-- Sweet Alert-->
   <link href="{{ asset('assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
 
@@ -22,6 +25,8 @@
   <!-- Responsive datatable examples -->
   <link href="{{ asset('assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
     rel="stylesheet" type="text/css" />
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" rel="stylesheet">
+
 
   <!-- Bootstrap Css -->
   <link href="{{ asset('assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" />
@@ -31,6 +36,200 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <!-- App Css-->
   <link href="{{ asset('assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+  <style>
+    .search-box {
+      position: relative;
+    }
+
+    .search-box .search-icon {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      font-size: 16px;
+      color: var(--minia-text-muted);
+    }
+
+    .search-box input {
+      padding-left: 40px;
+    }
+
+    .form-control:focus {
+      border-color: #a6b0cf;
+      box-shadow: none;
+    }
+
+    .search-results {
+      position: absolute;
+      z-index: 20;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 4px;
+      background: #fff;
+      border: 1px solid var(--minia-card-border);
+      border-radius: 0.25rem;
+      box-shadow: 0 4px 16px rgba(33, 37, 41, 0.12);
+      max-height: 260px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .search-results.show {
+      display: block;
+    }
+
+    .search-result-item {
+      padding: 10px 14px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--minia-card-border);
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-result-item:hover,
+    .search-result-item.active {
+      background-color: rgba(var(--minia-primary-rgb), 0.08);
+    }
+
+    .search-result-item .item-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #495057;
+    }
+
+    .search-result-item .item-sub {
+      font-size: 12.5px;
+      color: var(--minia-text-muted);
+    }
+
+    .search-result-empty {
+      padding: 14px;
+      font-size: 13px;
+      color: var(--minia-text-muted);
+      text-align: center;
+    }
+
+    .member-card {
+      border: 1px dashed #ced4da;
+      border-radius: 0.25rem;
+      padding: 1.25rem;
+      min-height: 140px;
+    }
+
+    .member-card.has-member {
+      border-style: solid;
+      border-color: var(--minia-card-border);
+      background-color: #fbfbfd;
+    }
+
+    .member-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-height: 92px;
+      color: var(--minia-text-muted);
+      font-size: 13.5px;
+      text-align: center;
+    }
+
+    .avatar-title {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(var(--minia-primary-rgb), 0.15);
+      color: var(--minia-primary);
+      font-weight: 600;
+    }
+
+    .avatar-sm {
+      height: 3rem;
+      width: 3rem;
+      border-radius: 50%;
+      font-size: 18px;
+    }
+
+    .badge-soft-success {
+      background-color: rgba(52, 195, 143, 0.12);
+      color: var(--minia-success);
+      font-weight: 500;
+    }
+
+    table.crop-table th {
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--minia-text-muted);
+      font-weight: 600;
+      border-top: none;
+      border-bottom: 1px solid var(--minia-card-border);
+    }
+
+    table.crop-table td {
+      vertical-align: middle;
+      border-color: var(--minia-card-border);
+    }
+
+    .qty-input {
+      width: 80px;
+    }
+
+    .empty-row td {
+      text-align: center;
+      color: var(--minia-text-muted);
+      padding: 2.25rem 0;
+      font-size: 13.5px;
+    }
+
+    .btn-remove-row {
+      border: none;
+      background: transparent;
+      color: var(--minia-danger);
+      font-size: 18px;
+      line-height: 1;
+      padding: 4px 6px;
+    }
+
+    .btn-remove-row:hover {
+      color: #d84a4a;
+    }
+
+    .summary-table td {
+      padding: 0.4rem 0;
+      font-size: 14px;
+    }
+
+    .summary-table tr.total-row td {
+      border-top: 1px solid var(--minia-card-border);
+      padding-top: 0.75rem;
+      font-size: 17px;
+      font-weight: 600;
+      color: #343a40;
+    }
+
+    .section-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: #343a40;
+      margin-bottom: 0.75rem;
+    }
+
+    .logo-txt {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--minia-primary);
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    @media (max-width: 575.98px) {
+      .qty-input {
+        width: 70px;
+      }
+    }
+  </style>
 
 </head>
 

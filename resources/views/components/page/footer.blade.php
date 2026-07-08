@@ -24,6 +24,11 @@
 <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
 <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
 <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
+<!-- pace js -->
+{{-- <script src="{{ asset('assets/libs/pace-js/pace.min.js') }}"></script> --}}
+<!-- flatpickr js -->
+<script src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
+
 
 <!-- Required datatable js -->
 <script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
@@ -32,6 +37,8 @@
 <!-- Responsive examples -->
 <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
 <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('assets/js/pages/invoices-list.init.js') }}"></script>
+
 
 <!-- init js -->
 <script src="{{ asset('assets/js/pages/datatable-pages.init.js') }}"></script>

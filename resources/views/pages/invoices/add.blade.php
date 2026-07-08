@@ -1,0 +1,142 @@
+  <div class="modal fade add-invoice-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create New Invoice</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-body">
+
+                  <!-- Two-column layout: Member | Crops -->
+                  <div class="row">
+
+                    <!-- Column 1: Member -->
+                    <div class="col-lg-4 mb-4 mb-lg-0">
+                      <div class="section-label">1. Select Member</div>
+                      <div class="search-box position-relative mb-3">
+                        <input type="text" id="memberSearchInput" class="form-control"
+                          placeholder="Search member by name or phone…" autocomplete="off">
+                        <div id="memberResults" class="search-results"></div>
+                      </div>
+
+                      <div id="memberCard" class="member-card">
+                        <div class="member-placeholder" id="memberPlaceholder">
+                          No member selected yet — search and pick a member.
+                        </div>
+                        <div id="memberDetails" class="d-none">
+                          <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0 me-3">
+                              <span class="avatar-title avatar-sm rounded-circle" id="memberAvatar">--</span>
+                            </div>
+                            <div class="flex-grow-1">
+                              <div class="d-flex align-items-center">
+                                <h5 class="font-size-15 mb-1 me-2" id="memberName">—</h5>
+                                <span class="badge badge-soft-success" id="memberStatus">Active</span>
+                              </div>
+                              <p class="mb-1 text-muted font-size-13" id="memberFarm">—</p>
+                              <p class="mb-1 font-size-13"><i class="mdi mdi-map-marker me-1"></i><span
+                                  id="memberLocation">—</span></p>
+                              <p class="mb-1 font-size-13"><i class="mdi mdi-phone me-1"></i><span
+                                  id="memberPhone">—</span></p>
+                              <p class="mb-0 font-size-13"><i class="mdi mdi-identifier me-1"></i>Member ID: <span
+                                  id="memberId">—</span></p>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-link text-danger p-0" id="clearMemberBtn"
+                              title="Remove member">
+                              <i class="mdi mdi-close"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Column 2: Crops -->
+                    <div class="col-lg-8">
+                      <div class="section-label">2. Add Crop</div>
+                      <div class="search-box position-relative mb-3">
+                        <input type="text" id="cropSearchInput" class="form-control"
+                          placeholder="Search crop by name…" autocomplete="off">
+                        <div id="cropResults" class="search-results"></div>
+                      </div>
+
+                      <div class="border rounded p-3">
+                        <div class="table-responsive">
+                          <table class="table table-nowrap align-middle mb-0 crop-table">
+                            <thead>
+                              <tr>
+                                <th style="width: 40px;">No.</th>
+                                <th>Crop</th>
+                                <th class="text-end" style="width: 90px;">Price</th>
+                                <th style="width: 70px;">Unit</th>
+                                <th style="width: 110px;">Qty</th>
+                                <th class="text-end" style="width: 100px;">Amount</th>
+                                <th class="text-center" style="width: 40px;"></th>
+                              </tr>
+                            </thead>
+                            <tbody id="cropTableBody">
+                              <tr class="empty-row" id="emptyRow">
+                                <td colspan="7">No crops added yet. Use the search above to add crops to this
+                                  invoice.</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <!-- end two-column layout -->
+
+                  <!-- Summary -->
+                  <div class="row justify-content-end mt-4">
+                    <div class="col-lg-5 col-md-7">
+                      <div class="py-2">
+                        <h5 class="font-size-15">3. Summary</h5>
+                      </div>
+                      <div class="p-3 p-md-4 border rounded">
+                        <table class="table table-borderless summary-table mb-0">
+                          <tbody>
+                            <tr>
+                              <td>Items</td>
+                              <td class="text-end" id="summaryItemCount">0</td>
+                            </tr>
+                            <tr>
+                              <td>Sub Total</td>
+                              <td class="text-end" id="summarySubTotal">$0.00</td>
+                            </tr>
+                            <tr>
+                              <td>Tax (5%)</td>
+                              <td class="text-end" id="summaryTax">$0.00</td>
+                            </tr>
+                            <tr class="total-row">
+                              <td>Total</td>
+                              <td class="text-end" id="summaryTotal">$0.00</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Actions -->
+                  <div class="mt-4 text-end">
+                    <button type="button" class="btn btn-light waves-effect me-1">Cancel</button>
+                    <button type="button" class="btn btn-primary waves-effect waves-light" id="saveInvoiceBtn">
+                      <i class="mdi mdi-content-save me-1"></i>Save Invoice
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
