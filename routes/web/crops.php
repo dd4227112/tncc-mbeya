@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->prefix('crops')->group(function () {
     Route::get('/getCrops', [CropsController::class, 'getCrops'])->name('crops.getCrops');
+    Route::get('/searchCrop/{term}', [CropsController::class, 'searchCrop'])->name('crops.searchCrop');
+
     
     Route::get('/', [CropsController::class, 'index'])->name('crops.index');
     Route::get('/create', [CropsController::class, 'create'])->name('crops.create');

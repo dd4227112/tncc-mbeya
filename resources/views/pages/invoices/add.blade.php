@@ -37,15 +37,12 @@
                             <div class="flex-grow-1">
                               <div class="d-flex align-items-center">
                                 <h5 class="font-size-15 mb-1 me-2" id="memberName">—</h5>
-                                <span class="badge badge-soft-success" id="memberStatus">Active</span>
                               </div>
                               <p class="mb-1 text-muted font-size-13" id="memberFarm">—</p>
                               <p class="mb-1 font-size-13"><i class="mdi mdi-map-marker me-1"></i><span
                                   id="memberLocation">—</span></p>
                               <p class="mb-1 font-size-13"><i class="mdi mdi-phone me-1"></i><span
                                   id="memberPhone">—</span></p>
-                              <p class="mb-0 font-size-13"><i class="mdi mdi-identifier me-1"></i>Member ID: <span
-                                  id="memberId">—</span></p>
                             </div>
                             <button type="button" class="btn btn-sm btn-link text-danger p-0" id="clearMemberBtn"
                               title="Remove member">
@@ -110,10 +107,6 @@
                               <td>Sub Total</td>
                               <td class="text-end" id="summarySubTotal">$0.00</td>
                             </tr>
-                            <tr>
-                              <td>Tax (5%)</td>
-                              <td class="text-end" id="summaryTax">$0.00</td>
-                            </tr>
                             <tr class="total-row">
                               <td>Total</td>
                               <td class="text-end" id="summaryTotal">$0.00</td>
@@ -126,9 +119,10 @@
 
                   <!-- Actions -->
                   <div class="mt-4 text-end">
-                    <button type="button" class="btn btn-light waves-effect me-1">Cancel</button>
+                    <button type="button" class="btn btn-light waves-effect me-1" data-bs-dismiss="modal"
+                      aria-label="Close">Cancel</button>
                     <button type="button" class="btn btn-primary waves-effect waves-light" id="saveInvoiceBtn">
-                      <i class="mdi mdi-content-save me-1"></i>Save Invoice
+                      <i class="mdi mdi-content-save me-1"></i>Save
                     </button>
                   </div>
 

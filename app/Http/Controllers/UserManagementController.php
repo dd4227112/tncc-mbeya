@@ -223,4 +223,41 @@ class UserManagementController extends Controller
             ], 500);
         }
     }
+    // search member by name or phone number
+    public function searchMember(string $query)
+    {
+        try {
+            $users = User::where('first_name', 'ilike', "%$query%")
+                ->orWhere('last_name', 'ilike', "%$query%")
+                ->orWhere('phone', 'ilike', "%$query%")
+                ->orWhere('email', 'ilike', "%$query%")
+                ->get();
+            if ($users->isEmpty()) {
+                return response()->json([
+                    'message' => 'No members found matching the query.',
+                    'data' => [],
+                ]);
+            }
+            $data = $users->map(function ($user, $index) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->first_name . ' ' . $user->last_name,
+                    'phone' => $user->phone,
+                    'email' => $user->email,
+                    'address' => $user->address,
+                    'roles' => $user->roles->pluck('name')->implode(', '),
+                ];
+            })->values();
+            return response()->json([
+                'message' => 'Members found successfully.',
+                'data' => $data,
+            ]);
+        } catch (Throwable $e) {
+            Log::error('Error searching members: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json([
+                'message' => 'Unable to search members. Please try again.',
+                'data' => [],
+            ], 500);
+        }
+    }
 }

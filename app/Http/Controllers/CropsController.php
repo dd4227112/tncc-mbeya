@@ -168,4 +168,37 @@ class CropsController extends Controller
             'message' => 'Crop deleted successfully.',
         ]);
     }
+    // search crop by name or description
+    public function searchCrop(string $term)
+    {
+        try {
+            $crops = Crop::where('name', 'ilike', '%' . $term . '%')
+                ->orWhere('description', 'ilike', '%' . $term . '%')
+                ->get();
+            if ($crops->isEmpty()) {
+                return response()->json([
+                    'message' => 'No crops found.',
+                    'data' => [],
+                ]);
+            }
+            $data = $crops->map(function ($crop) {
+                return [
+                    'id' => $crop->id,
+                    'name' => $crop->name,
+                    'description' => $crop->description,
+                    'unit' => $crop->unit->name ?? 'N/A',
+                    'price' => $crop->price,
+                ];
+            })->values();
+
+            return response()->json([
+                'message' => 'Crop fetched successfully.',
+                'data' => $data,
+            ]);
+        } catch (Throwable $e) {
+            return response()->json([
+                'message' => 'Unable to search crops. Please try again.',
+            ], 500);
+        }
+    }
 }

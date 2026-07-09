@@ -59,7 +59,7 @@
 
             <!-- end row -->
             <div class="table-responsive">
-              <table class="table align-middle datatable dt-responsive table-check nowrap"
+              <table id="invoices-table" class="table align-middle datatable dt-responsive table-check nowrap"
                 style="border-collapse: collapse; border-spacing: 0 8px; width: 100%;">
                 <thead>
                   <tr class="bg-transparent">
@@ -69,39 +69,13 @@
                     <th>Member</th>
                     <th>Amount</th>
                     <th>Status</th>
+                    <th>Created By</th>
                     <th style="width: 90px;">Action</th>
                   </tr>
                 </thead>
                 <tbody>
+                  <!-- Invoices data will be populated here via AJAX -->
 
-                  <tr>
-                    <td>1</td>
-                    <td><a href="javascript: void(0);" class="text-dark fw-medium">#MN0215</a> </td>
-                    <td>
-                      12 Oct, 2020
-                    </td>
-                    <td>Connie Franco</td>
-
-                    <td>
-                      $26.30
-                    </td>
-                    <td>
-                      <div class="badge badge-soft-success font-size-12">Paid</div>
-                    </td>
-                    <td>
-                      <div class="dropdown">
-                        <button class="btn btn-link font-size-16 shadow-none py-0 text-muted dropdown-toggle"
-                          type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          <i class="bx bx-dots-horizontal-rounded"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                          <li><a class="dropdown-item" href="#">Edit</a></li>
-                          <li><a class="dropdown-item" href="#">Print</a></li>
-                          <li><a class="dropdown-item" href="#">Delete</a></li>
-                        </ul>
-                      </div>
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -121,5 +95,12 @@
 <!-- End Page-content -->
 {{-- Include the modal for adding a new invoice  --}}
 @include('pages.invoices.add')
+
+{{-- Include the modal for viewing invoice details --}}
+@include('pages.invoices.view')
+
+@push('scripts')
+@include('pages.invoices.scripts.index')
 @include('pages.invoices.scripts.create-invoice')
+@endpush
 <x-page.footer />
