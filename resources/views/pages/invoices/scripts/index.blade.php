@@ -84,7 +84,7 @@
       }).then(function(result) {
         if (result.isConfirmed) {
           $.ajax({
-            url: '/invoices/' + invoiceId,
+            url: "{{ route('invoices.destroy', ':id') }}".replace(':id', invoiceId),
             type: 'DELETE',
             headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -122,6 +122,7 @@
       type: 'GET',
       dataType: 'json'
     }).done(function(response) {
+      console.log('Invoice details response:', response); // Log the response for debugging
       if (response && response.data) {
         renderInvoiceDetailModal(response.data);
         $('.invoice-detail-modal').modal('show');
@@ -158,9 +159,10 @@
     invoice.items.forEach(function(item) {
       $body.append(
         '<tr>' +
-          '<th scope="row">' + item.index + '</th>' +
-          '<td>' + item.name + '<p class="font-size-13 text-muted mb-0">' + item.quantity + ' x ' + item.unit + '</p></td>' +
-          '<td class="text-end">' + item.total_price + '</td>' +
+        '<th scope="row">' + item.index + '</th>' +
+        '<td>' + item.name + '<p class="font-size-13 text-muted mb-0">' + item.quantity + ' x ' + item.unit +
+        '</p></td>' +
+        '<td class="text-end">' + item.total_price + '</td>' +
         '</tr>'
       );
     });
@@ -203,7 +205,8 @@
       'tr { page-break-inside: avoid; }\n' +
       '</style>\n';
 
-    var html = '<!doctype html><html><head><meta charset="utf-8"><title>Invoice -- TNCC-Mbeya</title>' + links + printCss + '</head><body>' +
+    var html = '<!doctype html><html><head><meta charset="utf-8"><title>Invoice -- TNCC-Mbeya</title>' + links +
+      printCss + '</head><body>' +
       '<div class="invoice-print-wrapper">' + modalContent.innerHTML + '</div>' +
       '</body></html>';
 
@@ -220,7 +223,9 @@
         console.warn('Print failed:', e);
       }
       // close after printing to keep user flow clean
-      setTimeout(function() { printWindow.close(); }, 500);
+      setTimeout(function() {
+        printWindow.close();
+      }, 500);
     };
   }
 

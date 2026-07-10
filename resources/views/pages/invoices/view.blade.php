@@ -13,18 +13,21 @@
                     <div class="d-flex flex-column align-items-center justify-content-center">
                       <img src="{{ asset('assets/images/tncc-logo.png') }}" alt="TNCC Mbeya" height="42"
                         class="mb-2">
-                      <span class="logo-txt fs-5 fw-semibold">TNCC Mbeya</span>
+                      <span class="logo-txt fs-5 fw-semibold">TNCC- Mbeya</span>
                     </div>
                     <div class="mt-2 text-muted small">
-                      <p class="mb-1" id="invoiceDetailAddress">1874 County Line Road City, FL 33566</p>
-                      <p class="mb-1" id="invoiceDetailEmail"><i class="mdi mdi-email align-middle me-1"></i> abc@123.com</p>
-                      <p class="mb-0" id="invoiceDetailPhone"><i class="mdi mdi-phone align-middle me-1"></i> 012-345-6789</p>
+                      <p class="mb-1" id="">Kasumulu Border-Mbeya</p>
+                      <p class="mb-1" id=""><i class="mdi mdi-email align-middle me-1"></i>
+                        josephatibenjamini13@gmail.com</p>
+                      <p class="mb-0" id=""><i class="mdi mdi-phone align-middle me-1"></i>
+                        +255 747 814 565</p>
                     </div>
                   </div>
 
                   <div class="text-center mb-3">
                     <h5 class="mb-1 fw-semibold" id="invoiceDetailNumber">Invoice # 12345</h5>
-                    <p class="text-muted small mb-0">Invoice Date: <span id="invoiceDetailOrderDate">February 16, 2020</span></p>
+                    <p class="text-muted small mb-0">Invoice Date: <span id="invoiceDetailOrderDate">February 16,
+                        2020</span></p>
                   </div>
                   <hr class="my-3">
                   <div class="row gx-3 gy-3">
@@ -32,7 +35,8 @@
                       <div class="border rounded-3 p-3 h-100 bg-light">
                         <p class="text-uppercase text-muted small mb-2">Billed To</p>
                         <h6 class="mb-1 fw-semibold" id="invoiceDetailBilledName">Richard Saul</h6>
-                        <p class="small mb-1" id="invoiceDetailBilledAddress">1208 Sherwood Circle Lafayette, LA 70506</p>
+                        <p class="small mb-1" id="invoiceDetailBilledAddress">1208 Sherwood Circle Lafayette, LA 70506
+                        </p>
                         <p class="small mb-1" id="invoiceDetailBilledEmail">RichardSaul@rhyta.com</p>
                         <p class="small mb-0" id="invoiceDetailBilledPhone">337-256-9134</p>
                       </div>
@@ -41,8 +45,10 @@
                       <div class="border rounded-3 p-3 h-100 bg-light">
                         <p class="text-uppercase text-muted small mb-2">Invoice info</p>
                         <p class="small mb-1"><strong>Status:</strong> <span id="invoiceDetailStatus">Pending</span></p>
-                        <p class="small mb-1"><strong>Date:</strong> <span id="invoiceDetailOrderDate">February 16, 2020</span></p>
-                        <p class="small mb-0"><strong>Payment method:</strong> <span id="invoiceDetailPaymentMethod">Not specified</span></p>
+                        <p class="small mb-1"><strong>Date:</strong> <span id="invoiceDetailOrderDate">February 16,
+                            2020</span></p>
+                        <p class="small mb-0"><strong>Payment method:</strong> <span id="invoiceDetailPaymentMethod">Not
+                            specified</span></p>
                       </div>
                     </div>
                   </div>
@@ -78,7 +84,8 @@
                   </div>
                   <div class="d-print-none mt-3">
                     <div class="float-end">
-                      <a href="javascript:void(0)" onclick="printInvoiceDetailModal()" class="btn btn-success waves-effect waves-light me-1">Print</a>
+                      <a href="javascript:void(0)" onclick="printInvoiceDetailModal()"
+                        class="btn btn-success waves-effect waves-light me-1">Print</a>
                       {{-- <a href="#" class="btn btn-primary w-md waves-effect waves-light">Send</a> --}}
                     </div>
                   </div>

@@ -35,17 +35,6 @@
                     <button class="input-group-text" id="date1" data-toggle><i
                         class="bx bx-calendar-event"></i></button>
                   </div>
-                  <div class="dropdown">
-                    <a class="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" href="#"
-                      role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bx bx-dots-horizontal-rounded"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                  </div>
                 </div>
               </div>
 
@@ -99,8 +88,12 @@
 {{-- Include the modal for viewing invoice details --}}
 @include('pages.invoices.view')
 
+{{-- Include the modal for adding a payment --}}
+@include('pages.invoices.add-payment')
+
 @push('scripts')
-@include('pages.invoices.scripts.index')
-@include('pages.invoices.scripts.create-invoice')
+  @include('pages.invoices.scripts.index')
+  @include('pages.invoices.scripts.create-invoice')
+  @include('pages.invoices.scripts.payment')
 @endpush
 <x-page.footer />

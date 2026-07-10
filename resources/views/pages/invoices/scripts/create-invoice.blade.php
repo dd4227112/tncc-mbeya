@@ -1,10 +1,10 @@
 <script>
   var SEARCH_ROUTES = {
-    crop: '{{ route("crops.searchCrop", ["term" => "SEARCH_TERM"]) }}',
-    member: '{{ route("members.searchMember", ["query" => "SEARCH_QUERY"]) }}'
+    crop: '{{ route('crops.searchCrop', ['term' => 'SEARCH_TERM']) }}',
+    member: '{{ route('members.searchMember', ['query' => 'SEARCH_QUERY']) }}'
   };
 
-  var SAVE_ROUTE = '{{ route("invoices.store") }}';
+  var SAVE_ROUTE = '{{ route('invoices.store') }}';
   var selectedMember = null;
   var cropRows = [];
 
@@ -13,7 +13,10 @@
     if (isNaN(amount)) {
       amount = 0;
     }
-    return 'TZS ' + amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return 'TZS ' + amount.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   }
 
   function formatInitials(name) {
@@ -54,8 +57,8 @@
         '<div class="item-sub">' + (member.email || member.phone || '') + '</div>';
 
       $item.html(itemHtml);
-      (function (currentMember) {
-        $item.on('click', function () {
+      (function(currentMember) {
+        $item.on('click', function() {
           selectMember({
             id: currentMember.id,
             name: currentMember.name,
@@ -91,8 +94,8 @@
         '<div class="item-sub">' + formatAmount(crop.price) + ' / ' + crop.unit + '</div>';
 
       $item.html(itemHtml);
-      (function (currentCrop) {
-        $item.on('click', function () {
+      (function(currentCrop) {
+        $item.on('click', function() {
           addCrop({
             id: currentCrop.id,
             name: currentCrop.name,
@@ -145,14 +148,15 @@
       url: buildMemberSearchUrl(query),
       type: 'GET',
       dataType: 'json'
-    }).done(function (response) {
+    }).done(function(response) {
       var members = [];
       if (response && $.isArray(response.data)) {
         members = response.data;
       }
       renderMemberResults(members);
-    }).fail(function () {
-      $('#memberResults').empty().append('<div class="search-result-empty">Unable to load members.</div>').addClass('show');
+    }).fail(function() {
+      $('#memberResults').empty().append('<div class="search-result-empty">Unable to load members.</div>').addClass(
+        'show');
     });
   }
 
@@ -161,14 +165,15 @@
       url: buildCropSearchUrl(query),
       type: 'GET',
       dataType: 'json'
-    }).done(function (response) {
+    }).done(function(response) {
       var crops = [];
       if (response && $.isArray(response.data)) {
         crops = response.data;
       }
       renderCropResults(crops);
-    }).fail(function () {
-      $('#cropResults').empty().append('<div class="search-result-empty">Unable to load crops.</div>').addClass('show');
+    }).fail(function() {
+      $('#cropResults').empty().append('<div class="search-result-empty">Unable to load crops.</div>').addClass(
+        'show');
     });
   }
 
@@ -201,19 +206,19 @@
     var $results = $('#memberResults');
     var searchTimer;
 
-    $input.on('input focus', function () {
+    $input.on('input focus', function() {
       clearTimeout(searchTimer);
       var query = $.trim($input.val());
       if (query.length < 3) {
         $results.empty().removeClass('show');
         return;
       }
-      searchTimer = setTimeout(function () {
+      searchTimer = setTimeout(function() {
         searchMembers(query);
       }, 300);
     });
 
-    $(document).on('click', function (event) {
+    $(document).on('click', function(event) {
       if (!$(event.target).closest('#memberResults, #memberSearchInput').length) {
         $results.removeClass('show');
       }
@@ -225,19 +230,19 @@
     var $results = $('#cropResults');
     var searchTimer;
 
-    $input.on('input focus', function () {
+    $input.on('input focus', function() {
       clearTimeout(searchTimer);
       var query = $.trim($input.val());
       if (query.length < 3) {
         $results.empty().removeClass('show');
         return;
       }
-      searchTimer = setTimeout(function () {
+      searchTimer = setTimeout(function() {
         searchCrops(query);
       }, 300);
     });
 
-    $(document).on('click', function (event) {
+    $(document).on('click', function(event) {
       if (!$(event.target).closest('#cropResults, #cropSearchInput').length) {
         $results.removeClass('show');
       }
@@ -291,30 +296,30 @@
         var row = cropRows[i];
         var rowHtml =
           '<tr data-id="' + row.id + '">' +
-            '<th scope="row">' + ('0' + (i + 1)).slice(-2) + '</th>' +
-            '<td><h5 class="font-size-14 mb-0">' + row.name + '</h5></td>' +
-            '<td class="text-end">' + formatAmount(row.price) + '</td>' +
-            '<td>' + row.unit + '</td>' +
-            '<td>' +
-              '<input type="number" min="1" step="any" class="form-control form-control-sm qty-input" ' +
-                     'value="' + row.quantity + '" data-id="' + row.id + '">' +
-            '</td>' +
-            '<td class="text-end row-amount">' + formatAmount(row.price * row.quantity) + '</td>' +
-            '<td class="text-center">' +
-              '<button type="button" class="btn-remove-row" data-id="' + row.id + '" title="Remove crop">' +
-                '<i class="mdi mdi-trash-can-outline"></i>' +
-              '</button>' +
-            '</td>' +
+          '<th scope="row">' + ('0' + (i + 1)).slice(-2) + '</th>' +
+          '<td><h5 class="font-size-14 mb-0">' + row.name + '</h5></td>' +
+          '<td class="text-end">' + formatAmount(row.price) + '</td>' +
+          '<td>' + row.unit + '</td>' +
+          '<td>' +
+          '<input type="number" min="1" step="any" class="form-control form-control-sm qty-input" ' +
+          'value="' + row.quantity + '" data-id="' + row.id + '">' +
+          '</td>' +
+          '<td class="text-end row-amount">' + formatAmount(row.price * row.quantity) + '</td>' +
+          '<td class="text-center">' +
+          '<button type="button" class="btn-remove-row" data-id="' + row.id + '" title="Remove crop">' +
+          '<i class="mdi mdi-trash-can-outline"></i>' +
+          '</button>' +
+          '</td>' +
           '</tr>';
 
         $tbody.append(rowHtml);
       }
 
-      $tbody.find('.qty-input').on('input', function () {
+      $tbody.find('.qty-input').on('input', function() {
         updateQuantity($(this).data('id'), $(this).val());
       });
 
-      $tbody.find('.btn-remove-row').on('click', function () {
+      $tbody.find('.btn-remove-row').on('click', function() {
         removeCrop($(this).data('id'));
       });
     } else {
@@ -381,7 +386,7 @@
 
     var payload = {
       member_id: selectedMember.id,
-      items: cropRows.map(function (row) {
+      items: cropRows.map(function(row) {
         return {
           crop_id: row.id,
           quantity: row.quantity,
@@ -404,7 +409,7 @@
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
       },
       data: JSON.stringify(payload)
-    }).done(function (response) {
+    }).done(function(response) {
       resetInvoiceForm();
       $('.add-invoice-modal').modal('hide');
       if (typeof invoicesTable !== 'undefined' && invoicesTable) {
@@ -413,10 +418,15 @@
       Swal.fire({
         icon: 'success',
         title: 'Invoice saved',
-        html: 'Invoice saved for <strong>' + selectedMemberName + '</strong><br>Total: <strong>' + formattedTotal + '</strong>',
+        html: 'Invoice saved for <strong>' + selectedMemberName + '</strong><br>Total: <strong>' +
+          formattedTotal + '</strong>',
         confirmButtonColor: '#5156be'
+      }).then((result) => {
+        if (result.isConfirmed && response?.data?.id) {
+          getInvoiceDetails(response.data.id);
+        }
       });
-    }).fail(function (xhr) {
+    }).fail(function(xhr) {
       var message = 'Unable to save invoice. Please try again.';
       if (xhr.responseJSON && xhr.responseJSON.message) {
         message = xhr.responseJSON.message;
@@ -430,7 +440,7 @@
     });
   }
 
-  $(function () {
+  $(function() {
     initMemberSearch();
     initCropSearch();
     $('#clearMemberBtn').on('click', clearMember);

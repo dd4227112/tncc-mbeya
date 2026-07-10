@@ -1,0 +1,70 @@
+  <div class="modal fade add-payment-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Payment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <h5 id="invoiceDetail">Invoice#: </h5>
+              <h5 id="memberDetail">Member: </h5>
+            </div>
+          </div>
+          <form id="addPaymentForm" novalidate>
+            <div class="row mt-2">
+              <div class="col-12">
+                <div class="form-group mb-3">
+                  <label for="add-name">Amount</label>
+                  <input type="text" id="add-amount" name="amount" readonly class="form-control" />
+                  <span class="invalid-feedback d-block" id="add-amount-error"></span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group mb-3">
+                  <label for="add-phone">phone</label>
+                  <input type="text" id="add-phone" name="phone" class="form-control" />
+                  <span class="invalid-feedback d-block" id="add-phone-error"></span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group mb-3">
+                  <label for="add-network">Network</label>
+                  <select id="add-network" name="network" class="form-control">
+                    <option value="">Select Network</option>
+                    <option value="airtel-money">Airtel Money</option>
+                    <option value="m-pesa">M-Pesa</option>
+                    <option value="mixx-by-yas">Mixx by Yas</option>
+                    <option value="halopesa">HaloPesa</option>
+                  </select>
+                  <span class="invalid-feedback d-block" id="add-network-error"></span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group mb-3">
+                  <label for="add-method">Payment Method</label>
+                  <select id="add-method" name="method" class="form-control">
+                    <option value="">Select Method</option>
+                    <option value="cash">Cash</option>
+                    <option value="mobile">Mobile Money</option>
+                  </select>
+                  <span class="invalid-feedback d-block" id="add-method-error"></span>
+                </div>
+              </div>
+              <input type="hidden" id="add-invoice-id" name="invoice_id" />
+            </div>
+            <div class="form-group float-end">
+              <button id="savePaymentBtn" type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->

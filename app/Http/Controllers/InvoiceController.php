@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Crop;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
+use Exception;
 
 class InvoiceController extends Controller
 {
@@ -47,7 +49,8 @@ class InvoiceController extends Controller
                     'status' => $status,
                     'status_badge' => '<div class="' . $statusClass . ' font-size-12">' . $status . '</div>',
                     'created_by' => optional($invoice->creator)->name ?? 'N/A',
-                    'actions' => '<button class="btn btn-sm btn-soft-info view-invoice" type="button" data-id="' . $invoice->id . '">View</button>
+                    'actions' => '<button class="btn btn-sm btn-soft-secondary view-invoice" type="button" data-id="' . $invoice->id . '">View</button>
+                    <button class="btn btn-sm btn-soft-info add-payment" data-bs-toggle="modal" type="button" data-id="' . $invoice->id . '">Add Payment</button>
                     <button class="btn btn-sm btn-soft-primary print-invoice" type="button" data-id="' . $invoice->id . '">Print</button>
                     <button class="btn btn-sm btn-soft-danger delete-invoice" type="button" data-id="' . $invoice->id . '">Delete</button>
                     ',
@@ -64,7 +67,7 @@ class InvoiceController extends Controller
         }
     }
 
-    public function details($id)
+    public function details(int $id)
     {
         $invoice = Invoice::with(['customer', 'creator', 'items.crop.unit'])->findOrFail($id);
 
@@ -167,7 +170,7 @@ class InvoiceController extends Controller
 
         return response()->json([
             'message' => 'Invoice saved successfully.',
-            'invoice_id' => $invoice->id,
+            'data' => ['id' => $invoice->id],
         ]);
     }
 
@@ -200,6 +203,62 @@ class InvoiceController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Implement the logic to delete an invoice and its associated items
+        try {
+            $invoice = Invoice::findOrFail($id);
+            $invoice->items()->delete(); // Delete associated items first
+            $invoice->delete(); // Then delete the invoice itself
+        } catch (Exception $e) {
+            Log::error('Error deleting invoice: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['message' => 'Failed to delete invoice. Please try again later.'], 500);
+        }
+
+        return response()->json(['message' => 'Invoice deleted successfully.']);
     }
+
+    public function addPayment(Request $request)
+    {
+        $request->validate([
+            'invoice_id' => ['required', 'exists:invoices,id'],
+            'method' => ['required', 'in:cash,mobile'],
+            'phone' => ['required_if:method,mobile', 'nullable', 'string', 'max:20'],
+            'network' => ['required_if:method,mobile', 'nullable', 'string', 'max:50'],
+        ]);
+
+        try {
+            $invoice = Invoice::findOrFail($request->input('invoice_id'));
+
+            if ($request->method === 'cash') {
+                $invoice->status = 'paid';
+                $invoice->save();
+                $invoice->payments()->create([
+                    'received_by' => Auth::id(),
+                    'user_id' => $invoice->user_id,
+                    'amount' => $invoice->total_amount,
+                    'status' => 'completed',
+                    'payment_method' => 'cash',
+                    'transaction_reference' => 'CASH_' . date('YmdHis'),
+                    'date' => now()->toDateString(),
+                ]);
+                return response()->json(
+                    [
+                        'message' => 'Payment added successfully.',
+                        'data' => ['id' => $invoice->id]
+                    ]
+                );
+            } else {
+                $invoice->payment_method = 'mobile';
+                $invoice->phone = $request->input('phone');
+                $invoice->network = $request->input('network');
+                $customer = $invoice->customer;
+                return $this->createPaymentApi($invoice, $customer);
+            }
+        } catch (Exception $e) {
+            Log::error('Error adding payment: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json(['message' => 'Failed to add payment. Please try again later.'], 500);
+        }
+
+        return response()->json(['message' => 'Payment added successfully.']);
+    }
+    public function createPaymentApi(Invoice $invoice, User $customer) {}
 }
