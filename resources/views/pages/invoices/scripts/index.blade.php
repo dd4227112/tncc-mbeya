@@ -122,7 +122,6 @@
       type: 'GET',
       dataType: 'json'
     }).done(function(response) {
-      console.log('Invoice details response:', response); // Log the response for debugging
       if (response && response.data) {
         renderInvoiceDetailModal(response.data);
         $('.invoice-detail-modal').modal('show');

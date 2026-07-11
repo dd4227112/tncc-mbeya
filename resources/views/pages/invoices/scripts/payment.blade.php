@@ -20,7 +20,6 @@
       type: 'GET',
       dataType: 'json'
     }).done(function(response) {
-      console.log('Invoice details response:', response.data); // Log the response for debugging
       if (response && response.data) {
         renderPaymentDetailModal(response.data);
         $('.add-payment-modal').modal('show');
@@ -91,17 +90,18 @@
         });
         return;
       }
+      $submitButton.prop('disabled', true).text('Creating Payment...');
       $.ajax({
         url: "{{ route('payments.store') }}",
         type: 'POST',
         data: formData,
         dataType: 'json',
-        contentType: 'application/json',
+        // contentType: 'application/json',
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
       }).done(function(response) {
-        console.log('Payment response:', response); // Log the response for debugging
+        $submitButton.prop('disabled', false).text('Save');
         $('.add-payment-modal').modal('hide');
         resetAddPaymentForm();
         Swal.fire({
@@ -116,6 +116,7 @@
         });
 
       }).fail(function(xhr) {
+        $submitButton.prop('disabled', false).text('Save');
         var message = 'Unable to save payment. Please try again.';
         if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
           message = xhr.responseJSON.message;

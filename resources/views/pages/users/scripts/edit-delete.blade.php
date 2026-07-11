@@ -21,7 +21,6 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function (response) {
-                    console.log(response);
                     if (response && response.data) {
                         $('#edit-user-id').val(response.data.id);
                         $('#edit-first-name').val(response.data.first_name);
