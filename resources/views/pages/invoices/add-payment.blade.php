@@ -61,7 +61,7 @@
               <input type="hidden" id="add-invoice-id" name="invoice_id" />
             </div>
             <div class="form-group float-end">
-              <button id="savePaymentBtn" type="submit" class="btn btn-primary">Save</button>
+              <button id="savePaymentBtn" type="submit" class="btn btn-primary float-end"> <i class="mdi mdi-content-save me-1"></i>Save</button>
             </div>
           </form>
         </div>

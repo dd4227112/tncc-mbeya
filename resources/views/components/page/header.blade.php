@@ -1,14 +1,17 @@
 <!doctype html>
-<html lang="en">
-
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
 
   <meta charset="utf-8" />
-  <title>TNCC - Mbeya</title>
+  <title>{{ config('app.name', 'Tncc-Mbeya') }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-  <meta content="Themesbrand" name="author" />
+  <meta content="Tanzania National Chamber of Commerce (TNCC)" name="description" />
+  <meta
+    content="Tanzania National Chamber of Commerce was established in 1988.The establishment of the TNCC was an important step in moving on from a centralized, planned economy towards a more open, mixed economy giving full scope to privately owned enterprises and farms."
+    name="description">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
   <!-- App favicon -->
   <link rel="shortcut icon" href="{{ asset('assets/images/tncc-logo.png') }}">
 

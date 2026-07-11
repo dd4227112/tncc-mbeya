@@ -67,7 +67,7 @@
 
     $('#invoices-table').on('click', '.print-invoice', function() {
       var invoiceId = $(this).data('id');
-      window.open('/invoices/' + invoiceId, '_blank');
+      fetchInvoiceDetails(invoiceId);
     });
 
     $('#invoices-table').on('click', '.delete-invoice', function() {
@@ -151,8 +151,10 @@
     $('#invoiceDetailBilledEmail').text(invoice.member_email);
     $('#invoiceDetailBilledPhone').text(invoice.member_phone);
     $('#invoiceDetailOrderDate').text(invoice.date);
-    $('#invoiceDetailPaymentMethod').text('Not specified');
-    $('#invoiceDetailPaymentMethodNote').text('');
+    $('#invoiceDetailStatus').text(invoice.status);
+    $('#invoiceDetailPaymentReference').text(invoice.transaction_reference);
+    $('#invoiceDetailPaymentStatus').text(invoice.payment_status);
+    $('#invoiceDetailPaymentMethod').text(invoice.payment_method);
 
     var $body = $('#invoiceDetailItemsBody');
     $body.empty();

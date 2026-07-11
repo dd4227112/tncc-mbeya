@@ -47,8 +47,12 @@
                         <p class="small mb-1"><strong>Status:</strong> <span id="invoiceDetailStatus">Pending</span></p>
                         <p class="small mb-1"><strong>Date:</strong> <span id="invoiceDetailOrderDate">February 16,
                             2020</span></p>
-                        <p class="small mb-0"><strong>Payment method:</strong> <span id="invoiceDetailPaymentMethod">Not
-                            specified</span></p>
+                        <p class="small mb-1"><strong>Payment Status:</strong> <span
+                            id="invoiceDetailPaymentStatus">-</span></p>
+                        <p class="small mb-1"><strong>Payment Reference:</strong> <span
+                            id="invoiceDetailPaymentReference">reference</span></p>
+                        <p class="small mb-1"><strong>Payment Method:</strong> <span
+                            id="invoiceDetailPaymentMethod">-</span></p>
                       </div>
                     </div>
                   </div>

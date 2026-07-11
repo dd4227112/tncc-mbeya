@@ -26,17 +26,23 @@ class InvoiceController extends Controller
     public function getInvoices()
     {
         try {
-            $invoices = Invoice::with('customer')->latest()->get();
+            $invoices = Invoice::with('customer', 'payment.receiver')->latest()->get();
 
             $data = $invoices->map(function ($invoice, $index) {
                 $status = ucfirst($invoice->status ?? 'pending');
                 $statusClass = 'badge badge-soft-secondary';
+                $showAddPayment = '<li><a class="dropdown-item text-info add-payment" data-bs-toggle="modal" type="button" data-id="' . $invoice->id . '"><i class="bx bx-plus-circle me-2"></i>Add Payment</a></li>';
+                $showDelete = '<li><a class="dropdown-item text-danger delete-invoice" type="button" data-id="' . $invoice->id . '"><i class="bx bx-trash me-2"></i>Delete</a></li>';
 
                 if (strtolower($invoice->status) === 'paid') {
+                    $showDelete = '';
+                    $showAddPayment = '';
                     $statusClass = 'badge badge-soft-success';
                 } elseif (strtolower($invoice->status) === 'pending') {
                     $statusClass = 'badge badge-soft-warning';
                 } elseif (strtolower($invoice->status) === 'overdue') {
+                    $showDelete = '';
+                    $showAddPayment = '';
                     $statusClass = 'badge badge-soft-danger';
                 }
 
@@ -49,11 +55,32 @@ class InvoiceController extends Controller
                     'status' => $status,
                     'status_badge' => '<div class="' . $statusClass . ' font-size-12">' . $status . '</div>',
                     'created_by' => optional($invoice->creator)->name ?? 'N/A',
-                    'actions' => '<button class="btn btn-sm btn-soft-secondary view-invoice" type="button" data-id="' . $invoice->id . '">View</button>
-                    <button class="btn btn-sm btn-soft-info add-payment" data-bs-toggle="modal" type="button" data-id="' . $invoice->id . '">Add Payment</button>
-                    <button class="btn btn-sm btn-soft-primary print-invoice" type="button" data-id="' . $invoice->id . '">Print</button>
-                    <button class="btn btn-sm btn-soft-danger delete-invoice" type="button" data-id="' . $invoice->id . '">Delete</button>
-                    ',
+                    // 'actions' => '
+                    // <button class="btn btn-sm btn-soft-secondary view-invoice" type="button" data-id="' . $invoice->id . '">View</button>
+                    // <button class="btn btn-sm btn-soft-info add-payment" data-bs-toggle="modal" type="button" data-id="' . $invoice->id . '">Add Payment</button>
+                    // <button class="btn btn-sm btn-soft-primary print-invoice" type="button" data-id="' . $invoice->id . '">Print</button>
+                    // <button class="btn btn-sm btn-soft-danger delete-invoice" type="button" data-id="' . $invoice->id . '">Delete</button>
+                    // ',
+                    'actions' =>
+                    '<div class="dropdown"><button class="btn btn-link font-size-16 shadow-none py-0 text-muted dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bx bx-dots-horizontal-rounded"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item text-secondary view-invoice" type="button" data-id="' . $invoice->id . '">
+                                    <i class="bx bx-show me-2"></i>View
+                                </a>
+                            </li>'
+                        . $showAddPayment .
+                        '<li>
+                                <a class="dropdown-item text-primary print-invoice" type="button" data-id="' . $invoice->id . '">
+                                    <i class="bx bx-printer me-2"></i>Print
+                                </a>
+                            </li>'
+                        . $showDelete .
+                        '</ul>
+                    </div>',
                 ];
             })->values();
 
@@ -69,7 +96,7 @@ class InvoiceController extends Controller
 
     public function details(int $id)
     {
-        $invoice = Invoice::with(['customer', 'creator', 'items.crop.unit'])->findOrFail($id);
+        $invoice = Invoice::with(['customer', 'payment', 'creator', 'items.crop.unit'])->findOrFail($id);
 
         $items = $invoice->items->map(function ($item, $index) {
             return [
@@ -93,7 +120,10 @@ class InvoiceController extends Controller
             'created_by' => optional($invoice->creator)->name ?? 'N/A',
             'sub_total' => 'TZS ' . number_format($invoice->items->sum('total_price'), 2),
             'total_amount' => 'TZS ' . number_format($invoice->total_amount, 2),
-            'status' => ucfirst($invoice->status ?? 'pending'),
+            'status' => strtoupper($invoice->status ?? 'pending'),
+            'transaction_reference' => optional($invoice->payment)->transaction_reference ?? null,
+            'payment_status' => strtoupper(optional($invoice->payment)->status ?? 'PENDING'),
+            'payment_method' => strtoupper(optional($invoice->payment)->payment_method ?? null),
             'items' => $items,
         ]]);
     }

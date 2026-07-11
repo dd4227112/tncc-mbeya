@@ -53,7 +53,7 @@
               </div>
             </div>            
             <div class="form-group">
-              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="submit" class="btn btn-primary float-end"><i class="mdi mdi-content-save me-1"></i>Save</button>
             </div>
           </form>
         </div>
