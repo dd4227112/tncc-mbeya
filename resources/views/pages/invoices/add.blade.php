@@ -17,7 +17,7 @@
                   <div class="row">
 
                     <!-- Column 1: Member -->
-                    <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="col-lg-3 mb-4 mb-lg-0">
                       <div class="section-label">1. Select Member</div>
                       <div class="search-box position-relative mb-3">
                         <input type="text" id="memberSearchInput" class="form-control"
@@ -54,7 +54,7 @@
                     </div>
 
                     <!-- Column 2: Crops -->
-                    <div class="col-lg-8">
+                    <div class="col-lg-9">
                       <div class="section-label">2. Add Crop</div>
                       <div class="search-box position-relative mb-3">
                         <input type="text" id="cropSearchInput" class="form-control"
@@ -69,7 +69,7 @@
                               <tr>
                                 <th style="width: 40px;">No.</th>
                                 <th>Crop</th>
-                                <th class="text-end" style="width: 90px;">Price</th>
+                                <th class="text-end" style="width: 90px;">Price (TZS)</th>
                                 <th style="width: 70px;">Unit</th>
                                 <th style="width: 110px;">Qty</th>
                                 <th class="text-end" style="width: 100px;">Amount</th>
@@ -104,11 +104,11 @@
                               <td class="text-end" id="summaryItemCount">0</td>
                             </tr>
                             <tr>
-                              <td>Sub Total</td>
+                              <td>Sub Total (TZS)</td>
                               <td class="text-end" id="summarySubTotal">$0.00</td>
                             </tr>
                             <tr class="total-row">
-                              <td>Total</td>
+                              <td>Total (TZS)</td>
                               <td class="text-end" id="summaryTotal">$0.00</td>
                             </tr>
                           </tbody>
@@ -119,7 +119,7 @@
 
                   <!-- Actions -->
                   <div class="mt-4 text-end">
-                    <button type="button" class="btn btn-light waves-effect me-1" data-bs-dismiss="modal"
+                    <button type="button" class="btn btn-soft-danger waves-effect me-1" data-bs-dismiss="modal"
                       aria-label="Close">Cancel</button>
                     <button type="button" class="btn btn-primary waves-effect waves-light" id="saveInvoiceBtn">
                       <i class="mdi mdi-content-save me-1"></i>Save

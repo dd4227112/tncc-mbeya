@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
-use Exception;
 
 class InvoiceController extends Controller
 {
@@ -104,8 +103,8 @@ class InvoiceController extends Controller
                 'name' => optional($item->crop)->name ?? 'Unknown crop',
                 'unit' => optional($item->crop->unit)->name ?? 'N/A',
                 'quantity' => $item->quantity,
-                'unit_price' => 'TZS ' . number_format($item->unit_price, 2),
-                'total_price' => 'TZS ' . number_format($item->total_price, 2),
+                'unit_price' => number_format($item->unit_price, 2),
+                'total_price' => number_format($item->total_price, 2),
             ];
         })->values();
 
@@ -118,8 +117,8 @@ class InvoiceController extends Controller
             'member_email' => optional($invoice->customer)->email ?? '—',
             'member_phone' => optional($invoice->customer)->phone ?? '—',
             'created_by' => optional($invoice->creator)->name ?? 'N/A',
-            'sub_total' => 'TZS ' . number_format($invoice->items->sum('total_price'), 2),
-            'total_amount' => 'TZS ' . number_format($invoice->total_amount, 2),
+            'sub_total' => number_format($invoice->items->sum('total_price'), 2),
+            'total_amount' => number_format($invoice->total_amount, 2),
             'status' => strtoupper($invoice->status ?? 'pending'),
             'transaction_reference' => optional($invoice->payment)->transaction_reference ?? null,
             'payment_status' => strtoupper(optional($invoice->payment)->status ?? 'PENDING'),
@@ -238,7 +237,7 @@ class InvoiceController extends Controller
             $invoice = Invoice::findOrFail($id);
             $invoice->items()->delete(); // Delete associated items first
             $invoice->delete(); // Then delete the invoice itself
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             Log::error('Error deleting invoice: ' . $e->getMessage(), ['exception' => $e]);
             return response()->json(['message' => 'Failed to delete invoice. Please try again later.'], 500);
         }
@@ -246,49 +245,4 @@ class InvoiceController extends Controller
         return response()->json(['message' => 'Invoice deleted successfully.']);
     }
 
-    public function addPayment(Request $request)
-    {
-        $request->validate([
-            'invoice_id' => ['required', 'exists:invoices,id'],
-            'method' => ['required', 'in:cash,mobile'],
-            'phone' => ['required_if:method,mobile', 'nullable', 'string', 'max:20'],
-            'network' => ['required_if:method,mobile', 'nullable', 'string', 'max:50'],
-        ]);
-
-        try {
-            $invoice = Invoice::findOrFail($request->input('invoice_id'));
-
-            if ($request->method === 'cash') {
-                $invoice->status = 'paid';
-                $invoice->save();
-                $invoice->payments()->create([
-                    'received_by' => Auth::id(),
-                    'user_id' => $invoice->user_id,
-                    'amount' => $invoice->total_amount,
-                    'status' => 'completed',
-                    'payment_method' => 'cash',
-                    'transaction_reference' => 'CASH_' . date('YmdHis'),
-                    'date' => now()->toDateString(),
-                ]);
-                return response()->json(
-                    [
-                        'message' => 'Payment added successfully.',
-                        'data' => ['id' => $invoice->id]
-                    ]
-                );
-            } else {
-                $invoice->payment_method = 'mobile';
-                $invoice->phone = $request->input('phone');
-                $invoice->network = $request->input('network');
-                $customer = $invoice->customer;
-                return $this->createPaymentApi($invoice, $customer);
-            }
-        } catch (Exception $e) {
-            Log::error('Error adding payment: ' . $e->getMessage(), ['exception' => $e]);
-            return response()->json(['message' => 'Failed to add payment. Please try again later.'], 500);
-        }
-
-        return response()->json(['message' => 'Payment added successfully.']);
-    }
-    public function createPaymentApi(Invoice $invoice, User $customer) {}
 }

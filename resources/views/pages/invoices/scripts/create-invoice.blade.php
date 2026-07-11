@@ -13,7 +13,7 @@
     if (isNaN(amount)) {
       amount = 0;
     }
-    return 'TZS ' + amount.toLocaleString('en-US', {
+    return amount.toLocaleString('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     });
@@ -90,7 +90,7 @@
     for (var i = 0; i < items.length && i < 8; i++) {
       var crop = items[i];
       var $item = $('<div class="search-result-item"></div>');
-      var itemHtml = '<div class="item-name">' + crop.name + '</div>' +
+      var itemHtml = '<div class="item-name">' + crop.name + ' (' + crop.description + ')</div>' +
         '<div class="item-sub">' + formatAmount(crop.price) + ' / ' + crop.unit + '</div>';
 
       $item.html(itemHtml);
@@ -98,7 +98,7 @@
         $item.on('click', function() {
           addCrop({
             id: currentCrop.id,
-            name: currentCrop.name,
+            name: currentCrop.name+' ('+currentCrop.description+')',
             price: currentCrop.price,
             unit: currentCrop.unit
           });

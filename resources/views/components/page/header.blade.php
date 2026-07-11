@@ -207,7 +207,7 @@
     .summary-table tr.total-row td {
       border-top: 1px solid var(--minia-card-border);
       padding-top: 0.75rem;
-      font-size: 17px;
+      font-size: 15px;
       font-weight: 600;
       color: #343a40;
     }

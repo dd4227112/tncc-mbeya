@@ -92,10 +92,14 @@
         return;
       }
       $.ajax({
-        url: "{{ route('invoices.addPayment') }}",
+        url: "{{ route('payments.store') }}",
         type: 'POST',
         data: formData,
-        dataType: 'json'
+        dataType: 'json',
+        contentType: 'application/json',
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
       }).done(function(response) {
         console.log('Payment response:', response); // Log the response for debugging
         $('.add-payment-modal').modal('hide');

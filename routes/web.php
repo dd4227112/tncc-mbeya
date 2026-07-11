@@ -26,4 +26,4 @@ require __DIR__ . '/web/crops.php';
 require __DIR__ . '/web/staffs.php';
 require __DIR__ . '/web/members.php';
 require __DIR__ . '/web/invoices.php';
-
+require __DIR__ . '/web/payments.php';

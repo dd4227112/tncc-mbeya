@@ -67,19 +67,19 @@
                           <tr>
                             <th style="width: 70px;">No.</th>
                             <th>Item</th>
-                            <th class="text-end" style="width: 120px;">Price</th>
+                            <th class="text-end" style="width: 120px;">Price (TZS)</th>
                           </tr>
                         </thead>
                         <tbody id="invoiceDetailItemsBody"></tbody>
                         <tfoot>
                           <tr>
-                            <th scope="row" colspan="2" class="text-end">Sub Total</th>
-                            <td class="text-end" id="invoiceDetailSubTotal">TZS 0.00</td>
+                            <th scope="row" colspan="2" class="text-end">Sub Total (TZS)</th>
+                            <td class="text-end" id="invoiceDetailSubTotal"> 0.00</td>
                           </tr>
                           <tr>
-                            <th scope="row" colspan="2" class="border-0 text-end">Total</th>
+                            <th scope="row" colspan="2" class="border-0 text-end">Total (TZS)</th>
                             <td class="border-0 text-end">
-                              <h4 class="m-0" id="invoiceDetailTotal">TZS 0.00</h4>
+                              <h5 class="m-0" id="invoiceDetailTotal"> 0.00</h5>
                             </td>
                           </tr>
                         </tfoot>
@@ -88,9 +88,10 @@
                   </div>
                   <div class="d-print-none mt-3">
                     <div class="float-end">
+                      <a href="#" class="btn btn-soft-danger me-1 waves-effect waves-light"
+                        data-bs-dismiss="modal">Cancel</a>
                       <a href="javascript:void(0)" onclick="printInvoiceDetailModal()"
-                        class="btn btn-success waves-effect waves-light me-1">Print</a>
-                      {{-- <a href="#" class="btn btn-primary w-md waves-effect waves-light">Send</a> --}}
+                        class="btn btn-success waves-effect waves-light w-md ">Print</a>
                     </div>
                   </div>
                 </div>
