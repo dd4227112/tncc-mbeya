@@ -23,7 +23,7 @@
         </li>
 
         <li>
-          <a href="layouts-horizontal.html">
+          <a href="{{route('payments.index')}}">
             <i data-feather="cpu"></i>
             <span data-key="t-horizontal">Payments</span>
           </a>

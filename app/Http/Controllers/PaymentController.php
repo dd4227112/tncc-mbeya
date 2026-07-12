@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,9 +18,83 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+        return view('pages.payments.index');
     }
+    public function getpayments(Request $request)
+    {
+        $dateRange = $request->input('date_range');
+        $status = $request->input('status');
+        $method = $request->input('method');
 
+        if ($dateRange) {
+            $dateRange = explode(' to ', $dateRange);
+
+            $fromDate = $dateRange[0];
+            $toDate = $dateRange[1];
+        } else {
+            $fromDate = date('Y-m-01');
+            $toDate = date('Y-m-d');
+        }
+
+        try {
+            $payments = Payment::with('invoice', 'receiver', 'payer')
+                ->whereDate('created_at', '>=', $fromDate)
+                ->whereDate('created_at', '<=', $toDate);
+            if ($status) {
+                $payments->where('status', $status);
+            }
+            if ($method) {
+                $payments->where('payment_method', $method);
+            }
+
+            $payments = $payments->latest()->get();
+
+
+
+            $data = $payments->map(function ($payment, $index) {
+                $status = ucfirst($payment->status ?? 'pending');
+                $statusClass = 'badge badge-soft-secondary';
+                $showPrint = $payment->invoice ? ('<button class="btn btn-sm btn-primary print-invoice" href="#" data-id="' . $payment->invoice->id . '">Print</button>') : '';
+                $showUssd = '<button class="btn btn-sm btn-success push-ussd" href="#" data-id="' . $payment->invoice->id . '">Push</button>';
+                $showDelete = '<button class="btn btn-sm btn-danger delete-payment" href="#" data-id="' . $payment->id . '">Delete</button>';
+
+                if (strtolower($payment->status) === 'completed') {
+                    $showDelete = '';
+                    $showUssd = '';
+                    $statusClass = 'badge badge-soft-success';
+                } elseif (strtolower($payment->status) === 'pending') {
+                    $showDelete = '';
+                    $showPrint = '';
+                    $statusClass = 'badge badge-soft-warning';
+                } elseif (strtolower($payment->status) === 'failed') {
+                    $showPrint = '';
+                    $showUssd = '';
+                    $statusClass = 'badge badge-soft-danger';
+                }
+                return [
+                    'id' => $index + 1,
+                    'date' => optional($payment->date)->format('d M, Y'),
+                    'payer' => optional($payment->payer)->name ?? 'N/A',
+                    'amount' => number_format($payment->amount, 2),
+                    'reference' => $payment->transaction_reference,
+                    'invoice' => optional($payment->invoice)->reference_number,
+                    'method' => $payment->payment_method,
+                    'status' => $status,
+                    'status_badge' => '<div class="' . $statusClass . ' font-size-12">' . $status . '</div>',
+                    'processed' => optional($payment->receiver)->name ?? 'N/A',
+                    'actions' => $showPrint . $showUssd . $showDelete
+                ];
+            })->values();
+
+            return response()->json(['data' => $data]);
+        } catch (Throwable $e) {
+            Log::error('Error fetching payments: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json([
+                'message' => 'Failed to get payments. Please try again later or contact support.',
+                'data' => [],
+            ], 500);
+        }
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -108,11 +183,60 @@ class PaymentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Payment $payment)
     {
-        //
+
+        try {
+            $payment->invoice()->update(['status' => 'pending']);
+            $payment->delete();
+        } catch (Throwable $e) {
+            Log::error('Error deleting payment: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json([
+                'message' => 'Unable to delete payment. Please try again.',
+            ], 500);
+        }
+
+        return response()->json([
+            'message' => 'Payment deleted successfully.',
+        ]);
     }
     public function createPaymentIntent(Invoice $invoice, User $customer)
+    {
+        $message = 'Failed to initiate mobile payment.';
+        try {
+            $endpoint  =  '/v1/payments';
+            $action = 'create';
+            return $this->callAPI($endpoint, $invoice, $customer, $message, $action);
+        } catch (Throwable $e) {
+            Log::error($message . $e->getMessage(), ['exception' => $e]);
+            return response()->json([
+                'message' => $message,
+            ], 500);
+        }
+    }
+    public function repushPayment(int $id)
+    {
+        $message = 'Failed to send USSD Push.';
+        try {
+            $invoice = Invoice::find($id);
+            if ($invoice) {
+                $endpoint = '/v1/payments/' . $invoice->reference_number . '/push';
+                $action = 'update';
+                $customer = $invoice->customer;
+                return $this->callAPI($endpoint, $invoice, $customer, $message, $action);
+            } else {
+                return response()->json([
+                    'message' => 'Invoice details not found.',
+                ], 404);
+            }
+        } catch (Throwable $e) {
+            Log::error($message . $e->getMessage(), ['exception' => $e]);
+            return response()->json([
+                'message' => $message,
+            ], 500);
+        }
+    }
+    public function callAPI(string $endpoint, Invoice $invoice, User $customer, string $message, string $action)
     {
         $baseUrl = rtrim((string) config('snippe.base_url', ''), '/');
         $apiKey = trim((string) config('snippe.auth_token', ''));
@@ -128,7 +252,7 @@ class PaymentController extends Controller
                 'amount' => (float) $invoice->total_amount,
                 'currency' => 'TZS',
             ],
-            'phone_number' => (string) ($invoice->getAttribute('phone') ?? optional($customer)->phone ?? ''),
+            'phone_number' => (string) $customer,
             'customer' => [
                 'firstname' => (string) (optional($customer)->first_name ?? ''),
                 'lastname' => (string) (optional($customer)->last_name ?? ''),
@@ -142,11 +266,11 @@ class PaymentController extends Controller
             ],
         ];
 
-        $ch = curl_init($baseUrl . '/v1/payments');
+        $ch = curl_init($baseUrl . $endpoint);
         $headers = [
             'Authorization: Bearer ' . $apiKey,
             'Content-Type: application/json',
-            'Idempotency-Key: ' . ($invoice->reference_number ?: 'payment-' . $invoice->id . '-' . now()->timestamp),
+            'Idempotency-Key: ' . $invoice->reference_number,
         ];
 
 
@@ -162,30 +286,33 @@ class PaymentController extends Controller
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $curlError = curl_error($ch);
         curl_close($ch);
-
         if ($response === false || $curlError !== '') {
-            Log::error('Mobile payment request failed: ' . $curlError);
+            Log::error($message . $curlError);
 
-            return response()->json(['message' => 'Failed to initiate mobile payment.'], 500);
+            return response()->json(['message' => $message], 500);
         }
 
         $decodedResponse = json_decode($response, true);
         $decodedResponse = is_array($decodedResponse) ? $decodedResponse : [];
 
         if (($httpCode < 200 || $httpCode >= 300) && empty($decodedResponse)) {
-            return response()->json(['message' => 'Failed to initiate mobile payment.'], $httpCode ?: 500);
+            return response()->json(['message' => $message], $httpCode ?: 500);
         }
 
         if (($httpCode >= 200 && $httpCode < 300) || ($decodedResponse['status'] ?? '') === 'success') {
-            $invoice->payment()->create([
-                'received_by' => Auth::id(),
-                'user_id' => $invoice->user_id,
-                'amount' => $invoice->total_amount,
-                'status' => 'pending',
-                'payment_method' => 'mobile',
-                'transaction_reference' => $decodedResponse['data']['reference'] ?? null,
-                'date' => now()->toDateString(),
-            ]);
+            if ($action === 'create') {
+                $invoice->payment()->create([
+                    'received_by' => Auth::id(),
+                    'user_id' => $invoice->user_id,
+                    'amount' => $invoice->total_amount,
+                    'status' => 'pending',
+                    'payment_method' => 'mobile',
+                    'transaction_reference' => $decodedResponse['data']['reference'] ?? null,
+                    'date' => now()->toDateString(),
+                ]);
+            } else {
+                $invoice->payment()->update(['status' => 'pending']);
+            }
         }
 
         return response()->json($decodedResponse, $decodedResponse['code'] ?? ($httpCode >= 200 && $httpCode < 300 ? 201 : $httpCode));
