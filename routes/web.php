@@ -10,9 +10,6 @@ Route::get('/login', function () {
     return view('login');
 })->name('login');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -27,3 +24,4 @@ require __DIR__ . '/web/staffs.php';
 require __DIR__ . '/web/members.php';
 require __DIR__ . '/web/invoices.php';
 require __DIR__ . '/web/payments.php';
+require __DIR__ . '/web/dashboard.php';
