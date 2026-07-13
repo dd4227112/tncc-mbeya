@@ -344,8 +344,9 @@
               <!-- item-->
               <a class="dropdown-item" href="apps-contacts-profile.html"><i
                   class="mdi mdi-face-profile font-size-16 align-middle me-1"></i> Profile</a>
-              <a class="dropdown-item" href="auth-lock-screen.html"><i
-                  class="mdi mdi-lock font-size-16 align-middle me-1"></i> Lock screen</a>
+              <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                data-bs-target=".change-password-modal"><i class="mdi mdi-lock font-size-16 align-middle me-1"></i>
+                Change Password</a>
               <div class="dropdown-divider"></div>
               <form method="POST" action="{{ route('logout') }}" class="d-inline w-100">
                 @csrf
@@ -359,3 +360,4 @@
         </div>
       </div>
     </header>
+    @include('auth.change-password')
