@@ -58,13 +58,15 @@ var radialchartColors = getChartColorsArray("#invested-overview"),
         },
         stroke: { dashArray: 4 },
         legend: { show: !1 },
-        series: [80],
+        series: [],
         labels: ["Series A"],
     };
 (chart = new ApexCharts(
     document.querySelector("#invested-overview"),
     options
 )).render();
+
+
 var barchartColors = getChartColorsArray("#market-overview"),
     options = {
         series: [
