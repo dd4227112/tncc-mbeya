@@ -22,10 +22,33 @@ class InvoiceController extends Controller
         return view('pages.invoices.index');
     }
 
-    public function getInvoices()
+    public function getInvoices(Request $request)
     {
+        $dateRange = $request->input('date_range');
+        $status = $request->input('status');
+
+        if ($dateRange) {
+            $dateRange = explode(' to ', $dateRange);
+            $fromDate = trim($dateRange[0] ?? '');
+            $toDate = trim($dateRange[1] ?? '');
+        } else {
+            $fromDate = date('Y-m-01');
+            $toDate = date('Y-m-d');
+        }
+
         try {
-            $invoices = Invoice::with('customer', 'payment.receiver')->latest()->get();
+            $invoicesQuery = Invoice::with('customer', 'payment.receiver');
+
+            if ($dateRange) {
+                $invoicesQuery->whereDate('created_at', '>=', $fromDate)
+                    ->whereDate('created_at', '<=', $toDate);
+            }
+
+            if ($status) {
+                $invoicesQuery->where('status', $status);
+            }
+
+            $invoices = $invoicesQuery->latest()->get();
 
             $data = $invoices->map(function ($invoice, $index) {
                 $status = ucfirst($invoice->status ?? 'pending');

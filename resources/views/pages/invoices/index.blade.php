@@ -27,24 +27,7 @@
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
-            <div class="row">
-              <div class="col-sm-auto">
-                <div class="d-flex align-items-center gap-1 mb-4">
-                  <div class="input-group datepicker-range">
-                    <input type="text" class="form-control flatpickr-input" data-input aria-describedby="date1">
-                    <button class="input-group-text" id="date1" data-toggle><i
-                        class="bx bx-calendar-event"></i></button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-sm-auto ms-auto">
-                <div class="mb-4">
-                  <a href="#" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target=".add-invoice-modal"><i class="bx bx-plus me-1"></i> Add New</a>
-                </div>
-              </div>
-            </div>
+            @include('pages.invoices.filter')
 
             <!-- end row -->
             <div class="table-responsive">

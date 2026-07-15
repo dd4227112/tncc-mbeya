@@ -1,7 +1,7 @@
 <script>
   var invoicesTable = null;
 
-  function loadInvoicesTable() {
+  function loadInvoicesTable(filterData = null) {
     invoicesTable = $('#invoices-table').DataTable({
       responsive: true,
       destroy: true,
@@ -48,7 +48,7 @@
       ],
       pageLength: 10,
       ajax: {
-        url: "{{ route('invoices.getInvoices') }}",
+        url: "{{ route('invoices.getInvoices') }}" + (filterData ? '?' + filterData : ''),
         type: 'GET',
         dataType: 'json',
         dataSrc: function(json) {
@@ -230,7 +230,15 @@
     };
   }
 
+  $('#filterForm').on('submit', function(e) {
+    e.preventDefault();
+
+    var $form = $(this);
+    var filterData = $form.serialize();
+    loadInvoicesTable(filterData);
+  });
+
   $(function() {
-    loadInvoicesTable();
+    loadInvoicesTable(null);
   });
 </script>
