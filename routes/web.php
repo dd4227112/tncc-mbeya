@@ -25,3 +25,4 @@ require __DIR__ . '/web/members.php';
 require __DIR__ . '/web/invoices.php';
 require __DIR__ . '/web/payments.php';
 require __DIR__ . '/web/dashboard.php';
+require __DIR__ . '/web/reports.php';

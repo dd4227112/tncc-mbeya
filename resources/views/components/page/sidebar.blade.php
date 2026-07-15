@@ -59,10 +59,10 @@
             <span data-key="t-reports">Reports</span>
           </a>
           <ul class="sub-menu" aria-expanded="false">
-            <li><a href="form-elements.html" data-key="t-form-elements">Members</a></li>
-            <li><a href="form-validation.html" data-key="t-form-validation">Payments</a></li>
-            <li><a href="form-advanced.html" data-key="t-form-advanced">Invoices</a></li>
-            <li><a href="form-editors.html" data-key="t-form-editors">Crops</a></li>
+            <li><a href="{{ route('reports.collection') }}" data-key="t-form-elements">Collection Report</a></li>
+            <li><a href="{{ route('reports.payments') }}" data-key="t-form-validation">Payments Report</a></li>
+            <li><a href="{{ route('reports.crops') }}" data-key="t-form-advanced">Crop Performance Report</a></li>
+            {{-- <li><a href="{{ route('reports.crops') }}" data-key="t-form-editors">Crops</a></li> --}}
           </ul>
         </li>
       </ul>
