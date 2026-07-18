@@ -24,26 +24,21 @@ class InvoiceController extends Controller
 
     public function getInvoices(Request $request)
     {
-        $dateRange = $request->input('date_range');
-        $status = $request->input('status');
-
-        if ($dateRange) {
-            $dateRange = explode(' to ', $dateRange);
-            $fromDate = trim($dateRange[0] ?? '');
-            $toDate = trim($dateRange[1] ?? '');
-        } else {
-            $fromDate = date('Y-m-01');
-            $toDate = date('Y-m-d');
-        }
-
         try {
             $invoicesQuery = Invoice::with('customer', 'payment.receiver');
-
-            if ($dateRange) {
-                $invoicesQuery->whereDate('created_at', '>=', $fromDate)
-                    ->whereDate('created_at', '<=', $toDate);
+            if ($request->input('date_range')) {
+                $dateRange = $request->input('date_range');
+                $dateRange = explode(' to ', $dateRange);
+                $fromDate = trim($dateRange[0] ?? '');
+                $toDate = trim($dateRange[1] ?? '');
+                if ($fromDate && $toDate) {
+                    $invoicesQuery->whereDate('created_at', '>=', $fromDate)
+                        ->whereDate('created_at', '<=', $toDate);
+                } else {
+                    $invoicesQuery->whereDate('created_at', '=', $fromDate);
+                }
             }
-
+            $status = $request->input('status');
             if ($status) {
                 $invoicesQuery->where('status', $status);
             }
@@ -267,5 +262,4 @@ class InvoiceController extends Controller
 
         return response()->json(['message' => 'Invoice deleted successfully.']);
     }
-
 }

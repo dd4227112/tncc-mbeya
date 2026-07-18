@@ -1,5 +1,9 @@
 <!-- <body data-layout="horizontal"> -->
 <x-page.header />
+  <!-- DataTables -->
+  <link href="{{ asset('assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet"
+    type="text/css" />
+
 <x-page.sidebar />
 
 <div class="page-content">
@@ -9,7 +13,7 @@
     <div class="row">
       <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-          <h4 class="mb-sm-0 font-size-18">Collection Summary Report</h4>
+          <h4 class="mb-sm-0 font-size-18">Collection Summary Report <span id ="reportDate"></span></h4>
 
           <div class="page-title-right">
             <ol class="breadcrumb m-0">
@@ -31,18 +35,12 @@
 
             <div class="row align-items-center">
               <div class="col-md-12">
-                <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
-                  <div>
-                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".add-crop-modal"><i
-                        class="bx bx-plus me-1"></i> Add New</a>
-                  </div>
-                </div>
+                @include('pages.reports.filter')
               </div>
             </div>
             <!-- end row -->
-
-            <div class="table-responsive mb-4">
-              <table id="crops-table" class="table align-middle dt-responsive table-check nowrap"
+            <div class="table-responsive">
+              <table id="datatable-buttons" class="table align-middle dt-responsive table-check nowrap"
                 style="border-collapse: collapse; border-spacing: 0 8px; width: 100%;">
                 <thead>
                   <tr>
@@ -55,9 +53,6 @@
                     <th scope="col">Rate</th>
                     <th scope="col">Amount</th>
                     <th scope="col">Recorded By</th>
-
-
-                    <th style="width: 80px; min-width: 80px;">Action</th>
                   </tr>
                 </thead>
                 <tbody id="crops-table-body">
@@ -79,5 +74,12 @@
   @push('scripts')
     @include('pages.reports.scripts.collection')
   @endpush
-
   <x-page.footer />
+  <script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+  <script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('assets/libs/jszip/jszip.min.js') }}"></script>
+  <script src="{{ asset('assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
+  <script src="{{ asset('assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+  <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+  <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+  <script src="{{ asset('assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>

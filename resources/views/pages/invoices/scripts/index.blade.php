@@ -239,6 +239,11 @@
   });
 
   $(function() {
+    $('.invoice-detail-modal').on('hidden.bs.modal', function() {
+      if (invoicesTable) {
+        invoicesTable.ajax.reload(null, false);
+      }
+    });
     loadInvoicesTable(null);
   });
 </script>

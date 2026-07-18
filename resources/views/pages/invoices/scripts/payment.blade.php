@@ -71,16 +71,16 @@
         $('#add-phone-error').text('Please enter the phone number.');
         return;
       }
-      if (!network) {
-        $('#add-network').addClass('is-invalid').focus();
-        $('#add-network-error').text('Please select a network.');
-        return;
-      }
-      if (!method) {
-        $('#add-method').addClass('is-invalid').focus();
-        $('#add-method-error').text('Please select a payment method.');
-        return;
-      }
+      // if (!network) {
+      //   $('#add-network').addClass('is-invalid').focus();
+      //   $('#add-network-error').text('Please select a network.');
+      //   return;
+      // }
+      // if (!method) {
+      //   $('#add-method').addClass('is-invalid').focus();
+      //   $('#add-method-error').text('Please select a payment method.');
+      //   return;
+      // }
       if (!invoiceId) {
         Swal.fire({
           icon: 'error',

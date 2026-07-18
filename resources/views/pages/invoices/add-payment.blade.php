@@ -31,7 +31,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            {{-- <div class="row">
               <div class="col-12">
                 <div class="form-group mb-3">
                   <label for="add-network">Network</label>
@@ -45,15 +45,15 @@
                   <span class="invalid-feedback d-block" id="add-network-error"></span>
                 </div>
               </div>
-            </div>
+            </div> --}}
             <div class="row">
               <div class="col-12">
                 <div class="form-group mb-3">
                   <label for="add-method">Payment Method</label>
                   <select id="add-method" name="method" class="form-control">
                     <option value="">Select Method</option>
-                    <option value="cash">Cash</option>
-                    <option value="mobile">Mobile Money</option>
+                    <option value="cash" selected>Cash</option>
+                    {{-- <option value="mobile">Mobile Money</option> --}}
                   </select>
                   <span class="invalid-feedback d-block" id="add-method-error"></span>
                 </div>

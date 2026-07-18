@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\NotifiyUser;
 use App\Models\Invoice;
+use App\Models\Message;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -110,9 +112,9 @@ class PaymentController extends Controller
     {
         $request->validate([
             'invoice_id' => ['required', 'exists:invoices,id'],
-            'method' => ['required', 'in:cash,mobile'],
-            'phone' => ['required_if:method,mobile', 'nullable', 'string', 'max:20'],
-            'network' => ['required_if:method,mobile', 'nullable', 'string', 'max:50'],
+            'method' => ['nullable', 'in:cash,mobile'],
+            'phone' => ['required', 'string', 'max:20'],
+            'network' => ['nullable', 'string', 'max:50'],
         ]);
 
         try {
@@ -133,6 +135,13 @@ class PaymentController extends Controller
                         'date' => now()->toDateString(),
                     ]);
                 });
+                $message = Message::create([
+                    'phone' => $request->input('phone'),
+                    'body' => "Payment for invoice {$invoice->reference_number} has been received. Thank you for your payment.",
+                    'status' => 'pending',
+                    'reference' => $invoice->reference_number,
+                ]);
+                NotifiyUser::dispatch($message->id)->onQueue('sms-notifications');
 
                 return response()->json(
                     [

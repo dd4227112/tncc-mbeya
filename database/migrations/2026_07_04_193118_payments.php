@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->foreignId('invoice_id')->constrained('invoices')->onDelete('cascade');
             $table->enum('status', ['pending', 'completed', 'failed'])->default('completed');
-            $table->string('payment_method');
+            $table->string('payment_method')->default('cash');
             $table->string('transaction_reference')->nullable();
             $table->date('date');
             $table->timestamps();
