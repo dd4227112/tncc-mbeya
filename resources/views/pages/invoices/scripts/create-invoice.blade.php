@@ -45,7 +45,8 @@
     $results.empty();
 
     if (!items || items.length === 0) {
-      $results.append('<div class="search-result-empty">No results found.</div>');
+      $results.append(
+        '<div class="search-result-empty">No results found.<br/><a href="#"data-bs-toggle="modal" data-bs-target=".add-user-modal" class="btn btn-primary btn-sm">Add New</a></div>');
       $results.addClass('show');
       return;
     }
@@ -82,7 +83,7 @@
     $results.empty();
 
     if (!items || items.length === 0) {
-      $results.append('<div class="search-result-empty">No results found.</div>');
+      $results.append('<div class="search-result-empty">No results found. <br/><a href="#"data-bs-toggle="modal" data-bs-target=".add-crop-modal" class="btn btn-primary btn-sm">Add New</a></div>');
       $results.addClass('show');
       return;
     }

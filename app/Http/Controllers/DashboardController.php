@@ -90,7 +90,8 @@ class DashboardController extends Controller
             )
             ->whereYear('created_at', date('Y'))
             ->groupBy(['crop_id'])
-            ->orderBy('total')
+            ->orderBy('total', 'desc')
+            ->limit(10)
             ->get();
         $total = $cropsSummary->sum('total');
         $cropsSummaryData = [];

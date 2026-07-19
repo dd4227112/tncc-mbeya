@@ -197,7 +197,7 @@
           <!-- card body -->
           <div class="card-body">
             <div class="d-flex flex-wrap align-items-center mb-4">
-              <h5 class="card-title me-2">Crops collections</h5>
+              <h5 class="card-title me-2">Crops collections (Top 10)</h5>
             </div>
 
             <div class="px-2 py-2">

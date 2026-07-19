@@ -36,7 +36,7 @@ class UserManagementController extends Controller
     public function getUsers()
     {
         try {
-            $users = User::with('roles')->select(['id', 'first_name', 'last_name', 'phone', 'email', 'address'])->get();
+            $users = User::with('roles')->select(['id', 'first_name', 'last_name', 'phone', 'email', 'address'])->latest()->get();
             $data = $users->map(function ($user, $index) {
                 return [
                     'id' => $index + 1,

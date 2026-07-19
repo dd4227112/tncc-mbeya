@@ -60,8 +60,8 @@
           </a>
           <ul class="sub-menu" aria-expanded="false">
             <li><a href="{{ route('reports.collection') }}" data-key="t-form-elements">Collection Report</a></li>
-            <li><a href="{{ route('reports.payments') }}" data-key="t-form-validation">Payments Report</a></li>
-            <li><a href="{{ route('reports.crops') }}" data-key="t-form-advanced">Crop Performance Report</a></li>
+            {{-- <li><a href="{{ route('reports.payments') }}" data-key="t-form-validation">Payments Report</a></li> --}}
+            <li><a href="{{ route('reports.crop_performance-report') }}" data-key="t-form-advanced">Crop Performance Report</a></li>
             {{-- <li><a href="{{ route('reports.crops') }}" data-key="t-form-editors">Crops</a></li> --}}
           </ul>
         </li>

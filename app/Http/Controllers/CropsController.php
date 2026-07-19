@@ -23,7 +23,7 @@ class CropsController extends Controller
     {
 
         try {
-            $crops = Crop::select(['id', 'name', 'price', 'description', 'unit_id'])->get();
+            $crops = Crop::select(['id', 'name', 'price', 'description', 'unit_id'])->latest()->get();
 
             $data = $crops->map(function ($crop, $index) {
                 return [

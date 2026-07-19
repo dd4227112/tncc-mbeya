@@ -74,9 +74,17 @@
 {{-- Include the modal for adding a payment --}}
 @include('pages.invoices.add-payment')
 
+{{-- Include the modal for adding new user while creating invoice --}}
+@include('pages.users.add')
+
+{{-- Include the modal for adding new crop while creating invoice --}}
+@include('pages.crops.add')
+
 @push('scripts')
   @include('pages.invoices.scripts.index')
   @include('pages.invoices.scripts.create-invoice')
   @include('pages.invoices.scripts.payment')
+  @include('pages.crops.scripts.add')
+  @include('pages.users.scripts.add')
 @endpush
 <x-page.footer />

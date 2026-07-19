@@ -57,7 +57,7 @@ class PaymentController extends Controller
                 $status = ucfirst($payment->status ?? 'pending');
                 $statusClass = 'badge badge-soft-secondary';
                 $showPrint = $payment->invoice ? ('<button class="btn btn-sm btn-primary print-invoice" href="#" data-id="' . $payment->invoice->id . '">Print</button>') : '';
-                $showUssd = '<button class="btn btn-sm btn-success push-ussd" href="#" data-id="' . $payment->invoice->id . '">Push</button>';
+                $showUssd = ''; // '<button class="btn btn-sm btn-success push-ussd" href="#" data-id="' . $payment->invoice->id . '">Push</button>';
                 $showDelete = '<button class="btn btn-sm btn-danger delete-payment" href="#" data-id="' . $payment->id . '">Delete</button>';
 
                 if (strtolower($payment->status) === 'completed') {
@@ -65,7 +65,7 @@ class PaymentController extends Controller
                     $showUssd = '';
                     $statusClass = 'badge badge-soft-success';
                 } elseif (strtolower($payment->status) === 'pending') {
-                    $showDelete = '';
+                    // $showDelete = '';
                     $showPrint = '';
                     $statusClass = 'badge badge-soft-warning';
                 } elseif (strtolower($payment->status) === 'failed') {

@@ -65,17 +65,17 @@
         emptyTable: 'No payments available.'
       }
     });
-
-    $('#payments-table').on('click', '.view-payment', function() {
-      var paymentId = $(this).data('id');
-      fetchpaymentDetails(paymentId);
-    });
-
-    $('#payments-table').on('click', '.print-payment', function() {
-      var paymentId = $(this).data('id');
-      fetchpaymentDetails(paymentId);
-    });
   }
+
+  $('#payments-table').on('click', '.view-payment', function() {
+    var paymentId = $(this).data('id');
+    fetchpaymentDetails(paymentId);
+  });
+
+  $('#payments-table').on('click', '.print-payment', function() {
+    var paymentId = $(this).data('id');
+    fetchpaymentDetails(paymentId);
+  });
   $('#payments-table').on('click', '.push-ussd', function() {
     var invoiceId = $(this).data('id');
 

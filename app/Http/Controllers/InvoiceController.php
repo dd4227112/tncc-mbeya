@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Crop;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
-use App\Models\User;
+use App\Models\Role;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,10 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        return view('pages.invoices.index');
+        $this->data['roles'] = Role::all();
+        $this->data['role'] = 'members';
+        $this->data['units'] = Unit::all();
+        return view('pages.invoices.index', $this->data);
     }
 
     public function getInvoices(Request $request)

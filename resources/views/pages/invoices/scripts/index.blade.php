@@ -59,62 +59,62 @@
         emptyTable: 'No invoices available yet.'
       }
     });
-
-    $('#invoices-table').on('click', '.view-invoice', function() {
-      var invoiceId = $(this).data('id');
-      fetchInvoiceDetails(invoiceId);
-    });
-
-    $('#invoices-table').on('click', '.print-invoice', function() {
-      var invoiceId = $(this).data('id');
-      fetchInvoiceDetails(invoiceId);
-    });
-
-    $('#invoices-table').on('click', '.delete-invoice', function() {
-      var invoiceId = $(this).data('id');
-      Swal.fire({
-        icon: 'warning',
-        title: 'Delete invoice?',
-        text: 'This action cannot be undone.',
-        showCancelButton: true,
-        confirmButtonText: 'Delete',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#6c757d'
-      }).then(function(result) {
-        if (result.isConfirmed) {
-          $.ajax({
-            url: "{{ route('invoices.destroy', ':id') }}".replace(':id', invoiceId),
-            type: 'DELETE',
-            headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-          }).done(function() {
-            Swal.fire({
-              icon: 'success',
-              title: 'Deleted',
-              text: 'Invoice deleted successfully.',
-              confirmButtonColor: '#5156be'
-            });
-            if (invoicesTable) {
-              invoicesTable.ajax.reload(null, false);
-            }
-          }).fail(function(xhr) {
-            var message = 'Unable to delete invoice. Please try again later.';
-            if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
-              message = xhr.responseJSON.message;
-            }
-            Swal.fire({
-              icon: 'error',
-              title: 'Delete failed',
-              text: message,
-              confirmButtonColor: '#5156be'
-            });
-          });
-        }
-      });
-    });
   }
+
+  $('#invoices-table').on('click', '.view-invoice', function() {
+    var invoiceId = $(this).data('id');
+    fetchInvoiceDetails(invoiceId);
+  });
+
+  $('#invoices-table').on('click', '.print-invoice', function() {
+    var invoiceId = $(this).data('id');
+    fetchInvoiceDetails(invoiceId);
+  });
+
+  $('#invoices-table').on('click', '.delete-invoice', function() {
+    var invoiceId = $(this).data('id');
+    Swal.fire({
+      icon: 'warning',
+      title: 'Delete invoice?',
+      text: 'This action cannot be undone.',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#6c757d'
+    }).then(function(result) {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: "{{ route('invoices.destroy', ':id') }}".replace(':id', invoiceId),
+          type: 'DELETE',
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+        }).done(function() {
+          Swal.fire({
+            icon: 'success',
+            title: 'Deleted',
+            text: 'Invoice deleted successfully.',
+            confirmButtonColor: '#5156be'
+          });
+          if (invoicesTable) {
+            invoicesTable.ajax.reload(null, false);
+          }
+        }).fail(function(xhr) {
+          var message = 'Unable to delete invoice. Please try again later.';
+          if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+            message = xhr.responseJSON.message;
+          }
+          Swal.fire({
+            icon: 'error',
+            title: 'Delete failed',
+            text: message,
+            confirmButtonColor: '#5156be'
+          });
+        });
+      }
+    });
+  });
 
   function fetchInvoiceDetails(invoiceId) {
     $.ajax({

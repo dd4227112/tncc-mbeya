@@ -1,9 +1,9 @@
 <script>
-  var collectionTable = null;
+  var CropPerformanceTable = null;
 
-  function loadCollectionReportTable(filterData = null) {
+  function loadCropPerformanceTable(filterData = null) {
     $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn btn-primary';
-    collectionTable = $('#datatable-buttons').DataTable({
+    CropPerformanceTable = $('#datatable-buttons').DataTable({
       responsive: true,
       destroy: true,
       processing: true,
@@ -33,31 +33,20 @@
           sortable: false,
         },
         {
-          data: 'date'
+          data: 'crop_name'
         },
         {
-          data: 'reference'
+          data: 'total_members'
         },
         {
-          data: 'member'
+          data: 'total_weight'
         },
         {
-          data: 'crop'
+          data: 'average_weight_per_member'
         },
         {
-          data: 'quantity',
+          data: 'total_collection',
           className: 'text-end'
-        },
-        {
-          data: 'rate',
-          className: 'text-end'
-        },
-        {
-          data: 'amount',
-          className: 'text-end'
-        },
-        {
-          data: 'user'
         }
       ],
       order: [
@@ -65,7 +54,7 @@
       ],
       pageLength: 10,
       ajax: {
-        url: "{{ route('reports.getCollection') }}?" + filterData,
+        url: "{{ route('reports.get-crop_performance-report') }}?" + filterData,
         type: 'GET',
         dataType: 'json',
         dataSrc: function(json) {
@@ -78,15 +67,14 @@
       }
     });
   }
-
   $('#filterForm').on('submit', function(e) {
     e.preventDefault();
 
     var $form = $(this);
     var filterData = $form.serialize();
-    loadCollectionReportTable(filterData);
+    loadCropPerformanceTable(filterData);
   });
   $(function() {
-    loadCollectionReportTable(null);
+    loadCropPerformanceTable(null);
   });
 </script>
