@@ -94,10 +94,7 @@
 
         return $.ajax({
           url: "{{ route('payments.repushPayment', ':id') }}".replace(':id', invoiceId),
-          type: 'POST',
-          headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
+          type: 'POST'
         }).catch(function(xhr) {
 
           var message = 'Unable to send USSD Push. Please try again later.';
@@ -145,9 +142,6 @@
         $.ajax({
           url: "{{ route('payments.destroy', ':id') }}".replace(':id', paymentId),
           type: 'DELETE',
-          headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
         }).done(function() {
           Swal.fire({
             icon: 'success',

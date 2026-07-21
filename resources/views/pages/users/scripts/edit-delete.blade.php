@@ -97,9 +97,6 @@
                 url: "{{ route($role . '.update', [$role === 'members' ? 'member' : 'staff' => ':id']) }}".replace(':id', userId),
                 type: 'PUT',
                 data: $form.serialize(),
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
                 success: function (response) {
                     $('.edit-user-modal').modal('hide');
                     toastr.success(response.message || 'User updated successfully.');
@@ -170,9 +167,6 @@
                     $.ajax({
                         url: "{{ route($role . '.destroy', [$role === 'members' ? 'member' : 'staff' => ':id']) }}".replace(':id', userId),
                         type: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
                         success: function (response) {
                             if (typeof loadUsersTable === 'function') {
                                 loadUsersTable();

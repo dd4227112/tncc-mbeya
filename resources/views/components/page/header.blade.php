@@ -313,7 +313,7 @@
             </button>
             <div class="dropdown-menu dropdown-menu-end">
               <!-- item-->
-              <a class="dropdown-item" href="apps-contacts-profile.html"><i
+              <a class="dropdown-item show-profile" href="#"><i
                   class="mdi mdi-face-profile font-size-16 align-middle me-1"></i> Profile</a>
               <a class="dropdown-item" href="#" data-bs-toggle="modal"
                 data-bs-target=".change-password-modal"><i class="mdi mdi-lock font-size-16 align-middle me-1"></i>
@@ -332,3 +332,4 @@
       </div>
     </header>
     @include('auth.change-password')
+    @include('pages.users.profile')

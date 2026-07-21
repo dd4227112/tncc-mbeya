@@ -81,9 +81,6 @@
                 url: "{{ route('crops.update', ['crop' => ':id']) }}".replace(':id', cropId),
                 type: 'PUT',
                 data: $form.serialize(),
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
                 success: function (response) {
                     $('.edit-crop-modal').modal('hide');
                     toastr.success(response.message || 'Crop updated successfully.');
@@ -146,9 +143,6 @@
                     $.ajax({
                         url: "{{ route('crops.destroy', ['crop' => ':id']) }}".replace(':id', cropId),
                         type: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
                         success: function (response) {
                             if (typeof loadCropsTable === 'function') {
                                 loadCropsTable();

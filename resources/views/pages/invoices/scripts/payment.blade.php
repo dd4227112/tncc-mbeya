@@ -95,11 +95,7 @@
         url: "{{ route('payments.store') }}",
         type: 'POST',
         data: formData,
-        dataType: 'json',
-        // contentType: 'application/json',
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
+        dataType: 'json'
       }).done(function(response) {
         $submitButton.prop('disabled', false).text('Save');
         $('.add-payment-modal').modal('hide');

@@ -86,10 +86,7 @@
       if (result.isConfirmed) {
         $.ajax({
           url: "{{ route('invoices.destroy', ':id') }}".replace(':id', invoiceId),
-          type: 'DELETE',
-          headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
+          type: 'DELETE'
         }).done(function() {
           Swal.fire({
             icon: 'success',

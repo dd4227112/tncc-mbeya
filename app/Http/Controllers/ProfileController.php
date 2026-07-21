@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,27 +15,39 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
+    public function edit(Request $request)
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        $user = [
+            'id' => 8,
+            'first_name' => $request->user()->first_name,
+            'last_name' => $request->user()->last_name,
+            'phone' => $request->user()->phone,
+            'email' => $request->user()->email,
+            'address' => $request->user()->address,
+            'role' => $request->user()->roles()->pluck('name')->first(),
+        ];
+        return response()->json([
+            'user' => $user
+        ], 200);
     }
 
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request): JsonResponse
     {
-        $request->user()->fill($request->validated());
+      try {
+            $request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+            if ($request->user()->isDirty('email')) {
+                $request->user()->email_verified_at = null;
+            }
+
+            $request->user()->save();
+            return response()->json(['message' => 'Profile updated successfully.'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update profile.'], 500);
         }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**

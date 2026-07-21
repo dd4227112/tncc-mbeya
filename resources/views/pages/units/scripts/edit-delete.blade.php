@@ -65,9 +65,6 @@
                 url: "{{ route('units.update', ['unit' => ':id']) }}".replace(':id', unitId),
                 type: 'PUT',
                 data: $form.serialize(),
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
                 success: function (response) {
                     $('.edit-unit-modal').modal('hide');
                     toastr.success(response.message || 'Unit updated successfully.');
@@ -122,9 +119,6 @@
                     $.ajax({
                         url: "{{ route('units.destroy', ['unit' => ':id']) }}".replace(':id', unitId),
                         type: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
                         success: function (response) {
                             if (typeof loadUnitsTable === 'function') {
                                 loadUnitsTable();

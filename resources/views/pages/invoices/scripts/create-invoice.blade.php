@@ -406,9 +406,6 @@
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
-      headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-      },
       data: JSON.stringify(payload)
     }).done(function(response) {
       resetInvoiceForm();

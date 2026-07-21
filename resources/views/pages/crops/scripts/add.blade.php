@@ -47,9 +47,6 @@
         url: '{{ route('crops.store') }}',
         type: 'POST',
         data: $form.serialize(),
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
         success: function(response) {
           $form[0].reset();
           $('.add-crop-modal').modal('hide');
