@@ -237,6 +237,17 @@
 </head>
 
 <body>
+  <script>
+    (function () {
+      const savedMode = localStorage.getItem('minia-layout-mode') || 'light';
+      const mode = savedMode === 'dark' ? 'dark' : 'light';
+
+      document.body.setAttribute('data-layout-mode', mode);
+      document.body.setAttribute('data-topbar', mode);
+      document.body.setAttribute('data-sidebar', mode);
+    })();
+  </script>
+
   <!-- Begin page -->
   <div id="layout-wrapper">
 
