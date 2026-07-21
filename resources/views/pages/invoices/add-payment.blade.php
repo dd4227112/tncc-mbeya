@@ -22,12 +22,12 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div class="row mt-2">
               <div class="col-12">
                 <div class="form-group mb-3">
-                  <label for="add-phone">phone</label>
-                  <input type="text" id="add-phone" name="phone" class="form-control" />
-                  <span class="invalid-feedback d-block" id="add-phone-error"></span>
+                  <label for="add-phone_number">Phone</label>
+                  <input type="text" id="add-phone_number" name="phone" class="form-control" />
+                  <span class="invalid-feedback d-block" id="add-phone_number-error"></span>
                 </div>
               </div>
             </div>

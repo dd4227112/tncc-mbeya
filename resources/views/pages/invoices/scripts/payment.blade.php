@@ -42,7 +42,7 @@
     $('#invoiceDetail').text(invoice.reference_number + ' | Date: ' + invoice.date);
     $('#memberDetail').text(invoice.member_name + ' | Phone: ' + invoice.member_phone);
     $('#add-amount').val(invoice.total_amount);
-    $('#add-phone').val(invoice.member_phone);
+    $('#add-phone_number').val(invoice.member_phone);
     $('#add-invoice-id').val(invoice.id);
     // $('#invoiceDetailBilledName').text(invoice.member_name);
     // $('#invoiceDetailBilledAddress').text(invoice.member_address);
@@ -61,14 +61,14 @@
       var $submitButton = $form.find('button[type="submit"]');
       $form.find('.is-invalid').removeClass('is-invalid');
       $form.find('.invalid-feedback').text('');
-      var phone = $.trim($('#add-phone').val());
+      var phone = $.trim($('#add-phone_number').val());
       var network = $.trim($('#add-network').val());
       var method = $.trim($('#add-method').val());
       var invoiceId = $.trim($('#add-invoice-id').val());
 
       if (!phone) {
-        $('#add-phone').addClass('is-invalid').focus();
-        $('#add-phone-error').text('Please enter the phone number.');
+        $('#add-phone_number').addClass('is-invalid').focus();
+        $('#add-phone_number-error').text('Please enter the phone number.');
         return;
       }
       // if (!network) {
