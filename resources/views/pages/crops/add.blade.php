@@ -48,9 +48,12 @@
                 </div>
               </div>
             </div>
-            <div class="form-group">
-              <button type="submit" class="btn btn-primary float-end"> <i class="mdi mdi-content-save me-1"></i>Save</button>
-            </div>
+            @if (hasPermission('crops.create'))
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary float-end"> <i
+                    class="mdi mdi-content-save me-1"></i>Save</button>
+              </div>
+            @endif
           </form>
         </div>
       </div><!-- /.modal-content -->

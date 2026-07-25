@@ -29,8 +29,10 @@
           </div>
           <div class="col-lg-2 ms-lg-auto">
             <div class="mt-4">
+              @if (hasPermission('invoices.create') )
               <a href="#" class="btn btn-primary float-end" data-bs-toggle="modal"
                 data-bs-target=".add-invoice-modal"><i class="bx bx-plus me-1"></i> Add New</a>
+              @endif
             </div>
           </div>
         </div>

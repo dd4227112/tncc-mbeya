@@ -121,9 +121,11 @@
                   <div class="mt-4 text-end">
                     <button type="button" class="btn btn-soft-danger waves-effect me-1" data-bs-dismiss="modal"
                       aria-label="Close">Cancel</button>
-                    <button type="button" class="btn btn-primary waves-effect waves-light" id="saveInvoiceBtn">
-                      <i class="mdi mdi-content-save me-1"></i>Save
-                    </button>
+                    @if (hasPermission('invoices.create'))
+                      <button type="button" class="btn btn-primary waves-effect waves-light" id="saveInvoiceBtn">
+                        <i class="mdi mdi-content-save me-1"></i>Save
+                      </button>
+                    @endif
                   </div>
 
                 </div>

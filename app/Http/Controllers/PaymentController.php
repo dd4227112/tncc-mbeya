@@ -20,81 +20,92 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        return view('pages.payments.index');
+        if (hasPermission('payments.view')) {
+            return view('pages.payments.index');
+        } else {
+            return redirect('dashboard')->with('error', 'You do not have permission to access this page.');
+        }
     }
     public function getpayments(Request $request)
     {
-        $dateRange = $request->input('date_range');
-        $status = $request->input('status');
-        $method = $request->input('method');
+        if (hasPermission('payments.view')) {
+            $dateRange = $request->input('date_range');
+            $status = $request->input('status');
+            $method = $request->input('method');
 
-        if ($dateRange) {
-            $dateRange = explode(' to ', $dateRange);
+            if ($dateRange) {
+                $dateRange = explode(' to ', $dateRange);
 
-            $fromDate = $dateRange[0];
-            $toDate = $dateRange[1];
-        } else {
-            $fromDate = date('Y-m-01');
-            $toDate = date('Y-m-d');
-        }
-
-        try {
-            $payments = Payment::with('invoice', 'receiver', 'payer')
-                ->whereDate('created_at', '>=', $fromDate)
-                ->whereDate('created_at', '<=', $toDate);
-            if ($status) {
-                $payments->where('status', $status);
-            }
-            if ($method) {
-                $payments->where('payment_method', $method);
+                $fromDate = $dateRange[0];
+                $toDate = $dateRange[1];
+            } else {
+                $fromDate = date('Y-m-01');
+                $toDate = date('Y-m-d');
             }
 
-            $payments = $payments->latest()->get();
-
-
-
-            $data = $payments->map(function ($payment, $index) {
-                $status = ucfirst($payment->status ?? 'pending');
-                $statusClass = 'badge badge-soft-secondary';
-                $showPrint = $payment->invoice ? ('<button class="btn btn-sm btn-primary print-invoice" href="#" data-id="' . $payment->invoice->id . '">Print</button>') : '';
-                $showUssd = ''; // '<button class="btn btn-sm btn-success push-ussd" href="#" data-id="' . $payment->invoice->id . '">Push</button>';
-                $showDelete = '<button class="btn btn-sm btn-danger delete-payment" href="#" data-id="' . $payment->id . '">Delete</button>';
-
-                if (strtolower($payment->status) === 'completed') {
-                    $showDelete = '';
-                    $showUssd = '';
-                    $statusClass = 'badge badge-soft-success';
-                } elseif (strtolower($payment->status) === 'pending') {
-                    // $showDelete = '';
-                    $showPrint = '';
-                    $statusClass = 'badge badge-soft-warning';
-                } elseif (strtolower($payment->status) === 'failed') {
-                    $showPrint = '';
-                    $showUssd = '';
-                    $statusClass = 'badge badge-soft-danger';
+            try {
+                $payments = Payment::with('invoice', 'receiver', 'payer')
+                    ->whereDate('created_at', '>=', $fromDate)
+                    ->whereDate('created_at', '<=', $toDate);
+                if ($status) {
+                    $payments->where('status', $status);
                 }
-                return [
-                    'id' => $index + 1,
-                    'date' => optional($payment->date)->format('d M, Y'),
-                    'payer' => optional($payment->payer)->name ?? 'N/A',
-                    'amount' => number_format($payment->amount, 2),
-                    'reference' => $payment->transaction_reference,
-                    'invoice' => optional($payment->invoice)->reference_number,
-                    'method' => $payment->payment_method,
-                    'status' => $status,
-                    'status_badge' => '<div class="' . $statusClass . ' font-size-12">' . $status . '</div>',
-                    'processed' => optional($payment->receiver)->name ?? 'N/A',
-                    'actions' => $showPrint . $showUssd . $showDelete
-                ];
-            })->values();
+                if ($method) {
+                    $payments->where('payment_method', $method);
+                }
 
-            return response()->json(['data' => $data]);
-        } catch (Throwable $e) {
-            Log::error('Error fetching payments: ' . $e->getMessage(), ['exception' => $e]);
+                $payments = $payments->latest()->get();
+
+
+
+                $data = $payments->map(function ($payment, $index) {
+                    $status = ucfirst($payment->status ?? 'pending');
+                    $statusClass = 'badge badge-soft-secondary';
+                    $showPrint = ($payment->invoice && hasPermission('payments.print')) ? ('<button class="btn btn-sm btn-primary print-invoice" href="#" data-id="' . $payment->invoice->id . '">Print</button>') : '';
+                    $showUssd = ''; // '<button class="btn btn-sm btn-success push-ussd" href="#" data-id="' . $payment->invoice->id . '">Push</button>';
+                    $showDelete = hasPermission('payments.delete') ? '<button class="btn btn-sm btn-danger delete-payment" href="#" data-id="' . $payment->id . '">Delete</button>' : '';
+
+                    if (strtolower($payment->status) === 'completed') {
+                        $showDelete = '';
+                        $showUssd = '';
+                        $statusClass = 'badge badge-soft-success';
+                    } elseif (strtolower($payment->status) === 'pending') {
+                        // $showDelete = '';
+                        $showPrint = '';
+                        $statusClass = 'badge badge-soft-warning';
+                    } elseif (strtolower($payment->status) === 'failed') {
+                        $showPrint = '';
+                        $showUssd = '';
+                        $statusClass = 'badge badge-soft-danger';
+                    }
+                    return [
+                        'id' => $index + 1,
+                        'date' => optional($payment->date)->format('d M, Y'),
+                        'payer' => optional($payment->payer)->name ?? 'N/A',
+                        'amount' => number_format($payment->amount, 2),
+                        'reference' => $payment->transaction_reference,
+                        'invoice' => optional($payment->invoice)->reference_number,
+                        'method' => $payment->payment_method,
+                        'status' => $status,
+                        'status_badge' => '<div class="' . $statusClass . ' font-size-12">' . $status . '</div>',
+                        'processed' => optional($payment->receiver)->name ?? 'N/A',
+                        'actions' => $showPrint . $showUssd . $showDelete
+                    ];
+                })->values();
+
+                return response()->json(['data' => $data]);
+            } catch (Throwable $e) {
+                Log::error('Error fetching payments: ' . $e->getMessage(), ['exception' => $e]);
+                return response()->json([
+                    'message' => 'Failed to get payments. Please try again later or contact support.',
+                    'data' => [],
+                ], 500);
+            }
+        } else {
             return response()->json([
-                'message' => 'Failed to get payments. Please try again later or contact support.',
+                'message' => 'You do not have permission to view paymets.',
                 'data' => [],
-            ], 500);
+            ], 403);
         }
     }
     /**
@@ -110,59 +121,64 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'invoice_id' => ['required', 'exists:invoices,id'],
-            'method' => ['nullable', 'in:cash,mobile'],
-            'phone' => ['required', 'string', 'max:20'],
-            'network' => ['nullable', 'string', 'max:50'],
-        ]);
+        if (hasPermission('payments.create')) {
+            $request->validate([
+                'invoice_id' => ['required', 'exists:invoices,id'],
+                'method' => ['nullable', 'in:cash,mobile'],
+                'phone' => ['required', 'string', 'max:20'],
+                'network' => ['nullable', 'string', 'max:50'],
+            ]);
 
-        try {
-            $invoice = Invoice::findOrFail($request->input('invoice_id'));
+            try {
+                $invoice = Invoice::findOrFail($request->input('invoice_id'));
 
-            if ($request->input('method') === 'cash') {
-                DB::transaction(function () use ($invoice) {
-                    $invoice->status = 'paid';
-                    $invoice->save();
+                if ($request->input('method') === 'cash') {
+                    DB::transaction(function () use ($invoice) {
+                        $invoice->status = 'paid';
+                        $invoice->save();
 
-                    $invoice->payment()->create([
-                        'received_by' => Auth::id(),
-                        'user_id' => $invoice->user_id,
-                        'amount' => $invoice->total_amount,
-                        'status' => 'completed',
-                        'payment_method' => 'cash',
-                        'transaction_reference' => 'CASH_' . date('YmdHis'),
-                        'date' => now()->toDateString(),
+                        $invoice->payment()->create([
+                            'received_by' => Auth::id(),
+                            'user_id' => $invoice->user_id,
+                            'amount' => $invoice->total_amount,
+                            'status' => 'completed',
+                            'payment_method' => 'cash',
+                            'transaction_reference' => 'CASH_' . date('YmdHis'),
+                            'date' => now()->toDateString(),
+                        ]);
+                    });
+                    $message = Message::create([
+                        'phone' => $request->input('phone'),
+                        'body' => "Payment for invoice {$invoice->reference_number} has been received. Thank you for your payment.",
+                        'status' => 'pending',
+                        'reference' => $invoice->reference_number,
                     ]);
-                });
-                $message = Message::create([
-                    'phone' => $request->input('phone'),
-                    'body' => "Payment for invoice {$invoice->reference_number} has been received. Thank you for your payment.",
-                    'status' => 'pending',
-                    'reference' => $invoice->reference_number,
-                ]);
-                NotifiyUser::dispatch($message->id)->onQueue('sms-notifications');
+                    NotifiyUser::dispatch($message->id)->onQueue('sms-notifications');
 
-                return response()->json(
-                    [
-                        'message' => 'Payment added successfully.',
-                        'data' => ['id' => $invoice->id]
-                    ]
-                );
-            } else {
-                $invoice->setAttribute('payment_method', 'mobile');
-                $invoice->setAttribute('phone', $request->input('phone'));
-                $invoice->setAttribute('network', $request->input('network'));
-                $customer = $invoice->customer;
+                    return response()->json(
+                        [
+                            'message' => 'Payment added successfully.',
+                            'data' => ['id' => $invoice->id]
+                        ]
+                    );
+                } else {
+                    $invoice->setAttribute('payment_method', 'mobile');
+                    $invoice->setAttribute('phone', $request->input('phone'));
+                    $invoice->setAttribute('network', $request->input('network'));
+                    $customer = $invoice->customer;
 
-                return $this->createPaymentIntent($invoice, $customer);
+                    return $this->createPaymentIntent($invoice, $customer);
+                }
+            } catch (Throwable $e) {
+                Log::error('Error adding payment: ' . $e->getMessage(), ['exception' => $e]);
+                return response()->json(['message' => 'Failed to add payment. Please try again later.'], 500);
             }
-        } catch (Throwable $e) {
-            Log::error('Error adding payment: ' . $e->getMessage(), ['exception' => $e]);
-            return response()->json(['message' => 'Failed to add payment. Please try again later.'], 500);
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to create paymets.',
+                'data' => [],
+            ], 403);
         }
-
-        return response()->json(['message' => 'Payment added successfully.']);
     }
 
     /**
@@ -194,20 +210,26 @@ class PaymentController extends Controller
      */
     public function destroy(Payment $payment)
     {
+        if (hasPermission('payments.delete')) {
+            try {
+                $payment->invoice()->update(['status' => 'pending']);
+                $payment->delete();
+            } catch (Throwable $e) {
+                Log::error('Error deleting payment: ' . $e->getMessage(), ['exception' => $e]);
+                return response()->json([
+                    'message' => 'Unable to delete payment. Please try again.',
+                ], 500);
+            }
 
-        try {
-            $payment->invoice()->update(['status' => 'pending']);
-            $payment->delete();
-        } catch (Throwable $e) {
-            Log::error('Error deleting payment: ' . $e->getMessage(), ['exception' => $e]);
             return response()->json([
-                'message' => 'Unable to delete payment. Please try again.',
-            ], 500);
+                'message' => 'Payment deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to delete paymets.',
+                'data' => [],
+            ], 403);
         }
-
-        return response()->json([
-            'message' => 'Payment deleted successfully.',
-        ]);
     }
     public function createPaymentIntent(Invoice $invoice, User $customer)
     {

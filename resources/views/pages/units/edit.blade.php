@@ -28,9 +28,11 @@
                 </div>
               </div>
             </div>
+            @if (hasPermission('units.update'))
             <div class="form-group">
               <button type="submit" class="btn btn-primary float-end"> <i class="mdi mdi-content-save me-1"></i>Save</button>
             </div>
+            @endif
           </form>
         </div>
       </div><!-- /.modal-content -->

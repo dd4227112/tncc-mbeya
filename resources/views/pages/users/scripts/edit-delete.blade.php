@@ -34,8 +34,8 @@
                         $modal.modal('show');
                     }
                 },
-                error: function () {
-                    toastr.error('Unable to load user details. Please try again.');
+                error: function (error) {
+                    toastr.error(error.responseJSON && error.responseJSON.message ? error.responseJSON.message : 'Unable to fetch user details. Please try again.');
                 }
             });
         });

@@ -33,8 +33,10 @@
               <div class="col-md-12">
                 <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
                   <div>
-                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target=".add-user-modal"><i
-                        class="bx bx-plus me-1"></i> Add New</a>
+                    @if (hasPermission('users.create'))
+                      <a href="#" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target=".add-user-modal"><i class="bx bx-plus me-1"></i> Add New</a>
+                    @endif
                     @include('pages.users.add')
                     @include('pages.users.edit')
                   </div>

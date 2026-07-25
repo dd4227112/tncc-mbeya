@@ -90,8 +90,10 @@
                     <div class="float-end">
                       <a href="#" class="btn btn-soft-danger me-1 waves-effect waves-light"
                         data-bs-dismiss="modal">Cancel</a>
+                         @if (hasPermission('invoices.print') )
                       <a href="javascript:void(0)" onclick="printInvoiceDetailModal()"
                         class="btn btn-success waves-effect waves-light w-md ">Print</a>
+                        @endif
                     </div>
                   </div>
                 </div>

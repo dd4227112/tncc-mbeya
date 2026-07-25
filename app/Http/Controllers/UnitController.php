@@ -14,7 +14,11 @@ class UnitController extends Controller
      */
     public function index()
     {
-        return view('pages.units.index');
+        if (hasPermission('units.view')) {
+            return view('pages.units.index');
+        } else {
+            return redirect()->route('dashboard')->with('error', 'You do not have permission to access this page.');
+        }
     }
 
     /**
@@ -45,10 +49,8 @@ class UnitController extends Controller
                     'id' => $index + 1,
                     'name' => $unit->name,
                     'abbreviation' => $unit->abbreviation,
-                    'actions' => '
-                    <button class="btn btn-sm btn-primary edit-unit" href="#" data-id="' . $unit->id . '">Edit</button> 
-                    <button class="btn btn-sm btn-danger delete-unit" href="#" data-id="' . $unit->id . '">Delete</button>
-                    ',
+                    'actions' => (hasPermission('units.update') ? ('<button class="btn btn-sm btn-primary edit-unit" href="#" data-id="' . $unit->id . '">Edit</button>') : '')
+                        . (hasPermission('units.delete') ? ('<button class="btn btn-sm btn-danger delete-unit" href="#" data-id="' . $unit->id . '">Delete</button>') : ''),
                 ];
             })->values();
 
@@ -79,26 +81,33 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('units')],
-            'abbreviation' => ['required', 'string', 'max:50'],
-        ]);
-        try {
-            $unit = Unit::create($validated);
-        } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Unable to create unit. Please try again.',
-            ], 500);
-        }
+        if (hasPermission('units.create')) {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255', Rule::unique('units')],
+                'abbreviation' => ['required', 'string', 'max:50'],
+            ]);
+            try {
+                $unit = Unit::create($validated);
+            } catch (Throwable $e) {
+                return response()->json([
+                    'message' => 'Unable to create unit. Please try again.',
+                ], 500);
+            }
 
-        return response()->json([
-            'message' => 'Unit created successfully.',
-            'data' => [
-                'id' => $unit->id,
-                'name' => $unit->name,
-                'abbreviation' => $unit->abbreviation,
-            ],
-        ], 201);
+            return response()->json([
+                'message' => 'Unit created successfully.',
+                'data' => [
+                    'id' => $unit->id,
+                    'name' => $unit->name,
+                    'abbreviation' => $unit->abbreviation,
+                ],
+            ], 201);
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to create units.',
+                'data' => [],
+            ], 403);
+        }
     }
 
     /**
@@ -114,13 +123,21 @@ class UnitController extends Controller
      */
     public function edit(Unit $unit)
     {
-        return response()->json([
-            'data' => [
-                'id' => $unit->id,
-                'name' => $unit->name,
-                'abbreviation' => $unit->abbreviation,
-            ],
-        ]);
+
+        if (hasPermission('units.update')) {
+            return response()->json([
+                'data' => [
+                    'id' => $unit->id,
+                    'name' => $unit->name,
+                    'abbreviation' => $unit->abbreviation,
+                ],
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to view units.',
+                'data' => [],
+            ], 403);
+        }
     }
 
     /**
@@ -128,26 +145,33 @@ class UnitController extends Controller
      */
     public function update(Request $request, Unit $unit)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('units')->ignore($unit->id)],
-            'abbreviation' => ['required', 'string', 'max:50'],
-        ]);
-        try {
-            $unit->update($validated);
-        } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Unable to update unit. Please try again.',
-            ], 500);
-        }
+        if (hasPermission('units.update')) {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255', Rule::unique('units')->ignore($unit->id)],
+                'abbreviation' => ['required', 'string', 'max:50'],
+            ]);
+            try {
+                $unit->update($validated);
+            } catch (Throwable $e) {
+                return response()->json([
+                    'message' => 'Unable to update unit. Please try again.',
+                ], 500);
+            }
 
-        return response()->json([
-            'message' => 'Unit updated successfully.',
-            'data' => [
-                'id' => $unit->id,
-                'name' => $unit->name,
-                'abbreviation' => $unit->abbreviation,
-            ],
-        ]);
+            return response()->json([
+                'message' => 'Unit updated successfully.',
+                'data' => [
+                    'id' => $unit->id,
+                    'name' => $unit->name,
+                    'abbreviation' => $unit->abbreviation,
+                ],
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to update units.',
+                'data' => [],
+            ], 403);
+        }
     }
 
     /**
@@ -155,15 +179,22 @@ class UnitController extends Controller
      */
     public function destroy(Unit $unit)
     {
-        try {
-            $unit->delete();
-        } catch (Throwable $e) {
+        if (hasPermission('units.delete')) {
+            try {
+                $unit->delete();
+            } catch (Throwable $e) {
+                return response()->json([
+                    'message' => 'Unable to delete unit. Please try again.',
+                ], 500);
+            }
             return response()->json([
-                'message' => 'Unable to delete unit. Please try again.',
-            ], 500);
+                'message' => 'Unit deleted successfully.',
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to delete units.',
+                'data' => [],
+            ], 403);
         }
-        return response()->json([
-            'message' => 'Unit deleted successfully.',
-        ]);
     }
 }

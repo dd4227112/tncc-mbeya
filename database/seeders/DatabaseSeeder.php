@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\PermissionSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,6 +29,7 @@ class DatabaseSeeder extends Seeder
         ]);
         $user->roles()->attach(1); // Assign Admin role to the user
         $this->unitSeeder();
+        PermissionSeeder::run();
     }
     public function unitSeeder(): void
     {

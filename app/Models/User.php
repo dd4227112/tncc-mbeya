@@ -35,18 +35,17 @@ class User extends Authenticatable
     {
         static::addGlobalScope('role', function (Builder $builder) {
             if (static::$managementRole) {
-                if(static::$managementRole === 'members') {
+                if (static::$managementRole === 'members') {
                     $builder->whereHas('roles', function ($query) {
                         $query->where('name', 'Member');
                     });
-                } elseif(static::$managementRole === 'staffs') {
+                } elseif (static::$managementRole === 'staffs') {
                     $builder->whereHas('roles', function ($query) {
                         $query->whereIn('name', ['Admin', 'Chairperson', 'Accountant']);
                     });
                 } else {
                     abort(400, 'Invalid role');
                 }
-               
             }
         });
     }
@@ -70,7 +69,7 @@ class User extends Authenticatable
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'user_roles');
+        return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id');
     }
 
     public function invoices(): HasMany
@@ -92,10 +91,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Payment::class, 'received_by');
     }
-   protected function name(): Attribute
-{
-    return Attribute::make(
-        get: fn () => trim($this->first_name . ' ' . $this->last_name),
-    );
-}
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => trim($this->first_name . ' ' . $this->last_name),
+        );
+    }
 }

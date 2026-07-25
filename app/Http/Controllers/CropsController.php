@@ -16,8 +16,12 @@ class CropsController extends Controller
      */
     public function index()
     {
-        $units = Unit::all();
-        return view('pages.crops.index', compact('units'));
+        if (hasPermission('crops.view')) {
+            $units = Unit::all();
+            return view('pages.crops.index', compact('units'));
+        } else {
+            return redirect()->route('dashboard')->with('error', 'You do not have permission to access this page.');
+        }
     }
     public function getCrops()
     {
@@ -32,10 +36,8 @@ class CropsController extends Controller
                     'description' => $crop->description,
                     'unit' => $crop->unit->name ?? 'N/A',
                     'price' => $crop->price,
-                    'actions' => '
-                    <button class="btn btn-sm btn-primary edit-crop" href="#" data-id="' . $crop->id . '">Edit</button> 
-                    <button class="btn btn-sm btn-danger delete-crop" href="#" data-id="' . $crop->id . '">Delete</button>
-                    ',
+                    'actions' => (hasPermission('crops.update') ? ('<button class="btn btn-sm btn-primary edit-crop" href="#" data-id="' . $crop->id . '">Edit</button> ') : '')
+                        . (hasPermission('crops.delete') ? ('<button class="btn btn-sm btn-danger delete-crop" href="#" data-id="' . $crop->id . '">Delete</button>') : ''),
                 ];
             })->values();
 
@@ -67,31 +69,38 @@ class CropsController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('crops')],
-            'description' => ['nullable', 'string', 'max:255'],
-            'price' => ['required', 'numeric', 'min:1'],
-            'unit_id' => ['required', 'exists:units,id'],
-        ]);
 
-        try {
-            $crop = Crop::create($validated);
-        } catch (Throwable $e) {
+        if (hasPermission('crops.create')) {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255', Rule::unique('crops')],
+                'description' => ['nullable', 'string', 'max:255'],
+                'price' => ['required', 'numeric', 'min:1'],
+                'unit_id' => ['required', 'exists:units,id'],
+            ]);
+
+            try {
+                $crop = Crop::create($validated);
+            } catch (Throwable $e) {
+                return response()->json([
+                    'message' => 'Unable to create crop. Please try again.',
+                ], 500);
+            }
+
             return response()->json([
-                'message' => 'Unable to create crop. Please try again.',
-            ], 500);
+                'message' => 'Crop created successfully.',
+                'data' => [
+                    'id' => $crop->id,
+                    'name' => $crop->name,
+                    'description' => $crop->description,
+                    'price' => $crop->price,
+                    'unit_id' => $crop->unit_id,
+                ],
+            ], 201);
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to create crops.',
+            ], 403);
         }
-
-        return response()->json([
-            'message' => 'Crop created successfully.',
-            'data' => [
-                'id' => $crop->id,
-                'name' => $crop->name,
-                'description' => $crop->description,
-                'price' => $crop->price,
-                'unit_id' => $crop->unit_id,
-            ],
-        ], 201);
     }
 
     /**
@@ -107,15 +116,21 @@ class CropsController extends Controller
      */
     public function edit(Crop $crop)
     {
-        return response()->json([
-            'data' => [
-                'id' => $crop->id,
-                'name' => $crop->name,
-                'description' => $crop->description,
-                'price' => $crop->price,
-                'unit_id' => $crop->unit_id,
-            ],
-        ]);
+        if (hasPermission('crops.update')) {
+            return response()->json([
+                'data' => [
+                    'id' => $crop->id,
+                    'name' => $crop->name,
+                    'description' => $crop->description,
+                    'price' => $crop->price,
+                    'unit_id' => $crop->unit_id,
+                ],
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to edit crops.',
+            ], 403);
+        }
     }
 
     /**
@@ -123,7 +138,9 @@ class CropsController extends Controller
      */
     public function update(Request $request, Crop $crop)
     {
-        $validated = $request->validate([
+       
+    if(hasPermission('crops.update')) {
+    $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('crops')->ignore($crop->id)],
             'description' => ['nullable', 'string', 'max:255'],
             'price' => ['required', 'numeric', 'min:1'],
@@ -148,6 +165,11 @@ class CropsController extends Controller
                 'unit_id' => $crop->unit_id,
             ],
         ]);
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to edit crops.',
+            ], 403);
+        }
     }
 
     /**     

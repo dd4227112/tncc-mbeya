@@ -71,7 +71,9 @@
             <input type="hidden" name="role_id" value="4" /> <!--  role_id 4 corresponds to 'Member' -->
           @endif
           <div class="form-group">
+            @if (hasPermission('users.create'))
             <button type="submit" class="btn btn-primary float-end"> <i class="mdi mdi-content-save me-1"></i>Save</button>
+            @endif
           </div>
         </form>
       </div>

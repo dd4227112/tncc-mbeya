@@ -12,8 +12,8 @@
               <div class="col-xl-12 col-md-12">
                 <div class="form-group mb-3">
                   <label for="edit-name">Name</label>
-                  <input type="text" id="edit-name" name="name" required data-pristine-required-message="Please Enter a name"
-                    class="form-control" />
+                  <input type="text" id="edit-name" name="name" required
+                    data-pristine-required-message="Please Enter a name" class="form-control" />
                   <span class="invalid-feedback d-block" id="edit-name-error"></span>
                 </div>
               </div>
@@ -32,8 +32,8 @@
               <div class="col-xl-12 col-md-12">
                 <div class="form-group mb-3">
                   <label for="edit-price">Price</label>
-                  <input type="number" id="edit-price" name="price" required data-pristine-required-message="Please Enter a price"
-                    class="form-control" />
+                  <input type="number" id="edit-price" name="price" required
+                    data-pristine-required-message="Please Enter a price" class="form-control" />
                   <span class="invalid-feedback d-block" id="edit-price-error"></span>
                 </div>
               </div>
@@ -51,10 +51,13 @@
                   <span class="invalid-feedback d-block" id="edit-unit-error"></span>
                 </div>
               </div>
-            </div>            
-            <div class="form-group">
-              <button type="submit" class="btn btn-primary float-end"><i class="mdi mdi-content-save me-1"></i>Save</button>
             </div>
+            @if (hasPermission('crops.update'))
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary float-end"><i
+                    class="mdi mdi-content-save me-1"></i>Save</button>
+              </div>
+            @endif
           </form>
         </div>
       </div><!-- /.modal-content -->

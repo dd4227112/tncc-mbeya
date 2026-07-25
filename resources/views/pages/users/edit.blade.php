@@ -72,9 +72,12 @@
           @else
             <input type="hidden" name="role_id" value="4" /> <!--  role_id 4 corresponds to 'Member' -->
           @endif
-          <div class="form-group">
-            <button type="submit" class="btn btn-primary float-end"> <i class="mdi mdi-content-save me-1"></i>Save</button>
-          </div>
+          @if (hasPermission('users.update'))
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary float-end"> <i
+                  class="mdi mdi-content-save me-1"></i>Save</button>
+            </div>
+          @endif
         </form>
       </div>
     </div>
