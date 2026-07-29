@@ -45,7 +45,7 @@
 <script src="{{ asset('assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
 <script src="{{ asset('assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('assets/js/pages/invoices-list.init.js') }}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 
 <!-- init js -->
 <script src="{{ asset('assets/js/pages/datatable-pages.init.js') }}"></script>

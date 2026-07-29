@@ -14,7 +14,7 @@
 
   <!-- App favicon -->
   <link rel="shortcut icon" href="{{ asset('assets/images/tncc-logo.png') }}">
-
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
   <!-- flatpickr css -->
   <link href="{{ asset('assets/libs/flatpickr/flatpickr.min.css') }}" rel="stylesheet" type="text/css">
 
@@ -262,7 +262,7 @@
       cursor: pointer;
       user-select: none;
     }
-    
+
 
     @media (max-width: 575.98px) {
       .qty-input {
@@ -362,8 +362,8 @@
               <!-- item-->
               <a class="dropdown-item show-profile" href="#"><i
                   class="mdi mdi-face-profile font-size-16 align-middle me-1"></i> Profile</a>
-              <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                data-bs-target=".change-password-modal"><i class="mdi mdi-lock font-size-16 align-middle me-1"></i>
+              <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target=".change-password-modal"><i
+                  class="mdi mdi-lock font-size-16 align-middle me-1"></i>
                 Change Password</a>
               <div class="dropdown-divider"></div>
               <form method="POST" action="{{ route('logout') }}" class="d-inline w-100">

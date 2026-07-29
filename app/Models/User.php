@@ -41,7 +41,7 @@ class User extends Authenticatable
                     });
                 } elseif (static::$managementRole === 'staffs') {
                     $builder->whereHas('roles', function ($query) {
-                        $query->whereIn('name', ['Admin', 'Chairperson', 'Accountant']);
+                        $query->whereNot('name', 'Member');
                     });
                 } else {
                     abort(400, 'Invalid role');

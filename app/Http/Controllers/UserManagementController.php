@@ -29,8 +29,9 @@ class UserManagementController extends Controller
     {
         if (hasPermission('users.view')) {
             $this->data['role'] = $this->role;
-            $this->data['roles'] = Role::where('name', '!=', 'Member')->get();
-
+            $allRoles = Role::latest()->get();
+            $this->data['roles'] = $allRoles->where('name', '!=', 'Member');
+            $this->data['all_roles'] = $allRoles;
             return view('pages.users.index', $this->data);
         } else {
             return redirect()->route('dashboard')->with('error', 'You do not have permission to access this page.');
@@ -42,6 +43,10 @@ class UserManagementController extends Controller
         try {
             $users = User::with('roles')->select(['id', 'first_name', 'last_name', 'phone', 'email', 'address'])->latest()->get();
             $data = $users->map(function ($user, $index) {
+                $editUser = hasPermission('users.view') ? ('<li><a class="dropdown-item text-primary edit-user" type="button" data-id="' . $user->id . '"><i class="bx bx-show me-2"></i>Edit</a></li>') : '';
+                $deleteUser = hasPermission('users.delete') ?  ('<li><a class="dropdown-item text-danger delete-user" type="button" data-id="' . $user->id . '"><i class="bx bx-trash me-2"></i>Delete</a></li>') : '';
+                $changeRole = hasPermission('settings.update') ? ('<li><a class="dropdown-item text-secondary update-role" type="button" data-id="' . $user->id . '"><i class="bx bx-cog me-2"></i>Change Role</a></li>') : '';
+
                 return [
                     'id' => $index + 1,
                     'first_name' => $user->first_name,
@@ -50,8 +55,17 @@ class UserManagementController extends Controller
                     'email' => $user->email,
                     'address' => $user->address,
                     'roles' => $user->roles->pluck('name')->implode(', '),
-                    'actions' => (hasPermission('users.update') ? ('<button class="btn btn-sm btn-primary edit-user" href="#" data-id="' . $user->id . '">Edit</button>') : '')
-                        . (hasPermission('users.delete') ? ('<button class="btn btn-sm btn-danger delete-user" href="#" data-id="' . $user->id . '">Delete</button>') : ''),
+                    'actions' =>
+                    '<div class="dropdown"><button class="btn btn-link font-size-16 shadow-none py-0 text-muted dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bx bx-dots-horizontal-rounded"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">'
+                        . $editUser
+                        . $deleteUser
+                        . $changeRole .
+                        '</ul>
+                    </div>',
                 ];
             })->values();
 

@@ -114,7 +114,6 @@
       @include('pages.settings.add')
       @push('scripts')
         @include('pages.settings.scripts.permissions')
-        @include('pages.settings.scripts.manage-role')
       @endpush
 
       <x-page.footer />

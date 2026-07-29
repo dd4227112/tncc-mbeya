@@ -39,6 +39,7 @@
                     @endif
                     @include('pages.users.add')
                     @include('pages.users.edit')
+                    @include('pages.users.user-role')
                   </div>
                 </div>
                 <!-- end row -->
@@ -74,10 +75,10 @@
       </div>
       <!-- End Page-content -->
 
+
       @push('scripts')
         @include('pages.users.scripts.index')
         @include('pages.users.scripts.add')
         @include('pages.users.scripts.edit-delete')
       @endpush
-
       <x-page.footer />
