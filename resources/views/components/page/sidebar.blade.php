@@ -82,7 +82,9 @@
             @if (hasPermission('settings.view'))
               <li><a href="{{ route('settings.roles') }}" data-key="t-alerts">Role Permissions</a></li>
             @endif
-            {{-- <li><a href="{{ route('staffs.index') }}" data-key="t-buttons">Staff</a></li> --}}
+               @if (hasPermission('settings.view'))
+            <li><a href="{{ route('settings.trash') }}" data-key="t-buttons">Trash</a></li>
+            @endif
           </ul>
         </li>
       </ul>

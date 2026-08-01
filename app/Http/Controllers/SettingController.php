@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Crop;
+use App\Models\Invoice;
+use App\Models\Payment;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -121,5 +125,124 @@ class SettingController extends Controller
                 ], 500);
             }
         }
+    }
+    public function trash()
+    {
+        if (hasPermission('settings.view')) {
+            $this->data['roles'] = Role::onlyTrashed()->latest()->get();
+            return view('pages.settings.trash.index', $this->data);
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to view setting.',
+                'data' => [],
+            ], 403);
+        }
+    }
+    public function getTrashData(Request $request)
+    {
+        if (hasPermission('settings.view')) {
+            $request->validate([
+                'category' => 'required|string|in:invoices,payments,crops,units,users',
+            ]);
+
+            $category = $request->input('category');
+            $modelClass = match ($request->input('category')) {
+                'invoices' => Invoice::class,
+                'payments' => Payment::class,
+                'crops' => Crop::class,
+                'units' => Unit::class,
+                'users' => User::class,
+            };
+            if (!isset($modelClass)) {
+                return response()->json([
+                    'message' => 'Invalid category selected.',
+                    'data' => [],
+                ], 400);
+            }
+            $query = $modelClass::onlyTrashed();
+            $this->data['trashedData'] = self::filterTrashData($request, $query);
+            return view('pages.settings.trash.' . $category, $this->data); // Render the specific view based on the category selected
+        } else {
+            return response()->json([
+                'message' => 'You do not have permission to view setting.',
+                'data' => [],
+            ], 403);
+        }
+    }
+    private static function filterTrashData(Request $request,  $query)
+    {
+        if ($request->input('date_range')) {
+            $dateRange = $request->input('date_range');
+            $dateRange = explode(' to ', $dateRange);
+            $fromDate = trim($dateRange[0] ?? '');
+            $toDate = trim($dateRange[1] ?? '');
+            if ($fromDate && $toDate) {
+                $query->whereDate('created_at', '>=', $fromDate)
+                    ->whereDate('created_at', '<=', $toDate);
+            } else {
+                $query->whereDate('created_at', '=', $fromDate);
+            }
+        }
+        return $query->latest()->get();
+    }
+
+    public function restoreTrash(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'model' => 'required|string|in:invoices,payments,crops,units,users',
+        ]);
+
+        $modelClass = match ($request->input('model')) {
+            'invoices' => Invoice::class,
+            'payments' => Payment::class,
+            'crops' => Crop::class,
+            'units' => Unit::class,
+            'users' => User::class,
+        };
+
+        $item = $modelClass::onlyTrashed()->find($request->input('id'));
+
+        if (!$item) {
+            return response()->json([
+                'message' => ucfirst($request->input('model')) . ' not found.',
+            ], 404);
+        }
+
+        $item->restore();
+
+        return response()->json([
+            'message' => ucfirst($request->input('model')) . ' restored successfully.',
+        ]);
+    }
+
+    public function deleteTrash(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'model' => 'required|string|in:invoices,payments,crops,units,users',
+        ]);
+
+        $modelClass = match ($request->input('model')) {
+            'invoices' => Invoice::class,
+            'payments' => Payment::class,
+            'crops' => Crop::class,
+            'units' => Unit::class,
+            'users' => User::class,
+        };
+
+        $item = $modelClass::onlyTrashed()->find($request->input('id'));
+
+        if (!$item) {
+            return response()->json([
+                'message' => ucfirst($request->input('model')) . ' not found.',
+            ], 404);
+        }
+
+        $item->forceDelete();
+
+        return response()->json([
+            'message' => ucfirst($request->input('model')) . ' deleted permanently.',
+        ]);
     }
 }

@@ -24,6 +24,9 @@
                 <div class="col-auto">
                   <button type="submit" class="btn btn-primary"><i class="bx bx-search-alt align-middle"></i>Filter</button>
                 </div>
+                 <div class="col-auto">
+                  <button type="reset" class="btn btn-secondary"><i class="bx bx-rotate-left align-middle"></i>Reset</button>
+                </div>
               </form>
             </div>
           </div>

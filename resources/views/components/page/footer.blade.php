@@ -62,6 +62,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 <script src="{{ asset('assets/js/app.js') }}"></script>
+<script>
+  //  global form reset button
+  $(document).on('click', 'button[type="reset"]', function(e) {
+    e.preventDefault(); // stop native reset from fighting with our manual clear
+
+    var $form = $(this).closest('form');
+
+    $form.find('input[name="date_range"]').val('');
+    $form.find('input[class="form-control flatpickr-input input"]').val('');
+
+    $form.find('input[type="text"], input[type="search"], select')
+      .not('.flatpickr-input, .input')
+      .val('');
+    $form.find('select').val('').trigger('change');
+  });
+</script>
 
 @stack('scripts')
 
