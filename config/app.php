@@ -65,8 +65,7 @@ return [
     | is set to "UTC" by default as it is suitable for most use cases.
     |
     */
-
-    'timezone' => 'UTC',
+    'timezone' => 'Africa/Dar_es_Salaam',
 
     /*
     |--------------------------------------------------------------------------
@@ -83,7 +82,7 @@ return [
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+    'faker_locale' => env('APP_FAKER_LOCALE', 'en_TZ'),
 
     /*
     |--------------------------------------------------------------------------

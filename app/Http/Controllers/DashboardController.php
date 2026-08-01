@@ -47,7 +47,7 @@ class DashboardController extends Controller
             $months[$i] = DateTime::createFromFormat('!m', $i)->format('M');
         }
         // invoice detail for chars
-        $invoicesData = Invoice::where('status', 'paid')
+        $invoicesData = Invoice::whereIn('status', ['paid', 'pending'])
             ->whereYear('created_at', date('Y'))
             ->select(
                 DB::raw('extract(month from created_at) as month'),

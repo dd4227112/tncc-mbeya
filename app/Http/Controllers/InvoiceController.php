@@ -46,6 +46,11 @@ class InvoiceController extends Controller
                     } else {
                         $invoicesQuery->whereDate('created_at', '=', $fromDate);
                     }
+                } else {
+                    $fromDate = date('Y-m-01');
+                    $toDate = date('Y-m-d');
+                    $invoicesQuery->whereDate('created_at', '>=', $fromDate)
+                        ->whereDate('created_at', '<=', $toDate);
                 }
                 $status = $request->input('status');
                 if ($status) {
