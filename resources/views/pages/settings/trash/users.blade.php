@@ -10,6 +10,8 @@
         <th scope="col">Email</th>
         <th scope="col">Address</th>
         <th scope="col">Roles</th>
+        <th scope="col">Deleted At</th>
+
         <th style="width: 80px; min-width: 80px;">Action</th>
       </tr>
     </thead>
@@ -23,11 +25,14 @@
           <td>{{ $user->email }}</td>
           <td>{{ $user->address }}</td>
           <td>{{ implode(', ', $user->roles->pluck('name')->toArray()) }}</td>
+          <td>{{ $user->deleted_at }}</td>
           <td>
-            <button type="button" class="btn btn-sm btn-primary restore-item-btn" data-id="{{ $user->id }}" data-model="users">
+            <button type="button" class="btn btn-sm btn-primary restore-item-btn" data-id="{{ $user->id }}"
+              data-model="users">
               <i class="bx bx-rotate-left"></i> Restore
             </button>
-            <button type="button" class="btn btn-sm btn-danger delete-item-btn" data-id="{{ $user->id }}" data-model="users">
+            <button type="button" class="btn btn-sm btn-danger delete-item-btn" data-id="{{ $user->id }}"
+              data-model="users">
               <i class="bx bx-trash"></i> Delete
             </button>
           </td>

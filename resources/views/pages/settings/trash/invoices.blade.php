@@ -11,6 +11,8 @@
          <th>Amount</th>
          <th>Status</th>
          <th>Created By</th>
+         <th scope="col">Deleted At</th>
+
          <th style="width: 90px;">Action</th>
        </tr>
      </thead>
@@ -24,12 +26,13 @@
            <td>{{ number_format($invoice->total_amount, 2) }}</td>
            <td>{{ $invoice->status }}</td>
            <td>{{ optional($invoice->creator)->name ?? 'N/A' }}</td>
+            <td>{{ $invoice->deleted_at }}</td>
            <td>
-             <button type="button" class="btn btn-sm btn-primary restore-item-btn"
-               data-id="{{ $invoice->id }}" data-model="invoices">
+             <button type="button" class="btn btn-sm btn-primary restore-item-btn" data-id="{{ $invoice->id }}"
+               data-model="invoices">
                <i class="bx bx-rotate-left"></i> Restore</button>
-             <button type="button" class="btn btn-sm btn-danger delete-item-btn"
-               data-id="{{ $invoice->id }}" data-model="invoices">
+             <button type="button" class="btn btn-sm btn-danger delete-item-btn" data-id="{{ $invoice->id }}"
+               data-model="invoices">
                <i class="bx bx-trash"></i> Delete
              </button>
            </td>

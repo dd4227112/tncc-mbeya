@@ -12,6 +12,7 @@
           <th>Paid Through</th>
           <th>Status</th>
           <th>Processed By</th>
+          <th scope="col">Deleted At</th>
           <th style="width: 90px;">Action</th>
         </tr>
       </thead>
@@ -28,13 +29,14 @@
             <td>{{ $payment->payment_method }}</td>
             <td>{{ $payment->status }}</td>
             <td>{{ optional($payment->receiver)->name ?? 'N/A' }}</td>
+            <td>{{ $payment->deleted_at }}</td>
             <td>
-              <button type="button" class="btn btn-sm btn-primary restore-item-btn"
-                data-id="{{ $payment->id }}" data-model="payments">
+              <button type="button" class="btn btn-sm btn-primary restore-item-btn" data-id="{{ $payment->id }}"
+                data-model="payments">
                 <i class="bx bx-rotate-left"></i> Restore
               </button>
-              <button type="button" class="btn btn-sm btn-danger delete-item-btn"
-                data-id="{{ $payment->id }}" data-model="payments">
+              <button type="button" class="btn btn-sm btn-danger delete-item-btn" data-id="{{ $payment->id }}"
+                data-model="payments">
                 <i class="bx bx-trash"></i> Delete
               </button>
             </td>
