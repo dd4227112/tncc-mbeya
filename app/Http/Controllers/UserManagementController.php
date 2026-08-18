@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -97,7 +98,17 @@ class UserManagementController extends Controller
             $validated = $request->validate([
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
-                'phone' => ['required', 'string', 'max:20', 'unique:users,phone'],
+                'phone' => [
+                    'required',
+                    'string',
+                    'size:13',
+                    'unique:users,phone',
+                   function (string $attribute, mixed $value, Closure $fail) {
+                    if (! isValidPhone($value)) {
+                        $fail('The :attribute must be a valid Tanzanian phone number.');
+                    }
+                },
+                ],
                 'email' => ['nullable', 'email', 'max:255', 'unique:users,email'],
                 'address' => ['nullable', 'string', 'max:255'],
                 'role_id' => ['required', 'integer', 'exists:roles,id'],
@@ -187,7 +198,17 @@ class UserManagementController extends Controller
             $validated = $request->validate([
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
-                'phone' => ['required', 'string', 'max:20', Rule::unique('users', 'phone')->ignore($id)],
+                'phone' => [
+                    'required',
+                    'string',
+                    'size:13',
+                    Rule::unique('users', 'phone')->ignore($id),
+                   function (string $attribute, mixed $value, Closure $fail) {
+                    if (! isValidPhone($value)) {
+                        $fail('The :attribute must be a valid Tanzanian phone number.');
+                    }
+                },
+                ],
                 'email' => ['nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($id)],
                 'address' => ['nullable', 'string', 'max:255'],
                 'role_id' => ['required', 'integer', 'exists:roles,id'],

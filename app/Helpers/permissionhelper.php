@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Auth;
 
 if (! function_exists('hasPermission')) {
@@ -35,5 +36,12 @@ if (! function_exists('hasPermission')) {
         }
 
         return in_array($permissionName, $cache[$cacheKey]);
+    }
+}
+
+if (! function_exists('isValidPhone')) {
+    function isValidPhone(string $phone): bool
+    {
+        return preg_match('/^\+255[0-9]{9}$/', $phone) === 1;
     }
 }

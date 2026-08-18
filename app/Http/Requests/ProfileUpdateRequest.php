@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
-use Illuminate\Contracts\Validation\ValidationRule;
+use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,7 +27,16 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
-            'phone' => ['string', 'max:20', 'required'],
+            'phone' => [
+                'string',
+                'size:13',
+                'required',
+                function (string $attribute, mixed $value, Closure $fail) {
+                    if (! isValidPhone($value)) {
+                        $fail('The :attribute must be a valid Tanzanian phone number.');
+                    }
+                },
+            ],
             'address' => ['string', 'max:50', 'nullable'],
         ];
     }

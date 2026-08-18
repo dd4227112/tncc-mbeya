@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Message;
 use App\Models\Payment;
 use App\Models\User;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -125,7 +126,16 @@ class PaymentController extends Controller
             $request->validate([
                 'invoice_id' => ['required', 'exists:invoices,id'],
                 'method' => ['nullable', 'in:cash,mobile'],
-                'phone' => ['required', 'string', 'max:20'],
+                'phone' => [
+                    'required',
+                    'string',
+                    'size:13',
+                    function (string $attribute, mixed $value, Closure $fail) {
+                        if (! isValidPhone($value)) {
+                            $fail('The :attribute must be a valid Tanzanian phone number.');
+                        }
+                    },
+                ],
                 'network' => ['nullable', 'string', 'max:50'],
             ]);
 

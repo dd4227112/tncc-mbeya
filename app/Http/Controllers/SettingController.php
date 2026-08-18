@@ -201,6 +201,13 @@ class SettingController extends Controller
             'users' => User::class,
         };
 
+        if (!isset($modelClass)) {
+                return response()->json([
+                    'message' => 'Invalid category selected.',
+                    'data' => [],
+                ], 400);
+            }
+
         $item = $modelClass::onlyTrashed()->find($request->input('id'));
 
         if (!$item) {
@@ -230,6 +237,13 @@ class SettingController extends Controller
             'units' => Unit::class,
             'users' => User::class,
         };
+
+        if (!isset($modelClass)) {
+                return response()->json([
+                    'message' => 'Invalid category selected.',
+                    'data' => [],
+                ], 400);
+            }
 
         $item = $modelClass::onlyTrashed()->find($request->input('id'));
 

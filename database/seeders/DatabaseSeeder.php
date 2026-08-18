@@ -2,12 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
+use App\Models\Role;
 use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\PermissionSeeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,6 +33,7 @@ class DatabaseSeeder extends Seeder
         $user->roles()->attach(1); // Assign Admin role to the user
         $this->unitSeeder();
         PermissionSeeder::run();
+        $this->seedAdminPermission();
     }
     public function unitSeeder(): void
     {
@@ -40,6 +44,14 @@ class DatabaseSeeder extends Seeder
         ];
         foreach ($units as $unit) {
             Unit::create($unit);
+        }
+    }
+    public function seedAdminPermission()
+    {
+        $role = Role::where('name', 'ilike', 'admin')->first();
+        if (!empty($role)) {
+            $permissions = Permission::pluck('id');
+            $role->permissions()->sync($permissions);
         }
     }
 }
