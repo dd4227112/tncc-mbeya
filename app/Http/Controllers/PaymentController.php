@@ -141,9 +141,9 @@ class PaymentController extends Controller
 
             try {
                 $invoice = Invoice::findOrFail($request->input('invoice_id'));
-
+                $transaction_reference = 'CASH-' . time() . '-' . rand(1000, 9999);
                 if ($request->input('method') === 'cash') {
-                    DB::transaction(function () use ($invoice) {
+                    DB::transaction(function () use ($invoice, $transaction_reference) {
                         $invoice->status = 'paid';
                         $invoice->save();
 
@@ -153,13 +153,14 @@ class PaymentController extends Controller
                             'amount' => $invoice->total_amount,
                             'status' => 'completed',
                             'payment_method' => 'cash',
-                            'transaction_reference' => 'CASH_' . date('YmdHis'),
+                            'transaction_reference' => $transaction_reference,
                             'date' => now()->toDateString(),
                         ]);
                     });
+                    // 'body' => "Habari, {$invoice->customer->name}! Malipo yako ya TSH." . number_format($invoice->total_amount, 2) . " yenye kumbumbuku namba: {$transaction_reference} kwa ajili ya ankra(invoice) namba: {$invoice->reference_number} yamepokelewa kikamilifu. Asante na Karibu tena!."
                     $message = Message::create([
                         'phone' => $request->input('phone'),
-                        'body' => "Payment for invoice {$invoice->reference_number} has been received. Thank you for your payment.",
+                        'body' => "Habari, {$invoice->customer->name}! Malipo yako ya TSH." . number_format($invoice->total_amount, 2) . " yenye kumbumbuku namba: {$transaction_reference} yamepokelewa kikamilifu. Asante na Karibu tena!.",
                         'status' => 'pending',
                         'reference' => $invoice->reference_number,
                     ]);

@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Message;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Support\Facades\Log;
 
 class NotifiyUser implements ShouldQueue
 {
@@ -21,15 +22,25 @@ class NotifiyUser implements ShouldQueue
      */
     public function handle(): void
     {
-        $api_key = env('SMS_API_KEY');
-        $secret_key = env('SMS_SECRET_KEY');
+        $sender_name = config('message.sender_name');
+        $api_key = config('message.api_key');
+        $sms_url = config('message.sms_url');
         $message = Message::find($this->messageId);
+        if(!$message) {
+            Log::error("Message with ID {$this->messageId} not found.");
+            return;
+        }
+        if (!$sender_name || !$api_key || !$sms_url) {
+            Log::error("Missing SMS configuration. Please check your .env file.");
+            return;
+        }
         if ($message) {
             $postData = array(
-                'from' => 'HUKUEVENTS',
+                'from' => $sender_name,
                 'to' => $message->phone,
                 'text' => utf8_encode($message->body),
-                'reference' => 'HUKUEVENTS'
+                'flash' => 0,
+                'reference' => $message->reference
             );
 
             $curl = curl_init();
@@ -37,7 +48,7 @@ class NotifiyUser implements ShouldQueue
             curl_setopt_array(
                 $curl,
                 array(
-                    CURLOPT_URL => 'https://messaging-service.co.tz/api/sms/v1/text/single',
+                    CURLOPT_URL => $sms_url,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_ENCODING => '',
                     CURLOPT_MAXREDIRS => 10,
@@ -47,7 +58,7 @@ class NotifiyUser implements ShouldQueue
                     CURLOPT_CUSTOMREQUEST => 'POST',
                     CURLOPT_POSTFIELDS => json_encode($postData),
                     CURLOPT_HTTPHEADER => array(
-                        'Authorization:Basic ' . base64_encode("$api_key:$secret_key"),
+                        'Authorization:Bearer ' . $api_key,
                         'Content-Type: application/json',
                         'Accept: application/json'
                     ),
@@ -56,7 +67,6 @@ class NotifiyUser implements ShouldQueue
 
             $responses = curl_exec($curl);
 
-            curl_close($curl);
             if ($responses) {
 
                 $response = json_decode($responses, true);
@@ -75,6 +85,8 @@ class NotifiyUser implements ShouldQueue
                     }
                 }
                 $message->update(['status' => $status, 'response' => $responses]);
+            }else{
+                $message->update(['status' => 'failed', 'response' => curl_error($curl)]);
             }
         }
     }

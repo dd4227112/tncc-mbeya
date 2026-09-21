@@ -46,7 +46,8 @@
 
     if (!items || items.length === 0) {
       $results.append(
-        '<div class="search-result-empty">No results found.<br/><a href="#"data-bs-toggle="modal" data-bs-target=".add-user-modal" class="btn btn-primary btn-sm">Add New</a></div>');
+        '<div class="search-result-empty">No results found.<br/><a href="#"data-bs-toggle="modal" data-bs-target=".add-user-modal" class="btn btn-primary btn-sm">Add New</a></div>'
+      );
       $results.addClass('show');
       return;
     }
@@ -55,7 +56,8 @@
       var member = items[i];
       var $item = $('<div class="search-result-item"></div>');
       var itemHtml = '<div class="item-name">' + member.name + '</div>' +
-        '<div class="item-sub">' + (member.email || member.phone || '') + '</div>';
+        '<div class="item-sub">' + (member.phone) + '</div>' +
+        '<div class="item-sub">' + (member.email || '') + '</div>';
 
       $item.html(itemHtml);
       (function(currentMember) {
@@ -63,9 +65,9 @@
           selectMember({
             id: currentMember.id,
             name: currentMember.name,
-            farm: currentMember.address || '—',
-            location: currentMember.address || '—',
-            phone: currentMember.phone || '—',
+            farm: currentMember.address,
+            location: currentMember.address,
+            phone: currentMember.phone,
             status: currentMember.roles || 'Member'
           });
           $results.removeClass('show');
@@ -83,7 +85,9 @@
     $results.empty();
 
     if (!items || items.length === 0) {
-      $results.append('<div class="search-result-empty">No results found. <br/><a href="#"data-bs-toggle="modal" data-bs-target=".add-crop-modal" class="btn btn-primary btn-sm">Add New</a></div>');
+      $results.append(
+        '<div class="search-result-empty">No results found. <br/><a href="#"data-bs-toggle="modal" data-bs-target=".add-crop-modal" class="btn btn-primary btn-sm">Add New</a></div>'
+      );
       $results.addClass('show');
       return;
     }
@@ -99,7 +103,7 @@
         $item.on('click', function() {
           addCrop({
             id: currentCrop.id,
-            name: currentCrop.name+' ('+currentCrop.description+')',
+            name: currentCrop.name + ' (' + currentCrop.description + ')',
             price: currentCrop.price,
             unit: currentCrop.unit
           });
@@ -119,12 +123,52 @@
     $('#memberDetails').removeClass('d-none');
     $('#memberCard').addClass('has-member');
 
-    $('#memberAvatar').text(formatInitials(member.name));
-    $('#memberName').text(member.name);
-    $('#memberFarm').text(member.farm);
-    $('#memberLocation').text(member.location);
-    $('#memberPhone').text(member.phone);
-    $('#memberId').text(member.id);
+    // $('#memberAvatar').text(formatInitials(member.name));
+    // $('#memberName').text(member.name);
+    // $('#memberFarm').text(member.farm);
+    // $('#memberLocation').text(member.location);
+    // $('#memberPhone').text(member.phone);
+    $('#memberId').text(member.id || '');
+
+    let html =
+      '<div class="flex-grow-1">' +
+
+      (member.name ?
+        '<div class="d-flex align-items-center">' +
+        '<h5 class="font-size-15 mb-1 me-2" id="memberName">' +
+        member.name +
+        '</h5>' +
+        '</div>' :
+        '') +
+
+      (member.farm ?
+        '<p class="mb-1 text-muted font-size-13" id="memberFarm">' +
+        member.farm +
+        '</p>' :
+        '') +
+
+      (member.location ?
+        '<p class="mb-1 font-size-13">' +
+        '<i class="mdi mdi-map-marker me-1"></i>' +
+        '<span id="memberLocation">' +
+        member.location +
+        '</span>' +
+        '</p>' :
+        '') +
+
+      (member.phone ?
+        '<p class="mb-1 font-size-13">' +
+        '<i class="mdi mdi-phone me-1"></i>' +
+        '<span id="memberPhone">' +
+        member.phone +
+        '</span>' +
+        '</p>' :
+        '') +
+
+      '</div>';
+
+    $('.selectedMemberDetails').html(html);
+
   }
 
   function clearMember() {

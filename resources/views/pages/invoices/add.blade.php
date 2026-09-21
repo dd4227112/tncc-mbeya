@@ -31,18 +31,8 @@
                         </div>
                         <div id="memberDetails" class="d-none">
                           <div class="d-flex align-items-start">
-                            <div class="flex-shrink-0 me-3">
-                              <span class="avatar-title avatar-sm rounded-circle" id="memberAvatar">--</span>
-                            </div>
-                            <div class="flex-grow-1">
-                              <div class="d-flex align-items-center">
-                                <h5 class="font-size-15 mb-1 me-2" id="memberName">—</h5>
-                              </div>
-                              <p class="mb-1 text-muted font-size-13" id="memberFarm">—</p>
-                              <p class="mb-1 font-size-13"><i class="mdi mdi-map-marker me-1"></i><span
-                                  id="memberLocation">—</span></p>
-                              <p class="mb-1 font-size-13"><i class="mdi mdi-phone me-1"></i><span
-                                  id="memberPhone">—</span></p>
+                            <div class="flex-grow-1 selectedMemberDetails">
+                              
                             </div>
                             <button type="button" class="btn btn-sm btn-link text-danger p-0" id="clearMemberBtn"
                               title="Remove member">
