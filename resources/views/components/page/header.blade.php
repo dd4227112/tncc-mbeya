@@ -4,7 +4,7 @@
 <head>
 
   <meta charset="utf-8" />
-  <title>{{ config('app.name', 'Tncc-Mbeya') }}</title>
+  <title>{{ config('app.name', 'Tncc-Kasumulu') }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta content="Tanzania National Chamber of Commerce (TNCC)" name="description" />
   <meta
@@ -300,7 +300,7 @@
               </span>
               <span class="logo-lg">
                 <img src="{{ asset('assets/images/tncc-logo.png') }}" alt="" height="24"> <span
-                  class="logo-txt">Tncc- Mbeya</span>
+                  class="logo-txt">Tncc- Kasumulu</span>
               </span>
             </a>
 
@@ -310,7 +310,7 @@
               </span>
               <span class="logo-lg">
                 <img src="{{ asset('assets/images/tncc-logo.png') }}" alt="" height="24"> <span
-                  class="logo-txt">Tncc- Mbeya</span>
+                  class="logo-txt">Tncc- Kasumulu</span>
               </span>
             </a>
           </div>

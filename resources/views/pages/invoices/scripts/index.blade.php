@@ -203,7 +203,7 @@
       'tr { page-break-inside: avoid; }\n' +
       '</style>\n';
 
-    var html = '<!doctype html><html><head><meta charset="utf-8"><title>Invoice -- TNCC-Mbeya</title>' + links +
+    var html = '<!doctype html><html><head><meta charset="utf-8"><title>Invoice -- TNCC-Kasumulu</title>' + links +
       printCss + '</head><body>' +
       '<div class="invoice-print-wrapper">' + modalContent.innerHTML + '</div>' +
       '</body></html>';

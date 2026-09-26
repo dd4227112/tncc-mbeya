@@ -5,7 +5,7 @@
      <p class="mb-0">©
        <script>
          document.write(new Date().getFullYear())
-       </script> <b>Tncc - Mbeya</b>
+       </script> <b>Tncc - Kasumulu</b>
      </p>
    </div>
    </div>

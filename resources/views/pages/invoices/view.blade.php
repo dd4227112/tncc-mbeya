@@ -11,12 +11,12 @@
                 <div class="card-body p-3">
                   <div class="invoice-title text-center mb-3">
                     <div class="d-flex flex-column align-items-center justify-content-center">
-                      <img src="{{ asset('assets/images/tncc-logo.png') }}" alt="TNCC Mbeya" height="42"
+                      <img src="{{ asset('assets/images/tncc-logo.png') }}" alt="TNCC Kasumulu" height="42"
                         class="mb-2">
-                      <span class="logo-txt fs-5 fw-semibold">TNCC- Mbeya</span>
+                      <span class="logo-txt fs-5 fw-semibold">TNCC- Kasumulu</span>
                     </div>
                     <div class="mt-2 text-muted small">
-                      <p class="mb-1" id="">Kasumulu Border-Mbeya</p>
+                      <p class="mb-1" id="">Kasumulu Border-Kasumulu</p>
                       <p class="mb-1" id=""><i class="mdi mdi-email align-middle me-1"></i>
                         josephatibenjamini13@gmail.com</p>
                       <p class="mb-0" id=""><i class="mdi mdi-phone align-middle me-1"></i>

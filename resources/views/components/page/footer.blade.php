@@ -4,7 +4,7 @@
       <div class="col-sm-12">©
         <script>
           document.write(new Date().getFullYear())
-        </script> <b>Tncc - Mbeya</b>
+        </script> <b>Tncc - Kasumulu</b>
       </div>
     </div>
   </div>

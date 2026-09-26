@@ -5,7 +5,7 @@
 <head>
 
   <meta charset="utf-8" />
-  <title>Login | TNCC - Mbeya</title>
+  <title>Login | TNCC - Kasumulu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
   <meta content="Themesbrand" name="author" />
@@ -37,7 +37,7 @@
                     <div class="mb-3 d-flex justify-content-center">
                       <img src="{{ asset('assets/images/tncc-logo.png') }}" alt="TNCC logo" height="104">
                     </div>
-                    <h5 class="mb-0">TNCC - Mbeya</h5>
+                    <h5 class="mb-0">TNCC - Kasumulu</h5>
                     <p class="text-muted mt-2">Collection Management System</p>
                   </div>
                   
