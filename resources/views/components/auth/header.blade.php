@@ -7,8 +7,8 @@
   <meta charset="utf-8" />
   <title>Login | TNCC - Kasumulu</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-  <meta content="Themesbrand" name="author" />
+  <meta content="Tanzania National Chamber of Commerce (TNCC)" name="description" />
+  <meta content="TnccKasumulu" name="author" />
   <!-- App favicon -->
   <link rel="shortcut icon" href="{{ asset('assets/images/tncc-logo.png') }}">
 
@@ -40,4 +40,3 @@
                     <h5 class="mb-0">TNCC - Kasumulu</h5>
                     <p class="text-muted mt-2">Collection Management System</p>
                   </div>
-                  
