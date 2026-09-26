@@ -130,41 +130,77 @@ class InvoiceController extends Controller
     {
         if (hasPermission('invoices.view') || hasPermission('invoices.print')) {
             $invoice = Invoice::with(['customer', 'payment', 'creator', 'items.crop.unit'])->findOrFail($id);
-
-            $items = $invoice->items->map(function ($item, $index) {
-                return [
-                    'index' => $index + 1,
-                    'name' => optional($item->crop)->name ?? 'Unknown crop',
-                    'unit' => optional($item->crop->unit)->name ?? 'N/A',
-                    'quantity' => $item->quantity,
-                    'unit_price' => number_format($item->unit_price, 2),
-                    'total_price' => number_format($item->total_price, 2),
-                ];
-            })->values();
-
-            return response()->json(['data' => [
-                'id' => $invoice->id,
-                'reference_number' => $invoice->reference_number,
-                'date' => optional($invoice->date)->format('d M, Y'),
-                'member_name' => optional($invoice->customer)->name ?? 'N/A',
-                'member_address' => optional($invoice->customer)->address ?? '—',
-                'member_email' => optional($invoice->customer)->email ?? '—',
-                'member_phone' => optional($invoice->customer)->phone ?? '—',
-                'created_by' => optional($invoice->creator)->name ?? 'N/A',
-                'sub_total' => number_format($invoice->items->sum('total_price'), 2),
-                'total_amount' => number_format($invoice->total_amount, 2),
-                'status' => strtoupper($invoice->status ?? 'pending'),
-                'transaction_reference' => optional($invoice->payment)->transaction_reference ?? null,
-                'payment_status' => strtoupper(optional($invoice->payment)->status ?? 'PENDING'),
-                'payment_method' => strtoupper(optional($invoice->payment)->payment_method ?? null),
-                'items' => $items,
-            ]]);
+            return response()->json(['data' => $this->invoiceDetailsData($invoice)]);
         } else {
             return response()->json([
                 'message' => 'You do not have permission to view invoices.',
                 'data' => [],
             ], 403);
         }
+    }
+
+    public function receipt(int $id)
+    {
+        abort_unless(
+            hasPermission('invoices.view') ||
+            hasPermission('invoices.print') ||
+            hasPermission('payments.print'),
+            403
+        );
+
+        $invoice = Invoice::with(['customer', 'payment', 'creator', 'items.crop.unit'])->findOrFail($id);
+
+        return view('invoices.receipt', [
+            'invoice' => $this->invoiceDetailsData($invoice),
+            'organizationAddress' => config('app.organization_address'),
+            'organizationEmail' => config('app.organization_email'),
+            'organizationPhone' => config('app.organization_phone'),
+        ]);
+    }
+
+    private function invoiceDetailsData(Invoice $invoice): array
+    {
+        $items = $invoice->items->map(function ($item, $index) {
+            return [
+                'index' => $index + 1,
+                'name' => optional($item->crop)->name ?? 'Unknown crop',
+                'unit' => optional(optional($item->crop)->unit)->name ?? 'N/A',
+                'quantity' => $item->quantity,
+                'unit_price' => number_format($item->unit_price, 2),
+                'total_price' => number_format($item->total_price, 2),
+            ];
+        })->values();
+
+        $payment = $invoice->payment;
+        $customerAddress = optional($invoice->customer)->address;
+
+        return [
+            'id' => $invoice->id,
+            'reference_number' => $invoice->reference_number,
+            'date' => optional($invoice->date)->format('d M, Y'),
+            'time' => optional($invoice->created_at)->format('H:i'),
+            'member_name' => optional($invoice->customer)->name ?? 'N/A',
+            'member_address' => $customerAddress ?: '—',
+            'member_email' => optional($invoice->customer)->email ?? '—',
+            'member_phone' => optional($invoice->customer)->phone ?? '—',
+            'created_by' => optional($invoice->creator)->name ?? 'N/A',
+            'sub_total' => number_format($invoice->items->sum('total_price'), 2),
+            'total_amount' => number_format($invoice->total_amount, 2),
+            'status' => strtoupper($invoice->status ?? 'pending'),
+            'transaction_reference' => optional($payment)->transaction_reference,
+            'payment_status' => strtoupper(optional($payment)->status ?? 'PENDING'),
+            'payment_method' => strtoupper(optional($payment)->payment_method ?? ''),
+            'paid_amount' => $payment ? number_format($payment->amount, 2) : null,
+            'items' => $items,
+            'item_count' => $items->count(),
+            'total_quantity' => $items->sum('quantity'),
+            // These optional fields are not stored by this application's invoice model.
+            'vat' => null,
+            'discount' => null,
+            'change' => null,
+            'terminal' => null,
+            'barcode' => null,
+        ];
     }
 
     /**

@@ -107,7 +107,7 @@
           confirmButtonColor: '#5156be'
         }).then((result) => {
           if (result.isConfirmed && response?.data?.id) {
-            fetchInvoiceDetails(response.data.id);
+            window.location.href = "{{ url('invoices') }}/" + response.data.id + "/receipt";
           }
         });
 

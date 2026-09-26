@@ -7,5 +7,6 @@ Route::middleware('auth')->group(function () {
     Route::get('invoices/getInvoices', [InvoiceController::class, 'getInvoices'])->name('invoices.getInvoices');
     Route::post('invoices/addPayment', [InvoiceController::class, 'addPayment'])->name('invoices.addPayment');
     Route::get('invoices/{invoice}/details', [InvoiceController::class, 'details'])->name('invoices.details');
+    Route::get('invoices/{invoice}/receipt', [InvoiceController::class, 'receipt'])->name('invoices.receipt');
     Route::resource('invoices', InvoiceController::class);
 });

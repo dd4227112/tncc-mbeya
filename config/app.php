@@ -14,6 +14,9 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'organization_address' => env('ORGANIZATION_ADDRESS'),
+    'organization_email' => env('ORGANIZATION_EMAIL'),
+    'organization_phone' => env('ORGANIZATION_PHONE'),
 
     /*
     |--------------------------------------------------------------------------
