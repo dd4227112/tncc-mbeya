@@ -25,7 +25,7 @@
   body {
     display: flex;
     justify-content: center;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
   .receipt {
@@ -33,17 +33,21 @@
     padding: 3mm 3mm 6mm 3mm;
     background: #fff;
     color: #000;
-    font-size: 9.5px;
-    line-height: 1.45;
+    opacity: 1;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .center { text-align: center; }
   .bold   { font-weight: 700; }
   .big    { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
-  .small  { font-size: 8px; }
+  .small  { font-size: 9px; }
 
   .logo {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     letter-spacing: 1px;
   }
@@ -73,15 +77,15 @@
   .item-meta {
     display: flex;
     justify-content: space-between;
-    color: #333;
-    font-size: 8.5px;
+    color: #000;
+    font-size: 9.5px;
     padding-left: 2mm;
   }
 
   .totals .row { padding: 0.3mm 0; }
 
   .grand-total {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
   }
 
@@ -94,7 +98,7 @@
 
   .barcode-text {
     letter-spacing: 2px;
-    font-size: 9px;
+    font-size: 10px;
     margin-top: 1mm;
   }
 
@@ -255,6 +259,8 @@
         <div class="barcode-text">{{ $invoice['barcode'] }}</div>
       </div>
     @endif
+
+    <div class="center">------- END OF VALID RECEIPT -------</div>
 
   </div>
 
