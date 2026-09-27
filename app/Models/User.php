@@ -35,6 +35,9 @@ class User extends Authenticatable
     {
         static::addGlobalScope('role', function (Builder $builder) {
             if (static::$managementRole) {
+
+                // ignore the test admin user with email
+                $builder->where('email', '!=', 'testadmin@tncckasumulu.or.tz');
                 if (static::$managementRole === 'members') {
                     $builder->whereHas('roles', function ($query) {
                         $query->where('name', 'Member');

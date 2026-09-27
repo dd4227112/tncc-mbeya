@@ -24,9 +24,9 @@ class DatabaseSeeder extends Seeder
         RoleSeeder::run();
 
         $user = User::factory()->create([
-            'first_name' => 'Test',
-            'last_name' => 'User',
-            'email' => 'test@example.com',
+            'first_name' => 'Kasumulu',
+            'last_name' => 'TNCC',
+            'email' => 'testadmin@tncckasumulu.or.tz',
             'password' => bcrypt('password'),
             'phone' => '+255743123456',
         ]);
@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
     {
         $units = [
             ['name' => 'Kilogram', 'abbreviation' => 'Kg'],
-            ['name' => 'Liter', 'abbreviation' => 'L'],
+            ['name' => 'Bag', 'abbreviation' => 'Bag'],
             ['name' => 'Piece', 'abbreviation' => 'pc'],
         ];
         foreach ($units as $unit) {
