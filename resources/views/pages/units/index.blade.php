@@ -51,7 +51,7 @@
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
                         <th scope="col">Abbreviation</th>
-                        <th style="width: 80px; min-width: 80px;">Action</th>
+                        <th style="width: 180px; min-width: 180px;">Action</th>
                       </tr>
                     </thead>
                     <tbody id="units-table-body">

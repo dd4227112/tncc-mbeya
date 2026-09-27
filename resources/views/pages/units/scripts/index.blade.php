@@ -1,7 +1,8 @@
 <script>
   function loadUnitsTable() {
     var table = $('#units-table').DataTable({
-      responsive: true,
+      responsive: false,
+      scrollX: true,
       destroy: true,
       processing: true,
       columns: [{

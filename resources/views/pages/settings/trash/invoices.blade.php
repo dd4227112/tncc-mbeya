@@ -13,7 +13,7 @@
          <th>Created By</th>
          <th scope="col">Deleted At</th>
 
-         <th style="width: 90px;">Action</th>
+         <th style="width: 200px; min-width: 200px;">Action</th>
        </tr>
      </thead>
      <tbody>
@@ -28,13 +28,12 @@
            <td>{{ optional($invoice->creator)->name ?? 'N/A' }}</td>
             <td>{{ $invoice->deleted_at }}</td>
            <td>
-             <button type="button" class="btn btn-sm btn-primary restore-item-btn" data-id="{{ $invoice->id }}"
-               data-model="invoices">
-               <i class="bx bx-rotate-left"></i> Restore</button>
-             <button type="button" class="btn btn-sm btn-danger delete-item-btn" data-id="{{ $invoice->id }}"
-               data-model="invoices">
-               <i class="bx bx-trash"></i> Delete
-             </button>
+             <div class="d-flex flex-wrap gap-1">
+               <button type="button" class="btn btn-sm btn-soft-success restore-item-btn" data-id="{{ $invoice->id }}"
+                 data-model="invoices"><i class="bx bx-rotate-left me-1"></i>Restore</button>
+               <button type="button" class="btn btn-sm btn-soft-danger delete-item-btn" data-id="{{ $invoice->id }}"
+                 data-model="invoices"><i class="bx bx-trash me-1"></i>Delete</button>
+             </div>
            </td>
          </tr>
        @empty

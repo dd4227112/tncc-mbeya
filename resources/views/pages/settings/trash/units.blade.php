@@ -7,7 +7,7 @@
          <th scope="col">Name</th>
          <th scope="col">Abbreviation</th>
          <th scope="col">Deleted At</th>
-         <th style="width: 80px; min-width: 80px;">Action</th>
+         <th style="width: 200px; min-width: 200px;">Action</th>
        </tr>
      </thead>
      <tbody id="units-table-body">
@@ -18,11 +18,12 @@
            <td>{{ $unit->abbreviation }}</td>
            <td>{{ $unit->deleted_at }}</td>
            <td>
-             <button type="button" class="btn btn-sm btn-primary restore-item-btn" data-id="{{ $unit->id }}" data-model="units">
-               <i class="bx bx-rotate-left"></i> Restore</button>
-             <button type="button" class="btn btn-sm btn-danger delete-item-btn" data-id="{{ $unit->id }}" data-model="units">
-               <i class="bx bx-trash"></i> Delete
-             </button>
+             <div class="d-flex flex-wrap gap-1">
+               <button type="button" class="btn btn-sm btn-soft-success restore-item-btn" data-id="{{ $unit->id }}" data-model="units">
+                 <i class="bx bx-rotate-left me-1"></i>Restore</button>
+               <button type="button" class="btn btn-sm btn-soft-danger delete-item-btn" data-id="{{ $unit->id }}" data-model="units">
+                 <i class="bx bx-trash me-1"></i>Delete</button>
+             </div>
            </td>
          </tr>
        @empty

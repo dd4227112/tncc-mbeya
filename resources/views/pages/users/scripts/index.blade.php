@@ -1,7 +1,8 @@
 <script>
   function loadUsersTable() {
     var table = $('#users-table').DataTable({
-      responsive: true,
+      responsive: false,
+      scrollX: true,
       destroy: true,
       processing: true,
       columns: [{

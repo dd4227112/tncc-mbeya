@@ -62,9 +62,9 @@ class PaymentController extends Controller
                 $data = $payments->map(function ($payment, $index) {
                     $status = ucfirst($payment->status ?? 'pending');
                     $statusClass = 'badge badge-soft-secondary';
-                    $showPrint = ($payment->invoice && hasPermission('payments.print')) ? ('<button class="btn btn-sm btn-primary print-invoice" href="#" data-id="' . $payment->invoice->id . '">Print</button>') : '';
+                    $showPrint = ($payment->invoice && hasPermission('payments.print')) ? ('<button class="btn btn-sm btn-soft-primary print-invoice" type="button" data-id="' . $payment->invoice->id . '"><i class="bx bx-printer me-1"></i>Print</button>') : '';
                     $showUssd = ''; // '<button class="btn btn-sm btn-success push-ussd" href="#" data-id="' . $payment->invoice->id . '">Push</button>';
-                    $showDelete = hasPermission('payments.delete') ? '<button class="btn btn-sm btn-danger delete-payment" href="#" data-id="' . $payment->id . '">Delete</button>' : '';
+                    $showDelete = hasPermission('payments.delete') ? '<button class="btn btn-sm btn-soft-danger delete-payment" type="button" data-id="' . $payment->id . '"><i class="bx bx-trash me-1"></i>Delete</button>' : '';
 
                     if (strtolower($payment->status) === 'completed') {
                         $showDelete = '';
@@ -90,7 +90,7 @@ class PaymentController extends Controller
                         'status' => $status,
                         'status_badge' => '<div class="' . $statusClass . ' font-size-12">' . $status . '</div>',
                         'processed' => optional($payment->receiver)->name ?? 'N/A',
-                        'actions' => $showPrint . $showUssd . $showDelete
+                        'actions' => '<div class="d-flex flex-wrap gap-1">' . $showPrint . $showUssd . $showDelete . '</div>'
                     ];
                 })->values();
 

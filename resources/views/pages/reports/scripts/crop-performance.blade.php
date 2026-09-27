@@ -4,7 +4,8 @@
   function loadCropPerformanceTable(filterData = null) {
     $.fn.dataTable.Buttons.defaults.dom.button.className = 'btn btn-primary';
     CropPerformanceTable = $('#datatable-buttons').DataTable({
-      responsive: true,
+      responsive: false,
+      scrollX: true,
       destroy: true,
       processing: true,
       serverSide: false,

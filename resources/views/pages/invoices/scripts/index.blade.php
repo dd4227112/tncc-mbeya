@@ -3,7 +3,8 @@
 
   function loadInvoicesTable(filterData = null) {
     invoicesTable = $('#invoices-table').DataTable({
-      responsive: true,
+      responsive: false,
+      scrollX: true,
       destroy: true,
       processing: true,
       serverSide: false,

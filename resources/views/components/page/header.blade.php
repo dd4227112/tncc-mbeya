@@ -342,8 +342,9 @@
             </div>
           </div> --}}
 
-          <div class="dropdown d-none d-sm-inline-block">
-            <button type="button" class="btn header-item" id="mode-setting-btn">
+          <div class="dropdown d-inline-block flex-shrink-0">
+            <button type="button" class="btn header-item" id="mode-setting-btn"
+              aria-label="Toggle light and dark theme" title="Toggle theme">
               <i data-feather="moon" class="icon-lg layout-mode-dark"></i>
               <i data-feather="sun" class="icon-lg layout-mode-light"></i>
             </button>

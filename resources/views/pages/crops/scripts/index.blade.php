@@ -1,7 +1,8 @@
 <script>
   function loadCropsTable() {
     var table = $('#crops-table').DataTable({
-      responsive: true,
+      responsive: false,
+      scrollX: true,
       destroy: true,
       processing: true,
       columns: [{

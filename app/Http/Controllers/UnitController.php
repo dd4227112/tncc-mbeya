@@ -30,27 +30,14 @@ class UnitController extends Controller
             $units = Unit::select(['id', 'name', 'abbreviation'])->get();
 
             $data = $units->map(function ($unit, $index) {
-                // return [
-                //     'id' => $index + 1,
-                //     'name' => $unit->name,
-                //     'abbreviation' => $unit->abbreviation,
-                //     'actions' => '<div class="dropdown">
-                //         <button class="btn btn-link font-size-16 shadow-none py-0 text-muted dropdown-toggle" type="button"
-                //           data-bs-toggle="dropdown" aria-expanded="false">
-                //           <i class="bx bx-dots-horizontal-rounded"></i>
-                //         </button>
-                //         <ul class="dropdown-menu dropdown-menu-end">
-                //           <li><a class="dropdown-item edit-unit" href="#" data-id="' . $unit->id . '">Edit</a></li>
-                //           <li><a class="dropdown-item delete-unit" href="#" data-id="' . $unit->id . '">Delete</a></li>
-                //         </ul>
-                //       </div>'
-                // ];
                 return [
                     'id' => $index + 1,
                     'name' => $unit->name,
                     'abbreviation' => $unit->abbreviation,
-                    'actions' => (hasPermission('units.update') ? ('<button class="btn btn-sm btn-primary edit-unit" href="#" data-id="' . $unit->id . '">Edit</button>') : '')
-                        . (hasPermission('units.delete') ? ('<button class="btn btn-sm btn-danger delete-unit" href="#" data-id="' . $unit->id . '">Delete</button>') : ''),
+                    'actions' => '<div class="d-flex flex-wrap gap-1">'
+                        . (hasPermission('units.update') ? ('<button class="btn btn-sm btn-soft-primary edit-unit" type="button" data-id="' . $unit->id . '"><i class="bx bx-edit me-1"></i>Edit</button>') : '')
+                        . (hasPermission('units.delete') ? ('<button class="btn btn-sm btn-soft-danger delete-unit" type="button" data-id="' . $unit->id . '"><i class="bx bx-trash me-1"></i>Delete</button>') : '')
+                        . '</div>',
                 ];
             })->values();
 

@@ -36,8 +36,10 @@ class CropsController extends Controller
                     'description' => $crop->description,
                     'unit' => $crop->unit->name ?? 'N/A',
                     'price' => $crop->price,
-                    'actions' => (hasPermission('crops.update') ? ('<button class="btn btn-sm btn-primary edit-crop" href="#" data-id="' . $crop->id . '">Edit</button> ') : '')
-                        . (hasPermission('crops.delete') ? ('<button class="btn btn-sm btn-danger delete-crop" href="#" data-id="' . $crop->id . '">Delete</button>') : ''),
+                    'actions' => '<div class="d-flex flex-wrap gap-1">'
+                        . (hasPermission('crops.update') ? ('<button class="btn btn-sm btn-soft-primary edit-crop" type="button" data-id="' . $crop->id . '"><i class="bx bx-edit me-1"></i>Edit</button>') : '')
+                        . (hasPermission('crops.delete') ? ('<button class="btn btn-sm btn-soft-danger delete-crop" type="button" data-id="' . $crop->id . '"><i class="bx bx-trash me-1"></i>Delete</button>') : '')
+                        . '</div>',
                 ];
             })->values();
 

@@ -87,6 +87,8 @@
 
           // Now initialize on the freshly injected table
           $('.global-datatable').DataTable({
+            responsive: false,
+            scrollX: true,
             "order": [
               [0, "asc"]
             ]

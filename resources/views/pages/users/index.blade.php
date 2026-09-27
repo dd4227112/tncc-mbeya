@@ -56,7 +56,7 @@
                         <th scope="col">Email</th>
                         <th scope="col">Address</th>
                         <th scope="col">Roles</th>
-                        <th style="width: 80px; min-width: 80px;">Action</th>
+                        <th style="width: 260px; min-width: 260px;">Action</th>
                       </tr>
                     </thead>
                     <tbody id="users-table-body">

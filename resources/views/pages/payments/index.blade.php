@@ -44,7 +44,7 @@
                     <th>Paid Through</th>
                     <th>Status</th>
                     <th>Processed By</th>
-                    <th style="width: 90px;">Action</th>
+                    <th style="width: 180px; min-width: 180px;">Action</th>
                   </tr>
                 </thead>
                 <tbody>

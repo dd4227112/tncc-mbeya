@@ -42,7 +42,7 @@
                     <th>Amount</th>
                     <th>Status</th>
                     <th>Created By</th>
-                    <th style="width: 90px;">Action</th>
+                    <th style="width: 260px; min-width: 260px;">Action</th>
                   </tr>
                 </thead>
                 <tbody>

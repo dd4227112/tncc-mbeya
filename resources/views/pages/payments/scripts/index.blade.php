@@ -3,7 +3,8 @@
 
   function loadPaymentsTableTable(filterData = null) {
     paymentsTable = $('#payments-table').DataTable({
-      responsive: true,
+      responsive: false,
+      scrollX: true,
       destroy: true,
       processing: true,
       serverSide: false,

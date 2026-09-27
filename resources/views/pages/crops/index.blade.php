@@ -53,7 +53,7 @@
                         <th scope="col">Description</th>
                         <th scope="col">Unit</th>
                         <th scope="col">Price</th>
-                        <th style="width: 80px; min-width: 80px;">Action</th>
+                        <th style="width: 180px; min-width: 180px;">Action</th>
                       </tr>
                     </thead>
                     <tbody id="crops-table-body">

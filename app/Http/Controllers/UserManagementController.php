@@ -44,9 +44,9 @@ class UserManagementController extends Controller
         try {
             $users = User::with('roles')->select(['id', 'first_name', 'last_name', 'phone', 'email', 'address'])->latest()->get();
             $data = $users->map(function ($user, $index) {
-                $editUser = hasPermission('users.view') ? ('<li><a class="dropdown-item text-primary edit-user" type="button" data-id="' . $user->id . '"><i class="bx bx-show me-2"></i>Edit</a></li>') : '';
-                $deleteUser = hasPermission('users.delete') ?  ('<li><a class="dropdown-item text-danger delete-user" type="button" data-id="' . $user->id . '"><i class="bx bx-trash me-2"></i>Delete</a></li>') : '';
-                $changeRole = hasPermission('settings.update') ? ('<li><a class="dropdown-item text-secondary update-role" type="button" data-id="' . $user->id . '"><i class="bx bx-cog me-2"></i>Change Role</a></li>') : '';
+                $editUser = hasPermission('users.view') ? ('<button class="btn btn-sm btn-soft-primary edit-user" type="button" data-id="' . $user->id . '"><i class="bx bx-edit me-1"></i>Edit</button>') : '';
+                $deleteUser = hasPermission('users.delete') ?  ('<button class="btn btn-sm btn-soft-danger delete-user" type="button" data-id="' . $user->id . '"><i class="bx bx-trash me-1"></i>Delete</button>') : '';
+                $changeRole = hasPermission('settings.update') ? ('<button class="btn btn-sm btn-soft-secondary update-role" type="button" data-id="' . $user->id . '"><i class="bx bx-cog me-1"></i>Change Role</button>') : '';
 
                 return [
                     'id' => $index + 1,
@@ -56,17 +56,11 @@ class UserManagementController extends Controller
                     'email' => $user->email,
                     'address' => $user->address,
                     'roles' => $user->roles->pluck('name')->implode(', '),
-                    'actions' =>
-                    '<div class="dropdown"><button class="btn btn-link font-size-16 shadow-none py-0 text-muted dropdown-toggle" type="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bx bx-dots-horizontal-rounded"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">'
+                    'actions' => '<div class="d-flex flex-wrap gap-1">'
                         . $editUser
                         . $deleteUser
                         . $changeRole .
-                        '</ul>
-                    </div>',
+                        '</div>',
                 ];
             })->values();
 

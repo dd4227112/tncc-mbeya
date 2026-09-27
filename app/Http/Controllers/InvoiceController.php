@@ -62,10 +62,10 @@ class InvoiceController extends Controller
                 $data = $invoices->map(function ($invoice, $index) {
                     $status = ucfirst($invoice->status ?? 'pending');
                     $statusClass = 'badge badge-soft-secondary';
-                    $showAddPayment = hasPermission('payments.create') ? ('<li><a class="dropdown-item text-info add-payment" data-bs-toggle="modal" type="button" data-id="' . $invoice->id . '"><i class="bx bx-plus-circle me-2"></i>Add Payment</a></li>') : '';
-                    $showDelete = hasPermission('invoices.delete') ? ('<li><a class="dropdown-item text-danger delete-invoice" type="button" data-id="' . $invoice->id . '"><i class="bx bx-trash me-2"></i>Delete</a></li>') : '';
-                    $showPrint = hasPermission('invoices.print') ?  ('<li><a class="dropdown-item text-primary print-invoice" type="button" data-id="' . $invoice->id . '"><i class="bx bx-printer me-2"></i>Print</a></li>') : '';
-                    $showView = hasPermission('invoices.view') ? ('<li><a class="dropdown-item text-secondary view-invoice" type="button" data-id="' . $invoice->id . '"><i class="bx bx-show me-2"></i>View</a></li>') : '';
+                    $showAddPayment = hasPermission('payments.create') ? ('<button class="btn btn-sm btn-soft-info add-payment" data-bs-toggle="modal" type="button" data-id="' . $invoice->id . '"><i class="bx bx-plus-circle me-1"></i>Add Payment</button>') : '';
+                    $showDelete = hasPermission('invoices.delete') ? ('<button class="btn btn-sm btn-soft-danger delete-invoice" type="button" data-id="' . $invoice->id . '"><i class="bx bx-trash me-1"></i>Delete</button>') : '';
+                    $showPrint = hasPermission('invoices.print') ?  ('<button class="btn btn-sm btn-soft-primary print-invoice" type="button" data-id="' . $invoice->id . '"><i class="bx bx-printer me-1"></i>Print</button>') : '';
+                    $showView = hasPermission('invoices.view') ? ('<button class="btn btn-sm btn-soft-secondary view-invoice" type="button" data-id="' . $invoice->id . '"><i class="bx bx-show me-1"></i>View</button>') : '';
 
                     if (strtolower($invoice->status) === 'paid') {
                         $showDelete = '';
@@ -89,24 +89,12 @@ class InvoiceController extends Controller
                         'status' => $status,
                         'status_badge' => '<div class="' . $statusClass . ' font-size-12">' . $status . '</div>',
                         'created_by' => optional($invoice->creator)->name ?? 'N/A',
-                        // 'actions' => '
-                        // <button class="btn btn-sm btn-soft-secondary view-invoice" type="button" data-id="' . $invoice->id . '">View</button>
-                        // <button class="btn btn-sm btn-soft-info add-payment" data-bs-toggle="modal" type="button" data-id="' . $invoice->id . '">Add Payment</button>
-                        // <button class="btn btn-sm btn-soft-primary print-invoice" type="button" data-id="' . $invoice->id . '">Print</button>
-                        // <button class="btn btn-sm btn-soft-danger delete-invoice" type="button" data-id="' . $invoice->id . '">Delete</button>
-                        // ',
-                        'actions' =>
-                        '<div class="dropdown"><button class="btn btn-link font-size-16 shadow-none py-0 text-muted dropdown-toggle" type="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bx bx-dots-horizontal-rounded"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end">'
+                        'actions' => '<div class="d-flex flex-wrap gap-1">'
                             . $showView
                             . $showAddPayment
                             . $showPrint
                             . $showDelete .
-                            '</ul>
-                    </div>',
+                            '</div>',
                     ];
                 })->values();
 
