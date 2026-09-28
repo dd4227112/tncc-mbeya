@@ -36,6 +36,7 @@ class ProfileUpdateRequest extends FormRequest
                         $fail('The :attribute must be a valid Tanzanian phone number.');
                     }
                 },
+                Rule::unique(User::class)->ignore($this->user()->id),
             ],
             'address' => ['string', 'max:50', 'nullable'],
         ];
