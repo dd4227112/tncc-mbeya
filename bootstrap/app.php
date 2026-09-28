@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (ValidationException $e, Request $request) {
 
             if ($request->is(
-                ['login', 'register', 'password/email', 'password/reset', 'password/confirm', 'password/forgot', 'password/verify', 'forgot-password'],
+                ['login', 'register', 'password/email', 'password/reset', 'password/confirm', 'password/forgot', 'password/verify', 'forgot-password', 'verify-otp', 'verify-otp/*', 'reset-password'],
             )) {
                 return null;
             }

@@ -8,7 +8,6 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -17,47 +16,71 @@ use Illuminate\View\View;
 class NewPasswordController extends Controller
 {
     /**
-     * Display the password reset view.
+     * Minutes a verified OTP session remains valid for setting a new password.
      */
-    public function create(Request $request): View
+    private const VERIFIED_SESSION_MINUTES = 10;
+
+    /**
+     * Display the create new password view.
+     */
+    public function create(Request $request): View|RedirectResponse
     {
-        return view('auth.reset-password', ['request' => $request]);
+        if (!$this->verifiedUser($request)) {
+            return $this->restart($request);
+        }
+
+        return view('auth.reset-password');
     }
 
     /**
-     * Handle an incoming new password request.
+     * Save the new password for the phone number verified by OTP.
      *
      * @throws ValidationException
      */
     public function store(Request $request): RedirectResponse
     {
+        $user = $this->verifiedUser($request);
+        if (!$user) {
+            return $this->restart($request);
+        }
+
         $request->validate([
-            'token' => ['required'],
-            'email' => ['required', 'email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        // Here we will attempt to reset the user's password. If it is successful we
-        // will update the password on an actual user model and persist it to the
-        // database. Otherwise we will parse the error and return the response.
-        $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user) use ($request) {
-                $user->forceFill([
-                    'password' => Hash::make($request->password),
-                    'remember_token' => Str::random(60),
-                ])->save();
+        $user->forceFill([
+            'password' => Hash::make($request->input('password')),
+            'remember_token' => Str::random(60),
+        ])->save();
 
-                event(new PasswordReset($user));
-            }
-        );
+        event(new PasswordReset($user));
 
-        // If the password was successfully reset, we will redirect the user back to
-        // the application's home authenticated view. If there is an error we can
-        // redirect them back to where they came from with their error message.
-        return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+        $request->session()->forget('password_reset');
+
+        return redirect()->route('login')
+            ->with('status', 'Your password has been reset. You can now log in with your new password.');
+    }
+
+    /**
+     * The user whose phone number was verified by OTP in this session, if still valid.
+     */
+    private function verifiedUser(Request $request): ?User
+    {
+        $phone = $request->session()->get('password_reset.phone');
+        $verifiedAt = $request->session()->get('password_reset.verified_at');
+
+        if (!$phone || !$verifiedAt || now()->timestamp - $verifiedAt > self::VERIFIED_SESSION_MINUTES * 60) {
+            return null;
+        }
+
+        return User::where('phone', $phone)->first();
+    }
+
+    private function restart(Request $request): RedirectResponse
+    {
+        $request->session()->forget('password_reset');
+
+        return redirect()->route('password.request')
+            ->withErrors(['phone' => 'Your reset session has expired. Please request a new code.']);
     }
 }

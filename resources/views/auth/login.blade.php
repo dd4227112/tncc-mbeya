@@ -1,4 +1,9 @@
 <x-auth.header />
+@if (session('status'))
+  <div class="alert alert-success mt-3 mb-0" role="alert">
+    {{ session('status') }}
+  </div>
+@endif
 <form method="POST" action="{{ route('login') }}" class="mt-4 pt-2">
   @csrf
   <div class="mb-3">

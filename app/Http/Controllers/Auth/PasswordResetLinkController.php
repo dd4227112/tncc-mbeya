@@ -3,16 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Services\PasswordResetOtpService;
+use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class PasswordResetLinkController extends Controller
 {
     /**
-     * Display the password reset link request view.
+     * Display the forgot password (enter phone number) view.
      */
     public function create(): View
     {
@@ -20,26 +22,45 @@ class PasswordResetLinkController extends Controller
     }
 
     /**
-     * Handle an incoming password reset link request.
+     * Send a password reset OTP to the user's registered phone number.
      *
      * @throws ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, PasswordResetOtpService $otp): RedirectResponse
     {
         $request->validate([
-            'email' => ['required', 'email'],
+            'phone' => [
+                'required',
+                'string',
+                'size:13',
+                function (string $attribute, mixed $value, Closure $fail) {
+                    if (! isValidPhone($value)) {
+                        $fail('The :attribute must be a valid Tanzanian phone number, e.g. +255712345678.');
+                    }
+                },
+            ],
         ]);
 
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        $user = User::where('phone', $request->input('phone'))->first();
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'phone' => 'We could not find an account with that phone number.',
+            ]);
+        }
 
-        return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+        $wait = $otp->secondsUntilResend($user->phone);
+        if ($wait > 0) {
+            throw ValidationException::withMessages([
+                'phone' => "Please wait {$wait} seconds before requesting another code.",
+            ]);
+        }
+
+        $otp->issue($user);
+
+        $request->session()->forget('password_reset');
+        $request->session()->put('password_reset.phone', $user->phone);
+
+        return redirect()->route('password.otp')
+            ->with('status', 'A ' . PasswordResetOtpService::CODE_LENGTH . '-digit code has been sent to your phone.');
     }
 }
