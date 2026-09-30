@@ -110,7 +110,7 @@ class ReportController extends Controller
                 'c.name AS crop_name',
                 DB::raw('COUNT(DISTINCT invoices.user_id) AS total_members'),
                 DB::raw('SUM(t.quantity) AS total_weight'),
-                DB::raw('ROUND(AVG(t.quantity), 2) AS average_weight_per_member'),
+                DB::raw('SUM(t.quantity)/COUNT(DISTINCT invoices.user_id) AS average_weight_per_member'),
                 DB::raw('SUM(t.total_price) AS total_collection')
             )->groupBy([
                 'c.id',
@@ -124,7 +124,7 @@ class ReportController extends Controller
                     'crop_name' => $report->crop_name,
                     'total_members' => $report->total_members,
                     'total_weight' => $report->total_weight,
-                    'average_weight_per_member' => number_format($report->average_weight_per_member, 2),
+                    'average_weight_per_member' => $report->average_weight_per_member,
                     'total_collection' => number_format($report->total_collection, 2),
                 ];
             });

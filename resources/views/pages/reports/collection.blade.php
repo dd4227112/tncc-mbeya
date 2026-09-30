@@ -13,7 +13,7 @@
     <div class="row">
       <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-          <h4 class="mb-sm-0 font-size-18">Collection Summary Report <span id ="reportDate"></span></h4>
+          <h4 class="mb-sm-0 font-size-18">Collection Detailed Report <span id ="reportDate"></span></h4>
 
           <div class="page-title-right">
             <ol class="breadcrumb m-0">
