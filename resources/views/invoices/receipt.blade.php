@@ -105,7 +105,11 @@
   .qr {
     margin: 2mm auto 0;
     display: block;
+    width: 30mm;
+    height: 30mm;
   }
+
+  .verification-url { overflow-wrap: anywhere; }
 
   .footer {
     margin-top: 2mm;
@@ -254,11 +258,7 @@
 
     <div class="divider solid"></div>
 
-    @if (!empty($invoice['barcode']))
-      <div class="barcode">
-        <div class="barcode-text">{{ $invoice['barcode'] }}</div>
-      </div>
-    @endif
+    <img class="qr" src="{{ $qrCode }}" alt="QR code to verify invoice {{ $invoice['reference_number'] }}">
 
     <div class="center">------- END OF VALID RECEIPT -------</div>
 

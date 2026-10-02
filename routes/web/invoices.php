@@ -3,6 +3,9 @@
 use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('invoice/verify/{reference}', [InvoiceController::class, 'verify'])
+    ->name('invoices.verify');
+
 Route::middleware('auth')->group(function () {
     Route::get('invoices/getInvoices', [InvoiceController::class, 'getInvoices'])->name('invoices.getInvoices');
     Route::post('invoices/addPayment', [InvoiceController::class, 'addPayment'])->name('invoices.addPayment');

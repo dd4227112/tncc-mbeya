@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use App\Models\Crop;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
@@ -11,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Throwable;
 
 class InvoiceController extends Controller
@@ -137,13 +142,31 @@ class InvoiceController extends Controller
         );
 
         $invoice = Invoice::with(['customer', 'payment', 'creator', 'items.crop.unit'])->findOrFail($id);
+        $verificationUrl = URL::signedRoute('invoices.verify', [
+            'reference' => $invoice->reference_number,
+        ]);
+        $qrCode = (new Writer(new ImageRenderer(new RendererStyle(300, 4), new SvgImageBackEnd())))
+            ->writeString($verificationUrl);
 
         return view('invoices.receipt', [
             'invoice' => $this->invoiceDetailsData($invoice),
+            'verificationUrl' => $verificationUrl,
+            'qrCode' => 'data:image/svg+xml;base64,' . base64_encode($qrCode),
             'organizationAddress' => config('app.organization_address'),
             'organizationEmail' => config('app.organization_email'),
             'organizationPhone' => config('app.organization_phone'),
         ]);
+    }
+
+    public function verify(Request $request, string $reference)
+    {
+        abort_unless($request->hasValidSignature(), 404);
+
+        $invoice = Invoice::with('payment')
+            ->where('reference_number', $reference)
+            ->firstOrFail();
+
+        return view('invoices.verify', ['invoice' => $invoice]);
     }
 
     private function invoiceDetailsData(Invoice $invoice): array
