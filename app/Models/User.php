@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     /**
      * Get the attributes that should be cast.
@@ -36,8 +36,12 @@ class User extends Authenticatable
         static::addGlobalScope('role', function (Builder $builder) {
             if (static::$managementRole) {
 
-                // ignore the test admin user with email
-                $builder->where('email', '!=', 'testadmin@tncckasumulu.or.tz');
+                // Exclude only the test admin; keep users with no email
+                $builder->where(function (Builder $query) {
+                    $query->whereNull('email')
+                        ->orWhere('email', '!=', 'testadmin@tncckasumulu.or.tz');
+                });
+
                 if (static::$managementRole === 'members') {
                     $builder->whereHas('roles', function ($query) {
                         $query->where('name', 'Member');
