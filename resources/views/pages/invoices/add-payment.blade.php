@@ -10,6 +10,8 @@
             <div class="col-12">
               <h5 id="invoiceDetail">Invoice#: </h5>
               <h5 id="memberDetail">Member: </h5>
+              <p class="mb-1"><strong>Location:</strong> <span id="paymentInvoiceLocation">—</span></p>
+              <p class="mb-1"><strong>Plate Number:</strong> <span id="paymentInvoicePlateNumber">—</span></p>
             </div>
           </div>
           <form id="addPaymentForm" novalidate>
@@ -26,7 +28,7 @@
               <div class="col-12">
                 <div class="form-group mb-3">
                   <label for="add-phone_number">Phone</label>
-                  <input type="text" id="add-phone_number" name="phone" class="form-control" />
+                  <input type="text" id="add-phone_number" name="phone" class="form-control" value="+255" />
                   <span class="invalid-feedback d-block" id="add-phone_number-error"></span>
                 </div>
               </div>

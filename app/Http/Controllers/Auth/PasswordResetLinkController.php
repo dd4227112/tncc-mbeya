@@ -28,6 +28,7 @@ class PasswordResetLinkController extends Controller
      */
     public function store(Request $request, PasswordResetOtpService $otp): RedirectResponse
     {
+        $request->merge(['phone' => normalizeTzPhone((string) $request->input('phone', ''))]);
         $request->validate([
             'phone' => [
                 'required',

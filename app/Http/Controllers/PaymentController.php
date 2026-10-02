@@ -86,6 +86,8 @@ class PaymentController extends Controller
                         'amount' => number_format($payment->amount, 2),
                         'reference' => $payment->transaction_reference,
                         'invoice' => optional($payment->invoice)->reference_number,
+                        'location' => optional($payment->invoice)->location ?? '—',
+                        'plate_number' => optional($payment->invoice)->plate_number ?? '—',
                         'method' => $payment->payment_method,
                         'status' => $status,
                         'status_badge' => '<div class="' . $statusClass . ' font-size-12">' . $status . '</div>',
@@ -123,6 +125,7 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
         if (hasPermission('payments.create')) {
+            $request->merge(['phone' => normalizeTzPhone((string) $request->input('phone', ''))]);
             $request->validate([
                 'invoice_id' => ['required', 'exists:invoices,id'],
                 'method' => ['nullable', 'in:cash,mobile'],
@@ -288,13 +291,14 @@ class PaymentController extends Controller
             return response()->json(['message' => 'Payment gateway is not configured.'], 500);
         }
 
+        $phoneNumber = $invoice->getAttribute('phone') ?: $customer->phone;
         $payload = [
             'payment_type' => 'mobile',
             'details' => [
                 'amount' => (float) $invoice->total_amount,
                 'currency' => 'TZS',
             ],
-            'phone_number' => (string) $customer,
+            'phone_number' => (string) $phoneNumber,
             'customer' => [
                 'firstname' => (string) (optional($customer)->first_name ?? ''),
                 'lastname' => (string) (optional($customer)->last_name ?? ''),

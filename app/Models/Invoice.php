@@ -19,6 +19,8 @@ class Invoice extends Model
         'status',
         'created_by',
         'date',
+        'location',
+        'plate_number',
     ];
 
     protected $casts = [

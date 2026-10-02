@@ -89,6 +89,7 @@ class UserManagementController extends Controller
     {
 
         if (hasPermission('users.create')) {
+            $request->merge(['phone' => normalizeTzPhone((string) $request->input('phone', ''))]);
             $validated = $request->validate([
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],
@@ -189,6 +190,7 @@ class UserManagementController extends Controller
     public function update(Request $request, int $id)
     {
         if (hasPermission('users.update')) {
+            $request->merge(['phone' => normalizeTzPhone((string) $request->input('phone', ''))]);
             $validated = $request->validate([
                 'first_name' => ['required', 'string', 'max:255'],
                 'last_name' => ['required', 'string', 'max:255'],

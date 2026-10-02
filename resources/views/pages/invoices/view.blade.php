@@ -53,6 +53,8 @@
                             id="invoiceDetailPaymentReference">reference</span></p>
                         <p class="small mb-1"><strong>Payment Method:</strong> <span
                             id="invoiceDetailPaymentMethod">-</span></p>
+                        <p class="small mb-1"><strong>Location:</strong> <span id="invoiceDetailLocation">—</span></p>
+                        <p class="small mb-0"><strong>Plate Number:</strong> <span id="invoiceDetailPlateNumber">—</span></p>
                       </div>
                     </div>
                   </div>

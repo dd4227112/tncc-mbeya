@@ -41,6 +41,8 @@
                     <th>Amount</th>
                     <th>Txn Reference</th>
                     <th style="width: 120px;">Invoice</th>
+                    <th>Location</th>
+                    <th>Plate Number</th>
                     <th>Paid Through</th>
                     <th>Status</th>
                     <th>Processed By</th>

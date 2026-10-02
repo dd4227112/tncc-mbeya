@@ -30,7 +30,7 @@
             <div class="col-12">
               <div class="form-group mb-3">
                 <label for="edit-phone">Phone</label>
-                <input type="text" id="edit-phone" name="phone" class="form-control" />
+                <input type="text" id="edit-phone" name="phone" class="form-control" value="+255" />
                 <span class="invalid-feedback d-block" id="edit-phone-error"></span>
               </div>
             </div>

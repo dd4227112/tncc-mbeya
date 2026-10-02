@@ -80,11 +80,26 @@
                   </div>
                   <!-- end two-column layout -->
 
+                  <!-- Vehicle details -->
+                  <div class="row mt-4">
+                    <div class="col-12">
+                      <div class="section-label">3. Vehicle Details</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="invoiceLocation" class="form-label">Location</label>
+                      <input type="text" id="invoiceLocation" class="form-control" maxlength="255" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label for="invoicePlateNumber" class="form-label">Plate Number</label>
+                      <input type="text" id="invoicePlateNumber" class="form-control" maxlength="255" required>
+                    </div>
+                  </div>
+
                   <!-- Summary -->
                   <div class="row justify-content-end mt-4">
                     <div class="col-lg-5 col-md-7">
                       <div class="py-2">
-                        <h5 class="font-size-15">3. Summary</h5>
+                        <h5 class="font-size-15">4. Summary</h5>
                       </div>
                       <div class="p-3 p-md-4 border rounded">
                         <table class="table table-borderless summary-table mb-0">

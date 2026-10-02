@@ -29,7 +29,7 @@
             <div class="col-12">
               <div class="form-group mb-3">
                 <label for="add-phone">Phone</label>
-                <input type="text" id="add-phone" name="phone" class="form-control" />
+                <input type="text" id="add-phone" name="phone" class="form-control" value="{{ old('phone', '+255') }}" />
                 <span class="invalid-feedback d-block" id="add-phone-error"></span>
               </div>
             </div>

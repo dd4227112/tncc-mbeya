@@ -95,15 +95,23 @@
     for (var i = 0; i < items.length && i < 8; i++) {
       var crop = items[i];
       var $item = $('<div class="search-result-item"></div>');
-      var itemHtml = '<div class="item-name">' + crop.name + ' (' + crop.description + ')</div>' +
+      var cropLabel = crop.name;
+      if (crop.description && $.trim(crop.description)) {
+        cropLabel += ' (' + crop.description + ')';
+      }
+      var itemHtml = '<div class="item-name">' + cropLabel + '</div>' +
         '<div class="item-sub">' + formatAmount(crop.price) + ' / ' + crop.unit + '</div>';
 
       $item.html(itemHtml);
       (function(currentCrop) {
         $item.on('click', function() {
+          var cropName = currentCrop.name;
+          if (currentCrop.description && $.trim(currentCrop.description)) {
+            cropName += ' (' + currentCrop.description + ')';
+          }
           addCrop({
             id: currentCrop.id,
-            name: currentCrop.name + ' (' + currentCrop.description + ')',
+            name: cropName,
             price: currentCrop.price,
             unit: currentCrop.unit
           });
@@ -186,6 +194,7 @@
     $('#memberResults').empty().removeClass('show');
     $('#cropSearchInput').val('');
     $('#cropResults').empty().removeClass('show');
+    $('#invoiceLocation, #invoicePlateNumber').val('');
   }
 
   function searchMembers(query) {
@@ -412,6 +421,19 @@
       return;
     }
 
+    var location = $.trim($('#invoiceLocation').val());
+    var plateNumber = $.trim($('#invoicePlateNumber').val());
+    if (!location || !plateNumber) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Vehicle details required',
+        text: 'Please enter the location and plate number before saving the invoice.',
+        confirmButtonColor: '#5156be'
+      });
+      (!location ? $('#invoiceLocation') : $('#invoicePlateNumber')).trigger('focus');
+      return;
+    }
+
     for (var i = 0; i < cropRows.length; i++) {
       if (cropRows[i].quantity < 1) {
         Swal.fire({
@@ -431,6 +453,8 @@
 
     var payload = {
       member_id: selectedMember.id,
+      location: location,
+      plate_number: plateNumber,
       items: cropRows.map(function(row) {
         return {
           crop_id: row.id,
@@ -485,6 +509,12 @@
   $(function() {
     initMemberSearch();
     initCropSearch();
+    $('#invoicePlateNumber').on('input', function() {
+      var start = this.selectionStart;
+      var end = this.selectionEnd;
+      this.value = this.value.toUpperCase();
+      this.setSelectionRange(start, end);
+    });
     $('#clearMemberBtn').on('click', clearMember);
     $('#saveInvoiceBtn').on('click', saveInvoice);
     renderCropTable();

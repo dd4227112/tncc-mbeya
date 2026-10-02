@@ -31,6 +31,12 @@
           data: 'invoice'
         },
         {
+          data: 'location'
+        },
+        {
+          data: 'plate_number'
+        },
+        {
           data: 'method'
         },
         {

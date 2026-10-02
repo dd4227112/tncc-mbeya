@@ -9,6 +9,11 @@ use Illuminate\Validation\Rule;
 
 class ProfileUpdateRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge(['phone' => normalizeTzPhone((string) $this->input('phone', ''))]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

@@ -41,8 +41,10 @@
   function renderPaymentDetailModal(invoice) {
     $('#invoiceDetail').text(invoice.reference_number + ' | Date: ' + invoice.date);
     $('#memberDetail').text(invoice.member_name + ' | Phone: ' + invoice.member_phone);
+    $('#paymentInvoiceLocation').text(invoice.location || '—');
+    $('#paymentInvoicePlateNumber').text(invoice.plate_number || '—');
     $('#add-amount').val(invoice.total_amount);
-    $('#add-phone_number').val(invoice.member_phone);
+    $('#add-phone_number').val(invoice.member_phone && invoice.member_phone !== '—' ? invoice.member_phone : '+255');
     $('#add-invoice-id').val(invoice.id);
     // $('#invoiceDetailBilledName').text(invoice.member_name);
     // $('#invoiceDetailBilledAddress').text(invoice.member_address);

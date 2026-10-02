@@ -155,6 +155,8 @@
     $('#invoiceDetailPaymentReference').text(invoice.transaction_reference);
     $('#invoiceDetailPaymentStatus').text(invoice.payment_status);
     $('#invoiceDetailPaymentMethod').text(invoice.payment_method);
+    $('#invoiceDetailLocation').text(invoice.location || '—');
+    $('#invoiceDetailPlateNumber').text(invoice.plate_number || '—');
 
     var $body = $('#invoiceDetailItemsBody');
     $body.empty();

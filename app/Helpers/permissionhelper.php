@@ -45,3 +45,24 @@ if (! function_exists('isValidPhone')) {
         return preg_match('/^\+255[0-9]{9}$/', $phone) === 1;
     }
 }
+
+if (! function_exists('normalizeTzPhone')) {
+    function normalizeTzPhone(string $phone): string
+    {
+        $phone = preg_replace('/[\s()-]/', '', $phone) ?? $phone;
+
+        if (preg_match('/^0[0-9]{9}$/', $phone) === 1) {
+            return '+255' . substr($phone, 1);
+        }
+
+        if (preg_match('/^[0-9]{9}$/', $phone) === 1) {
+            return '+255' . $phone;
+        }
+
+        if (preg_match('/^255[0-9]{9}$/', $phone) === 1) {
+            return '+' . $phone;
+        }
+
+        return $phone;
+    }
+}

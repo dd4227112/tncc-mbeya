@@ -29,7 +29,7 @@
               <div class="col-12">
                 <div class="form-group mb-3">
                   <label for="add-price">Price</label>
-                  <input type="number" id="add-price" name="price" class="form-control" />
+                  <input type="number" id="add-price" name="price" class="form-control" value="5" />
                   <span class="invalid-feedback d-block" id="add-price-error"></span>
                 </div>
               </div>

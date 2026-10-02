@@ -162,11 +162,22 @@ class InvoiceController extends Controller
     {
         abort_unless($request->hasValidSignature(), 404);
 
-        $invoice = Invoice::with('payment')
+        $invoice = Invoice::with(['customer', 'payment'])
             ->where('reference_number', $reference)
             ->firstOrFail();
 
-        return view('invoices.verify', ['invoice' => $invoice]);
+        $verificationUrl = URL::signedRoute('invoices.verify', [
+            'reference' => $invoice->reference_number,
+        ]);
+        $qrCode = (new Writer(new ImageRenderer(new RendererStyle(300, 4), new SvgImageBackEnd())))
+            ->writeString($verificationUrl);
+
+        return view('invoices.verify', [
+            'invoice' => $invoice,
+            'qrCode' => 'data:image/svg+xml;base64,' . base64_encode($qrCode),
+            'organizationEmail' => config('app.organization_email'),
+            'organizationPhone' => config('app.organization_phone'),
+        ]);
     }
 
     private function invoiceDetailsData(Invoice $invoice): array
@@ -194,6 +205,8 @@ class InvoiceController extends Controller
             'member_address' => $customerAddress ?: '—',
             'member_email' => optional($invoice->customer)->email ?? '—',
             'member_phone' => optional($invoice->customer)->phone ?? '—',
+            'location' => $invoice->location ?? '—',
+            'plate_number' => $invoice->plate_number ?? '—',
             'created_by' => optional($invoice->creator)->name ?? 'N/A',
             'sub_total' => number_format($invoice->items->sum('total_price'), 2),
             'total_amount' => number_format($invoice->total_amount, 2),
@@ -230,6 +243,8 @@ class InvoiceController extends Controller
         if (hasPermission('invoices.create')) {
             $request->validate([
                 'member_id' => ['required', 'exists:users,id'],
+                'location' => ['required', 'string', 'max:255'],
+                'plate_number' => ['required', 'string', 'max:255'],
                 'items' => ['required', 'array', 'min:1'],
                 'items.*.crop_id' => ['required', 'exists:crops,id'],
                 'items.*.quantity' => ['required', 'integer', 'min:1'],
@@ -271,6 +286,8 @@ class InvoiceController extends Controller
                         'status' => 'pending',
                         'created_by' => Auth::id(),
                         'date' => now()->toDateString(),
+                        'location' => $request->input('location'),
+                        'plate_number' => $request->input('plate_number'),
                     ]);
 
                     foreach ($invoiceItemData as $itemData) {

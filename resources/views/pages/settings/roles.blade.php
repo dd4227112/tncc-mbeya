@@ -113,6 +113,7 @@
       <!-- End Page-content -->
       @include('pages.settings.add')
       @push('scripts')
+        @include('pages.settings.scripts.manage-role')
         @include('pages.settings.scripts.permissions')
       @endpush
 

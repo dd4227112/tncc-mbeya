@@ -107,6 +107,7 @@
     display: block;
     width: 30mm;
     height: 30mm;
+    opacity: 0.75;
   }
 
   .verification-url { overflow-wrap: anywhere; }
@@ -215,6 +216,12 @@
 
     <div>
       <div>{{ $invoice['member_name'] }}</div>
+      @if (!empty($invoice['location']) && $invoice['location'] !== '—')
+        <div class="small">Location: {{ $invoice['location'] }}</div>
+      @endif
+      @if (!empty($invoice['plate_number']) && $invoice['plate_number'] !== '—')
+        <div class="small">Plate Number: {{ $invoice['plate_number'] }}</div>
+      @endif
       @if (!empty($invoice['member_address']) && $invoice['member_address'] !== '—')
         <div class="small">{{ $invoice['member_address'] }}</div>
       @endif
