@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use BaconQrCode\Renderer\Image\SvgImageBackEnd;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Writer;
+use BaconQrCode\Common\ErrorCorrectionLevel;
+use BaconQrCode\Encoder\Encoder;
 use App\Models\Crop;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
@@ -145,13 +143,16 @@ class InvoiceController extends Controller
         $verificationUrl = URL::signedRoute('invoices.verify', [
             'reference' => $invoice->reference_number,
         ]);
-        $qrCode = (new Writer(new ImageRenderer(new RendererStyle(300, 4), new SvgImageBackEnd())))
-            ->writeString($verificationUrl);
+
+        // Sized for the 58mm thermal printer: modules are made as large as fit
+        // in 46mm, and shrunk slightly to cancel thermal ink/heat spread.
+        $qr = $this->buildQr($verificationUrl, 46.0, 0.5);
 
         return view('invoices.receipt', [
             'invoice' => $this->invoiceDetailsData($invoice),
             'verificationUrl' => $verificationUrl,
-            'qrCode' => 'data:image/svg+xml;base64,' . base64_encode($qrCode),
+            'qrCode' => $qr['src'],
+            'qrWidthMm' => $qr['width_mm'],
             'organizationAddress' => config('app.organization_address'),
             'organizationEmail' => config('app.organization_email'),
             'organizationPhone' => config('app.organization_phone'),
@@ -169,15 +170,85 @@ class InvoiceController extends Controller
         $verificationUrl = URL::signedRoute('invoices.verify', [
             'reference' => $invoice->reference_number,
         ]);
-        $qrCode = (new Writer(new ImageRenderer(new RendererStyle(300, 4), new SvgImageBackEnd())))
-            ->writeString($verificationUrl);
+
+        // On-screen page: no printer limit and no dot gain to compensate.
+        $qr = $this->buildQr($verificationUrl, null, 0.0, 6);
 
         return view('invoices.verify', [
             'invoice' => $invoice,
-            'qrCode' => 'data:image/svg+xml;base64,' . base64_encode($qrCode),
+            'qrCode' => $qr['src'],
+            'qrWidthMm' => $qr['width_mm'],
             'organizationEmail' => config('app.organization_email'),
             'organizationPhone' => config('app.organization_phone'),
         ]);
+    }
+
+    /**
+     * @param string     $content        Text/URL to encode.
+     * @param float|null $maxWidthMm     Fit within this width (null = use $dotsPerModule).
+     * @param float      $dotGain        Dots to shave off each side of a module (0 - 1.5).
+     * @param int        $dotsPerModule  Used only when $maxWidthMm is null.
+     * @return array{src: string, width_mm: float, modules: int, dots_per_module: int}
+     */
+    private function buildQr(string $content, ?float $maxWidthMm = 46.0, float $dotGain = 0.5, int $dotsPerModule = 6): array
+    {
+        // BaconQrCode v3 uses an enum (L), v2 uses a static method (L()).
+        $ecLevel = enum_exists(ErrorCorrectionLevel::class)
+            ? ErrorCorrectionLevel::L
+            : ErrorCorrectionLevel::L();
+
+        $quietZone = 4; // modules of white around the code
+        $dotsPerMm = 8; // 203dpi
+
+        $matrix  = Encoder::encode($content, $ecLevel, 'UTF-8')->getMatrix();
+        $modules = $matrix->getWidth();
+        $totalModules = $modules + 2 * $quietZone;
+
+        if ($maxWidthMm !== null) {
+            $dotsPerModule = (int) floor($maxWidthMm * $dotsPerMm / $totalModules);
+        }
+        $dotsPerModule = max(3, min(10, $dotsPerModule));
+
+        // Never shave more than a third of a module.
+        $inset = min(max(0.0, $dotGain), $dotsPerModule / 3);
+        $cell  = $dotsPerModule - 2 * $inset;
+        $size  = $totalModules * $dotsPerModule;
+
+        $path = '';
+        for ($y = 0; $y < $modules; $y++) {
+            for ($x = 0; $x < $modules; $x++) {
+                if ($matrix->get($x, $y) === 1) {
+                    $px = ($x + $quietZone) * $dotsPerModule + $inset;
+                    $py = ($y + $quietZone) * $dotsPerModule + $inset;
+                    $path .= "M{$px} {$py}h{$cell}v{$cell}h-{$cell}z";
+                }
+            }
+        }
+
+        $svg = '<?xml version="1.0" encoding="UTF-8"?>'
+            . '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" '
+            . "width=\"{$size}\" height=\"{$size}\" viewBox=\"0 0 {$size} {$size}\" "
+            . 'shape-rendering="crispEdges">'
+            . '<rect width="100%" height="100%" fill="#ffffff"/>'
+            . "<path fill=\"#000000\" d=\"{$path}\"/>"
+            . '</svg>';
+
+        $widthMm = round($size / $dotsPerMm, 2);
+
+        Log::info('Receipt QR built', [
+            'modules' => $modules,
+            'dots_per_module' => $dotsPerModule,
+            'dot_gain' => $inset,
+            'width_mm' => $widthMm,
+            'content_length' => strlen($content),
+        ]);
+
+        return [
+            'src' => 'data:image/svg+xml;base64,' . base64_encode($svg),
+            'width_mm' => $widthMm,
+            'modules' => $modules,
+            'dots_per_module' => $dotsPerModule,
+        ];
     }
 
     private function invoiceDetailsData(Invoice $invoice): array

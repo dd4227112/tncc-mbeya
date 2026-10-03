@@ -1,174 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Invoice {{ $invoice['reference_number'] }} Receipt</title>
-<style>
-  /* 58mm is the paper width used by handheld POS thermal printers
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invoice {{ $invoice['reference_number'] }} Receipt</title>
+  <style>
+    /* 58mm is the paper width used by handheld POS thermal printers
      (40mm usually refers to the max roll diameter the printer accepts,
      not a fixed print height) — so the page is 58mm wide and grows
      downward with content, like a real receipt roll. */
-  @page {
-    size: 58mm auto;
-    margin: 0;
-  }
+    @page {
+      size: 58mm auto;
+      margin: 0;
+    }
 
-  * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: #ccc;
-  }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: #ccc;
+    }
 
-  body {
-    display: flex;
-    justify-content: center;
-    font-family: Arial, Helvetica, sans-serif;
-  }
+    body {
+      display: flex;
+      justify-content: center;
+      font-family: Arial, Helvetica, sans-serif;
+    }
 
-  .receipt {
-    width: 58mm;
-    padding: 3mm 3mm 6mm 3mm;
-    background: #fff;
-    color: #000;
-    opacity: 1;
-    font-size: 11px;
-    font-weight: 500;
-    line-height: 1.4;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
+    .receipt {
+      width: 58mm;
+      padding: 3mm 3mm 6mm 3mm;
+      background: #fff;
+      color: #000; /* was #212020: thermal printers are 1-bit, use pure black */
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1.4;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
 
-  .center { text-align: center; }
-  .bold   { font-weight: 700; }
-  .big    { font-size: 13px; font-weight: 700; letter-spacing: 0.5px; }
-  .small  { font-size: 9px; }
+    .center {
+      text-align: center;
+    }
 
-  .logo {
-    font-size: 17px;
-    font-weight: 700;
-    letter-spacing: 1px;
-  }
+    .bold {
+      font-weight: 400;
+    }
 
-  .divider {
-    border-top: 1px dashed #000;
-    margin: 2mm 0;
-  }
+    .big {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
 
-  .divider.solid {
-    border-top: 1px solid #000;
-  }
+    .small {
+      font-size: 9px;
+    }
 
-  .row {
-    display: flex;
-    justify-content: space-between;
-    gap: 4px;
-  }
+    .logo {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
 
-  .items { margin: 1mm 0; }
+    .divider {
+      border-top: 1px dashed #000;
+      margin: 2mm 0;
+    }
 
-  .item-name {
-    display: flex;
-    justify-content: space-between;
-  }
+    .divider.solid {
+      border-top: 1px solid #000;
+    }
 
-  .item-meta {
-    display: flex;
-    justify-content: space-between;
-    color: #000;
-    font-size: 9.5px;
-    padding-left: 2mm;
-  }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+    }
 
-  .totals .row { padding: 0.3mm 0; }
+    .items {
+      margin: 1mm 0;
+    }
 
-  .grand-total {
-    font-size: 13px;
-    font-weight: 700;
-  }
+    .item-name {
+      display: flex;
+      justify-content: space-between;
+    }
 
-  .barcode {
-    margin-top: 3mm;
-    text-align: center;
-  }
+    .item-meta {
+      display: flex;
+      justify-content: space-between;
+      color: #000;
+      font-size: 9.5px;
+      padding-left: 2mm;
+    }
 
-  .barcode svg { width: 100%; height: 34px; }
+    .totals .row {
+      padding: 0.3mm 0;
+    }
 
-  .barcode-text {
-    letter-spacing: 2px;
-    font-size: 10px;
-    margin-top: 1mm;
-  }
+    .grand-total {
+      font-size: 13px;
+      font-weight: 700;
+    }
 
-  .qr {
-    margin: 2mm auto 0;
-    display: block;
-    width: 30mm;
-    height: 30mm;
-    opacity: 0.75;
-  }
+    .barcode {
+      margin-top: 3mm;
+      text-align: center;
+    }
 
-  .verification-url { overflow-wrap: anywhere; }
+    .barcode svg {
+      width: 100%;
+      height: 34px;
+    }
 
-  .footer {
-    margin-top: 2mm;
-    text-align: center;
-  }
+    .barcode-text {
+      letter-spacing: 2px;
+      font-size: 10px;
+      margin-top: 1mm;
+    }
 
-  /* On-screen preview only: shows the physical edges of the receipt.
+    /* QR code
+     - The SVG is generated server-side with exactly N printer dots per module
+       and already contains its own 4-module white quiet zone, so NO padding here.
+     - Width/height are set inline from $qrWidthMm so modules stay on the dot grid.
+     - display:block is required for margin:auto to center the image. */
+    .qr {
+      display: block;
+      margin: 2mm auto 0;
+      padding: 0;
+      background: #fff;
+    }
+
+    .verification-url {
+      overflow-wrap: anywhere;
+    }
+
+    .footer {
+      margin-top: 2mm;
+      text-align: center;
+    }
+
+    /* On-screen preview only: shows the physical edges of the receipt.
      Removed automatically when printing. */
-  .preview-frame {
-    box-shadow: 0 0 0 1px #999, 0 6px 18px rgba(0,0,0,0.25);
-    margin: 16px 0;
-  }
+    .preview-frame {
+      box-shadow: 0 0 0 1px #999, 0 6px 18px rgba(0, 0, 0, 0.25);
+      margin: 16px 0;
+    }
 
-  @media print {
-    body { background: #fff; }
-    .preview-frame { box-shadow: none; margin: 0; }
-  }
+    @media print {
+      body {
+        background: #fff;
+      }
 
-  .print-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px;
-    background: #eee;
-    border-bottom: 1px solid #ccc;
-    z-index: 10;
-  }
+      .preview-frame {
+        box-shadow: none;
+        margin: 0;
+      }
+    }
 
-  .print-btn,
-  .back-btn {
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 8px 18px;
-    border: none;
-    border-radius: 6px;
-    background: #111;
-    color: #fff;
-    cursor: pointer;
-  }
+    .print-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      background: #eee;
+      border-bottom: 1px solid #ccc;
+      z-index: 10;
+    }
 
-  .print-btn { background: #111; }
-  .back-btn { background: #555; }
-  .print-btn:hover { background: #333; }
-  .back-btn:hover { background: #444; }
+    .print-btn,
+    .back-btn {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 6px;
+      background: #111;
+      color: #fff;
+      cursor: pointer;
+    }
 
-  body { padding-top: 46px; }
+    .print-btn {
+      background: #111;
+    }
 
-  @media print {
-    .print-bar { display: none; }
-    body { padding-top: 0; }
-  }
-</style>
+    .back-btn {
+      background: #555;
+    }
+
+    .print-btn:hover {
+      background: #333;
+    }
+
+    .back-btn:hover {
+      background: #444;
+    }
+
+    body {
+      padding-top: 46px;
+    }
+
+    @media print {
+      .print-bar {
+        display: none;
+      }
+
+      body {
+        padding-top: 0;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
   <div class="print-bar">
@@ -265,18 +319,22 @@
 
     <div class="divider solid"></div>
 
-    <img class="qr" src="{{ $qrCode }}" alt="QR code to verify invoice {{ $invoice['reference_number'] }}">
+    <img class="qr"
+         style="width: {{ $qrWidthMm ?? 40 }}mm; height: {{ $qrWidthMm ?? 40 }}mm;"
+         src="{{ $qrCode }}"
+         alt="QR code to verify invoice {{ $invoice['reference_number'] }}">
 
     <div class="center">------- END OF VALID RECEIPT -------</div>
 
   </div>
 
   <script>
-    window.addEventListener('load', function () {
-      setTimeout(function () {
+    window.addEventListener('load', function() {
+      setTimeout(function() {
         window.print();
       }, 500);
     });
   </script>
 </body>
+
 </html>
